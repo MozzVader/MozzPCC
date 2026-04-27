@@ -24,15 +24,26 @@
     'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
+  // --- Estado ---
+  let nombreUsuario = '';
+
   /**
    * Obtiene el saludo según la hora del día
    * @param {number} hora - Hora actual (0-23)
    * @returns {string} Saludo apropiado
    */
   function obtenerSaludo(hora) {
-    if (hora >= 5 && hora < 12) return 'Buenos días ☀️';
-    if (hora >= 12 && hora < 19) return 'Buenas tardes 🌤️';
-    return 'Buenas noches 🌙';
+    let saludo;
+    if (hora >= 5 && hora < 12) saludo = 'Buenos días ☀️';
+    else if (hora >= 12 && hora < 19) saludo = 'Buenas tardes 🌤️';
+    else saludo = 'Buenas noches 🌙';
+
+    // Agregar nombre del usuario si está disponible
+    if (nombreUsuario) {
+      saludo += ', ' + nombreUsuario;
+    }
+
+    return saludo;
   }
 
   /**
@@ -73,6 +84,17 @@
   function init() {
     // Establecer el año en el footer
     yearEl.textContent = new Date().getFullYear();
+
+    // Escuchar eventos de autenticación para obtener/limpiar el nombre
+    window.addEventListener('auth:ready', function (e) {
+      nombreUsuario = e.detail.displayName || '';
+      actualizarReloj(); // Actualizar inmediatamente con el nombre
+    });
+
+    window.addEventListener('auth:logout', function () {
+      nombreUsuario = '';
+      actualizarReloj(); // Actualizar sin nombre
+    });
 
     // Actualizar inmediatamente y luego cada segundo
     actualizarReloj();

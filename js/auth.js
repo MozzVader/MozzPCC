@@ -127,15 +127,38 @@
   }
 
   /**
-   * Oculta la pantalla de autenticación y muestra el dashboard
-   * @param {Object} session - Sesión de Supabase
+   * Extrae el nombre para mostrar del usuario
+   * Google: user_metadata.given_name o full_name
+   * GitHub: user_metadata.preferred_username o user_name
+   * Email: primer parte del email si no hay nombre
+   * @param {Object} user - Objeto usuario de Supabase
+   * @returns {string} Nombre para mostrar
    */
+  function extractDisplayName(user) {
+    const meta = user.user_metadata || {};
+
+    // Google prioriza given_name, después full_name
+    if (meta.given_name) return meta.given_name;
+    if (meta.full_name) {
+      // Si full_name tiene espacios (ej: "Juan Perez"), tomar solo el nombre
+      const partes = meta.full_name.trim().split(' ');
+      return partes[0];
+    }
+    // GitHub usa preferred_username o user_name
+    if (meta.preferred_username) return meta.preferred_username;
+    if (meta.user_name) return meta.user_name;
+    // Fallback: usar la parte antes del @ del email
+    if (user.email) return user.email.split('@')[0];
+    return 'Usuario';
+  }
+
   function showDashboard(session) {
     const userId = session.user.id;
     const email = session.user.email;
+    const displayName = extractDisplayName(session.user);
 
-    // Actualizar barra de usuario
-    userEmailDisplay.textContent = email;
+    // Actualizar barra de usuario con nombre
+    userEmailDisplay.textContent = displayName;
     userInfoBar.style.display = 'flex';
 
     // Transición: fade out auth, fade in dashboard
@@ -151,9 +174,9 @@
       }, 500);
     }, 300);
 
-    // Disparar evento de autenticación lista
+    // Disparar evento de autenticación lista (incluye nombre del usuario)
     window.dispatchEvent(new CustomEvent('auth:ready', {
-      detail: { userId, email, session }
+      detail: { userId, email, displayName, session }
     }));
   }
 
