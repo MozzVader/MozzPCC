@@ -827,6 +827,23 @@ body::before {
   letter-spacing: 0.5px;
 }
 
+.footer-credit {
+  margin-top: 6px;
+}
+
+.footer-credit a {
+  color: var(--text-muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.footer-credit a:hover {
+  color: var(--accent);
+}
+
 .footer a {
   color: var(--accent);
   text-decoration: none;

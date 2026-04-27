@@ -1,100 +1,124 @@
-# MozzPCC — Personal Command Center
+<p align="center">
+  <img src="assets/logo.png" alt="MozzPCC Logo" width="120">
+</p>
 
-Un dashboard personal interactivo y moderno, diseñado como centro de comando diario. Construido con HTML, CSS y JavaScript puro (sin frameworks), ideal para GitHub Pages. Ahora con autenticación y persistencia en la nube gracias a Supabase.
+<h1 align="center">MozzPCC</h1>
+<p align="center">
+  <strong>Personal Command Center</strong> — Tu dashboard personal, interactivo y moderno.
+</p>
 
-## 🎯 Funcionalidades
-
-- **Autenticación** — Login/registro con email y contraseña, Google OAuth, GitHub OAuth y Magic Link
-- **Reloj y Saludo** — Reloj digital en tiempo real con fecha completa en español y saludo dinámico según la hora del día
-- **Lista de Tareas** — Agrega, completa y elimina tareas con persistencia en Supabase (sincronizado entre dispositivos)
-- **Temporizador Pomodoro** — Timer circular SVG (25min trabajo / 5min descanso) con notificación de audio y estadísticas en la nube
-- **Notas Rápidas** — Notas adhesivas editables con colores seleccionables y persistencia en Supabase
-- **Frases Motivacionales** — Colección de 25+ frases en español con animación de cambio
-
-## 🎨 Diseño
-
-- Tema oscuro con degradado profundo (tonos púrpura/azul)
-- Tarjetas con efecto glassmorphism (vidrio esmerilado)
-- Animaciones suaves de entrada y transiciones
-- Diseño responsivo (escritorio, tablet y mobile)
-- Tipografía moderna (Inter via Google Fonts)
-- Iconos Font Awesome
-
-## 📂 Estructura
-
-```
-├── index.html          # Página principal del dashboard
-├── css/
-│   └── styles.css      # Estilos completos (tema, glassmorphism, auth, grid, animaciones)
-├── js/
-│   ├── supabase.js     # Inicialización del cliente Supabase
-│   ├── auth.js         # Sistema de autenticación (login, registro, OAuth)
-│   ├── app.js          # Reloj, fecha y saludo
-│   ├── tasks.js        # Lista de tareas con Supabase
-│   ├── pomodoro.js     # Temporizador Pomodoro con Supabase
-│   ├── notes.js        # Notas adhesivas con Supabase
-│   └── quotes.js       # Frases motivacionales en español
-├── sql/
-│   └── schema.sql      # Schema de base de datos + RLS (ejecutar en Supabase)
-└── README.md
-```
-
-## 🚀 Configuración
-
-### 1. Crear proyecto en Supabase
-
-1. Andá a [supabase.com](https://supabase.com) y creá un nuevo proyecto
-2. Anotá el **Project URL** y el **anon/public key** del proyecto
-
-### 2. Ejecutar el schema SQL
-
-1. En el panel de Supabase, abrí el **SQL Editor**
-2. Copiá y ejecutá todo el contenido del archivo `sql/schema.sql`
-3. Esto creará las tablas (`tasks`, `notes`, `pomodoro_sessions`) y las políticas RLS
-
-### 3. Configurar OAuth providers (opcional)
-
-#### Google OAuth
-1. Andá a **Authentication → Providers → Google**
-2. Habilitá el provider
-3. Agregá el **Client ID** y **Client Secret** desde la Google Cloud Console
-4. Configurá los redirect URLs (ver abajo)
-
-#### GitHub OAuth
-1. Andá a **Authentication → Providers → GitHub**
-2. Habilitá el provider
-3. Agregá el **Client ID** y **Client Secret** desde GitHub Developer Settings
-4. Configurá los redirect URLs (ver abajo)
-
-### 4. Configurar Redirect URLs
-
-1. Andá a **Authentication → URL Configuration**
-2. En **Redirect URLs**, agregá:
-   - `https://tu-usuario.github.io/MozzPCC/` (tu URL de GitHub Pages)
-   - `http://localhost:5500/` (para desarrollo local, si usás Live Server)
-3. En **Site URL**, configurá la URL principal del sitio
-
-### 5. Configurar Magic Link (opcional)
-
-1. Andá a **Authentication → Email Templates** para personalizar el email de Magic Link
-2. En **Authentication → Providers → Email**, verificá que "Confirm email" esté habilitado
-
-## 🛠️ Tecnologías
-
-- HTML5 semántico
-- CSS3 (Custom Properties, Grid, Glassmorphism, Animaciones)
-- JavaScript ES6+ (vanilla)
-- Supabase (Auth + PostgreSQL + RLS)
-- Google Fonts (Inter)
-- Font Awesome 6
-- Web Audio API para notificaciones
-
-## 🔒 Seguridad
-
-- Row Level Security (RLS) en todas las tablas — cada usuario solo accede a sus propios datos
-- Autenticación gestionada por Supabase Auth
-- La anon key es segura para uso en el frontend (las RLS protegen los datos)
+<p align="center">
+  <a href="https://mozzvader.github.io/MozzPCC/" target="_blank">
+    <img src="https://img.shields.io/badge/🌐-Live_Demo-00d4ff?style=for-the-badge" alt="Live Demo">
+  </a>
+  <a href="https://github.com/MozzVader/MozzPCC" target="_blank">
+    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
+  </a>
+  <br><br>
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase">
+  <img src="https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=github&logoColor=white" alt="GitHub Pages">
+  <br><br>
+  <img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/No_Frameworks-vanilla_JS-purple?style=flat-square" alt="No Frameworks">
+  <img src="https://img.shields.io/badge/Auth-Email%20%7C%20Google%20%7C%20GitHub%20%7C%20Magic_Link-7c3aed?style=flat-square" alt="Auth Providers">
+</p>
 
 ---
 
-**MozzPCC** © 2026 — Hecho con ❤️
+## Descripcion
+
+MozzPCC es un dashboard personal disenado como centro de comando diario. Construido con HTML, CSS y JavaScript puro (sin frameworks), alojado en GitHub Pages y con persistencia en la nube gracias a Supabase. Pensado para tener todo lo que necesitas en un solo lugar: tareas, notas, pomodoro y mas.
+
+## Funcionalidades
+
+| Feature | Descripcion |
+|---------|-------------|
+| Autenticacion | Login/registro con email, Google OAuth, GitHub OAuth y Magic Link |
+| Reloj y Saludo | Reloj digital en tiempo real con fecha en espanol y saludo personalizado |
+| Lista de Tareas | CRUD completo con persistencia en Supabase (sincronizado entre dispositivos) |
+| Pomodoro Timer | Timer circular SVG 25/5 con notificacion de audio y estadisticas en la nube |
+| Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
+| Frases Motivacionales | 25+ frases en espanol con animacion de cambio |
+
+## Diseno
+
+- Tema oscuro con degradado profundo (tonos purpura/azul)
+- Tarjetas con efecto glassmorphism (vidrio esmerilado)
+- Animaciones suaves de entrada y transiciones
+- Diseno responsivo (escritorio, tablet y mobile)
+- Tipografia moderna (Inter via Google Fonts)
+- Iconos Font Awesome 6
+
+## Estructura
+
+```
+MozzPCC/
+├── index.html              # Pagina principal (dashboard + auth)
+├── favicon.ico             # Favicon del sitio
+├── assets/
+│   └── logo.png            # Logo del proyecto
+├── css/
+│   └── styles.css          # Estilos completos
+├── js/
+│   ├── supabase.js         # Cliente Supabase
+│   ├── auth.js             # Sistema de autenticacion
+│   ├── app.js              # Reloj, fecha y saludo
+│   ├── tasks.js            # Lista de tareas
+│   ├── pomodoro.js         # Temporizador Pomodoro
+│   ├── notes.js            # Notas adhesivas
+│   └── quotes.js           # Frases motivacionales
+├── sql/
+│   └── schema.sql          # Schema de BD + RLS
+├── README.md               # Este archivo
+└── SETUP.md                # Guia de configuracion paso a paso
+```
+
+## Configuracion Rapida
+
+Querés tu propia instancia? Seguí la [guia de configuracion completa](SETUP.md).
+
+Resumen rapido:
+
+1. Creá un proyecto en [Supabase](https://supabase.com)
+2. Ejecutá `sql/schema.sql` en el SQL Editor
+3. Actualizá las credenciales en `js/supabase.js`
+4. Configurá las Redirect URLs en Authentication
+5. (Opcional) Activá Google/GitHub OAuth
+6. Deployá en GitHub Pages
+
+## Tecnologias
+
+- HTML5 semantico
+- CSS3 (Custom Properties, Grid, Glassmorphism, Animaciones)
+- JavaScript ES6+ (vanilla, sin frameworks)
+- Supabase (Auth + PostgreSQL + RLS)
+- Google Fonts (Inter)
+- Font Awesome 6
+- Web Audio API
+
+## Seguridad
+
+- Row Level Security (RLS) en todas las tablas
+- Cada usuario solo accede a sus propios datos
+- Autenticacion gestionada por Supabase Auth
+- La anon key es segura para uso en el frontend
+
+## Licencia
+
+Este proyecto esta licenciado bajo **Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)**.
+
+Que significa esto en criollo:
+- Atribucion: tenes que acreditar al autor original ([MozzVader](https://github.com/MozzVader)) si usas el codigo.
+- No Comercial: no podes usar este proyecto para fines comerciales.
+- Sin Derivadas: no podes crear proyectos derivados basados en este codigo.
+
+Lee la licencia completa: [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode)
+
+---
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Hecho%20con%20effort%20por-MozzVader-00d4ff?style=for-the-badge" alt="Made by MozzVader">
+</p>
