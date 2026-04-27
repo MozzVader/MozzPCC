@@ -31,8 +31,7 @@
    */
   function obtenerSaludo(hora) {
     if (hora >= 5 && hora < 12) return 'Buenos días ☀️';
-    if (hora >= 12 && hora < 18) return 'Buenas tardes 🌤️';
-    if (hora >= 18 && hora < 21) return 'Buenas tardes 🌅';
+    if (hora >= 12 && hora < 19) return 'Buenas tardes 🌤️';
     return 'Buenas noches 🌙';
   }
 
