@@ -360,4 +360,4 @@ MozzPCC/
 
 ---
 
-**MozzPCC** &copy; 2025 — Hecho con effort
+**MozzPCC** &copy; 2026 — Hecho con effort

@@ -97,4 +97,4 @@ Un dashboard personal interactivo y moderno, diseñado como centro de comando di
 
 ---
 
-**MozzPCC** © 2025 — Hecho con ❤️
+**MozzPCC** © 2026 — Hecho con ❤️
