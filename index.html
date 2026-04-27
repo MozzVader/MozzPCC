@@ -20,26 +20,8 @@
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/MozzPCC/favicon.ico">
 
-  <!-- Script para detectar la base path dinámicamente -->
-  <script>
-    // Detecta automáticamente la base path para GitHub Pages
-    // Permite que el sitio funcione con o sin /repo-name/
-    (function() {
-      var path = window.location.pathname;
-      // Extraer la base: /repo-name/ o /
-      var base = path.substring(0, path.indexOf('/', 1) + 1);
-      if (!base || base === '/') base = '/';
-
-      // Inyectar CSS con la ruta correcta
-      var link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = base + 'css/styles.css';
-      document.head.appendChild(link);
-
-      // Guardar base path para los scripts
-      window.__BASE_PATH__ = base;
-    })();
-  </script>
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="/MozzPCC/css/styles.css">
 </head>
 <body>
 
@@ -241,26 +223,14 @@
     </footer>
   </main>
 
-  <!-- Scripts — cargados dinámicamente con la ruta correcta -->
-  <script>
-    (function() {
-      var base = window.__BASE_PATH__ || '/';
-      var scripts = [
-        'js/supabase.js',
-        'js/auth.js',
-        'js/tasks.js',
-        'js/pomodoro.js',
-        'js/notes.js',
-        'js/quotes.js',
-        'js/app.js'
-      ];
-      scripts.forEach(function(src) {
-        var s = document.createElement('script');
-        s.src = base + src;
-        document.body.appendChild(s);
-      });
-    })();
-  </script>
+  <!-- Scripts — Orden CRÍTICO -->
+  <script src="/MozzPCC/js/supabase.js"></script>
+  <script src="/MozzPCC/js/auth.js"></script>
+  <script src="/MozzPCC/js/tasks.js"></script>
+  <script src="/MozzPCC/js/pomodoro.js"></script>
+  <script src="/MozzPCC/js/notes.js"></script>
+  <script src="/MozzPCC/js/quotes.js"></script>
+  <script src="/MozzPCC/js/app.js"></script>
 
 </body>
 </html>
