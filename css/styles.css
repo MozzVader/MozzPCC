@@ -851,34 +851,19 @@ body::before {
 
 /* ============================================
    ANIMACIONES DE ENTRADA
-   Las cards arrancan invisibles y se animan al cargar.
-   Una vez completada la animación, se les agrega la clase
-   'card-entered' que las mantiene visibles permanentemente.
+   Cards con fade-in controlado por JS
    ============================================ */
 .card {
   opacity: 0;
   transform: translateY(20px);
-  animation: cardEntrance 0.6s ease forwards;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
-/* Una vez animadas, quedan visibles y no repiten */
+/* Estado final: visibles y quietas */
 .card.card-entered {
   opacity: 1;
   transform: translateY(0);
-  animation: none;
-}
-
-.widget-clock { animation-delay: 0.1s; }
-.widget-tasks { animation-delay: 0.2s; }
-.widget-pomodoro { animation-delay: 0.3s; }
-.widget-notes { animation-delay: 0.4s; }
-.widget-quotes { animation-delay: 0.5s; }
-
-@keyframes cardEntrance {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  transition: none;
 }
 
 /* ============================================
