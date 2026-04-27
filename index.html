@@ -2,7 +2,6 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <base href="/MozzPCC/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MozzPCC — Personal Command Center</title>
   <meta name="description" content="Tu centro de comando personal: reloj, tareas, pomodoro y notas.">
@@ -19,8 +18,28 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <!-- Estilos propios -->
+  <link rel="icon" type="image/x-icon" href="/MozzPCC/favicon.ico">
+
+  <!-- Script para detectar la base path dinámicamente -->
+  <script>
+    // Detecta automáticamente la base path para GitHub Pages
+    // Permite que el sitio funcione con o sin /repo-name/
+    (function() {
+      var path = window.location.pathname;
+      // Extraer la base: /repo-name/ o /
+      var base = path.substring(0, path.indexOf('/', 1) + 1);
+      if (!base || base === '/') base = '/';
+
+      // Inyectar CSS con la ruta correcta
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = base + 'css/styles.css';
+      document.head.appendChild(link);
+
+      // Guardar base path para los scripts
+      window.__BASE_PATH__ = base;
+    })();
+  </script>
 </head>
 <body>
 
@@ -222,14 +241,26 @@
     </footer>
   </main>
 
-  <!-- Scripts — Orden CRÍTICO -->
-  <script src="js/supabase.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/tasks.js"></script>
-  <script src="js/pomodoro.js"></script>
-  <script src="js/notes.js"></script>
-  <script src="js/quotes.js"></script>
-  <script src="js/app.js"></script>
+  <!-- Scripts — cargados dinámicamente con la ruta correcta -->
+  <script>
+    (function() {
+      var base = window.__BASE_PATH__ || '/';
+      var scripts = [
+        'js/supabase.js',
+        'js/auth.js',
+        'js/tasks.js',
+        'js/pomodoro.js',
+        'js/notes.js',
+        'js/quotes.js',
+        'js/app.js'
+      ];
+      scripts.forEach(function(src) {
+        var s = document.createElement('script');
+        s.src = base + src;
+        document.body.appendChild(s);
+      });
+    })();
+  </script>
 
 </body>
 </html>
