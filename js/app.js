@@ -85,6 +85,14 @@
     // Establecer el año en el footer
     yearEl.textContent = new Date().getFullYear();
 
+    // Bloquear animaciones de entrada de cards después de que terminen
+    // Esto evita que parpadeen al cambiar de pestaña
+    setTimeout(function () {
+      document.querySelectorAll('.card').forEach(function (card) {
+        card.classList.add('card-entered');
+      });
+    }, 800); // tiempo suficiente para que la última card (0.5s delay + 0.6s animación) termine
+
     // Escuchar eventos de autenticación para obtener/limpiar el nombre
     window.addEventListener('auth:ready', function (e) {
       nombreUsuario = e.detail.displayName || '';
