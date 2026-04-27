@@ -36,8 +36,8 @@
   --shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
 
   /* Bordes redondeados */
-  --radius: 16px;
-  --radius-sm: 10px;
+  --radius: 10px;
+  --radius-sm: 8px;
   --radius-xs: 6px;
 
   /* Transiciones */
