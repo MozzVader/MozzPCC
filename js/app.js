@@ -85,15 +85,6 @@
     // Establecer el año en el footer
     yearEl.textContent = new Date().getFullYear();
 
-    // Animación de entrada escalonada para las cards
-    // Usamos transiciones CSS en vez de @keyframes para evitar re-triggers al cambiar pestaña
-    var cards = document.querySelectorAll('.card');
-    cards.forEach(function (card, index) {
-      setTimeout(function () {
-        card.classList.add('card-entered');
-      }, index * 100); // 100ms de separación entre cada card
-    });
-
     // Escuchar eventos de autenticación para obtener/limpiar el nombre
     window.addEventListener('auth:ready', function (e) {
       nombreUsuario = e.detail.displayName || '';
