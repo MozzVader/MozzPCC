@@ -22,8 +22,13 @@
 </head>
 <body>
 
+  <!-- ===== LOADING (mientras Supabase verifica sesión) ===== -->
+  <div id="app-loading" class="app-loading">
+    <div class="app-loading-spinner"></div>
+  </div>
+
   <!-- ===== PANTALLA DE AUTENTICACIÓN ===== -->
-  <div id="auth-screen" class="auth-screen">
+  <div id="auth-screen" class="auth-screen" style="display:none;">
     <div id="auth-card" class="auth-card">
       <!-- Logo / Título -->
       <div class="auth-logo">

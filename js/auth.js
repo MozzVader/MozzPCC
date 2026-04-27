@@ -24,6 +24,7 @@
   const authToggleBtn = document.getElementById('auth-toggle-btn');
   const authError = document.getElementById('auth-error');
   const authPasswordToggle = document.getElementById('auth-password-toggle');
+  const appLoading = document.getElementById('app-loading');
   const dashboardMain = document.querySelector('.dashboard');
   const userInfoBar = document.getElementById('user-info-bar');
   const userEmailDisplay = document.getElementById('user-email-display');
@@ -33,6 +34,19 @@
   let isLoginMode = true; // true = login, false = register
 
   // --- Funciones de utilidad ---
+
+  /**
+   * Oculta la pantalla de carga inicial
+   */
+  function hideLoadingScreen() {
+    if (appLoading) {
+      appLoading.style.opacity = '0';
+      appLoading.style.transition = 'opacity 0.2s ease';
+      setTimeout(() => {
+        appLoading.style.display = 'none';
+      }, 200);
+    }
+  }
 
   /**
    * Muestra un error en el formulario de auth
@@ -109,6 +123,7 @@
    * Muestra la pantalla de autenticación
    */
   function showAuthScreen() {
+    hideLoadingScreen();
     authScreen.style.display = 'flex';
     dashboardMain.style.display = 'none';
     userInfoBar.style.display = 'none';
@@ -153,6 +168,7 @@
   }
 
   function showDashboard(session) {
+    hideLoadingScreen();
     const userId = session.user.id;
     const email = session.user.email;
     const displayName = extractDisplayName(session.user);
