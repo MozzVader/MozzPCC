@@ -14,12 +14,94 @@
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+  <!-- Supabase JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <!-- Estilos propios -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
-  <main class="dashboard">
+  <!-- ===== PANTALLA DE AUTENTICACIÓN ===== -->
+  <div id="auth-screen" class="auth-screen">
+    <div id="auth-card" class="auth-card">
+      <!-- Logo / Título -->
+      <div class="auth-logo">
+        <div class="auth-logo-icon">
+          <i class="fa-solid fa-terminal"></i>
+        </div>
+        <h1 id="auth-title" class="auth-title">MozzPCC</h1>
+        <p id="auth-subtitle" class="auth-subtitle">Ingresá a tu centro de comando personal</p>
+      </div>
+
+      <!-- Formulario -->
+      <form id="auth-form" class="auth-form" autocomplete="on">
+        <div class="auth-input-group">
+          <div class="auth-input-wrapper">
+            <i class="fa-regular fa-envelope auth-input-icon"></i>
+            <input type="email" id="auth-email" class="auth-input" placeholder="Correo electrónico" autocomplete="email" required>
+          </div>
+          <div class="auth-input-wrapper">
+            <i class="fa-solid fa-lock auth-input-icon"></i>
+            <input type="password" id="auth-password" class="auth-input" placeholder="Contraseña" autocomplete="current-password" required minlength="6">
+            <button type="button" id="auth-password-toggle" class="auth-password-toggle" aria-label="Mostrar contraseña">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div id="auth-error" class="auth-error" style="display:none;"></div>
+
+        <!-- Botón principal -->
+        <button type="button" id="auth-submit-btn" class="auth-btn auth-btn-primary">
+          Iniciar Sesión
+        </button>
+
+        <!-- Toggle login / register -->
+        <button type="button" id="auth-toggle-btn" class="auth-toggle-btn">
+          ¿No tenés cuenta? <strong>Creá una</strong>
+        </button>
+
+        <!-- Magic link -->
+        <button type="button" id="auth-magic-btn" class="auth-magic-btn">
+          <i class="fa-regular fa-paper-plane"></i> Enviar enlace mágico
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="auth-divider">
+        <span>o continuá con</span>
+      </div>
+
+      <!-- OAuth Buttons -->
+      <div class="auth-oauth">
+        <button type="button" id="auth-google-btn" class="auth-btn auth-btn-oauth">
+          <i class="fa-brands fa-google"></i> Google
+        </button>
+        <button type="button" id="auth-github-btn" class="auth-btn auth-btn-oauth">
+          <i class="fa-brands fa-github"></i> GitHub
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== BARRA DE USUARIO ===== -->
+  <div id="user-info-bar" class="user-info-bar" style="display:none;">
+    <div class="user-info-content">
+      <div class="user-avatar">
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <span id="user-email-display" class="user-email"></span>
+      <button id="logout-btn" class="btn-logout" aria-label="Cerrar sesión">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        <span>Salir</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== DASHBOARD ===== -->
+  <main class="dashboard" style="display:none;">
     <div class="dashboard-grid">
 
       <!-- ===== RELOJ Y SALUDO ===== -->
@@ -128,12 +210,14 @@
     </footer>
   </main>
 
-  <!-- Scripts -->
-  <script src="js/app.js"></script>
+  <!-- Scripts — Orden CRÍTICO -->
+  <script src="js/supabase.js"></script>
+  <script src="js/auth.js"></script>
   <script src="js/tasks.js"></script>
   <script src="js/pomodoro.js"></script>
   <script src="js/notes.js"></script>
   <script src="js/quotes.js"></script>
+  <script src="js/app.js"></script>
 
 </body>
 </html>

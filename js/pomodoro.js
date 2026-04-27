@@ -1,6 +1,7 @@
 /**
  * pomodoro.js — Temporizador Pomodoro con indicador circular SVG
- * Incluye notificación de audio via Web Audio API
+ * Guarda sesiones completadas en Supabase
+ * Se inicializa cuando se recibe el evento 'auth:ready'
  */
 
 (function () {
@@ -10,7 +11,6 @@
   const WORK_DURATION = 25 * 60;    // 25 minutos en segundos
   const BREAK_DURATION = 5 * 60;    // 5 minutos en segundos
   const CIRCUMFERENCE = 2 * Math.PI * 90; // ~565.48 (radio SVG = 90)
-  const STORAGE_KEY = 'mozzpcc_pomodoro';
 
   // --- Elementos del DOM ---
   const timeEl = document.getElementById('pomodoro-time');
@@ -28,14 +28,63 @@
   let intervalo = null;
   let sesiones = 0;
   let totalMinutos = 0;
+  let userId = null;
+  let isInitialized = false;
 
-  // Cargar estadísticas desde LocalStorage
-  try {
-    const datos = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    sesiones = datos.sesiones || 0;
-    totalMinutos = datos.totalMinutos || 0;
-  } catch (e) {
-    // Ignorar errores de carga
+  /**
+   * Obtiene el cliente Supabase
+   * @returns {Object|null}
+   */
+  function getSupabase() {
+    return window.supabaseClient || null;
+  }
+
+  /**
+   * Carga estadísticas de sesiones desde Supabase
+   */
+  async function cargarEstadisticas() {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      const { data, error } = await client
+        .from('pomodoro_sessions')
+        .select('duration')
+        .eq('user_id', userId)
+        .eq('mode', 'work');
+
+      if (error) {
+        console.warn('Error al cargar estadísticas de pomodoro:', error);
+        return;
+      }
+
+      sesiones = data ? data.length : 0;
+      totalMinutos = data ? data.reduce((sum, s) => sum + (s.duration || 0), 0) : 0;
+
+      actualizarDisplay();
+    } catch (e) {
+      console.warn('Error al cargar estadísticas de pomodoro:', e);
+    }
+  }
+
+  /**
+   * Guarda una sesión completada en Supabase
+   */
+  async function guardarSesion(duration, mode) {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      await client
+        .from('pomodoro_sessions')
+        .insert({
+          user_id: userId,
+          duration: duration,
+          mode: mode
+        });
+    } catch (e) {
+      console.warn('Error al guardar sesión de pomodoro:', e);
+    }
   }
 
   // --- Audio via Web Audio API ---
@@ -143,31 +192,18 @@
       // Terminó un pomodoro de trabajo
       sesiones++;
       totalMinutos += 25;
-      guardarEstadisticas();
+      guardarSesion(25, 'work');
       modo = 'break';
       tiempoRestante = BREAK_DURATION;
     } else {
       // Terminó el descanso, volver al trabajo
+      guardarSesion(5, 'break');
       modo = 'work';
       tiempoRestante = WORK_DURATION;
     }
 
     reproducirBeep();
     actualizarDisplay();
-  }
-
-  /**
-   * Guarda las estadísticas en LocalStorage
-   */
-  function guardarEstadisticas() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        sesiones,
-        totalMinutos
-      }));
-    } catch (e) {
-      // Ignorar
-    }
   }
 
   /**
@@ -214,21 +250,52 @@
     actualizarDisplay();
   }
 
+  /**
+   * Limpia el estado (al cerrar sesión)
+   */
+  function cleanup() {
+    // Detener timer
+    if (intervalo) {
+      clearInterval(intervalo);
+      intervalo = null;
+    }
+
+    estaCorriendo = false;
+    modo = 'work';
+    tiempoRestante = WORK_DURATION;
+    sesiones = 0;
+    totalMinutos = 0;
+    userId = null;
+
+    startBtn.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar';
+    countEl.textContent = '0';
+    totalEl.textContent = '0m';
+    timeEl.textContent = '25:00';
+    labelEl.textContent = 'Enfoque';
+
+    // Reset ring
+    ringEl.style.strokeDasharray = CIRCUMFERENCE;
+    ringEl.style.strokeDashoffset = 0;
+    ringEl.classList.remove('break-mode');
+  }
+
   // --- Eventos ---
   startBtn.addEventListener('click', toggleTimer);
   resetBtn.addEventListener('click', resetTimer);
 
-  // --- Inicialización ---
-  function init() {
-    // Inicializar el anillo SVG
-    ringEl.style.strokeDasharray = CIRCUMFERENCE;
-    ringEl.style.strokeDashoffset = 0;
-    actualizarDisplay();
-  }
+  // Escuchar evento de autenticación lista
+  window.addEventListener('auth:ready', (e) => {
+    userId = e.detail.userId;
+    if (!isInitialized) {
+      isInitialized = true;
+      ringEl.style.strokeDasharray = CIRCUMFERENCE;
+      ringEl.style.strokeDashoffset = 0;
+    }
+    cargarEstadisticas();
+  });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Escuchar cierre de sesión
+  window.addEventListener('auth:logout', () => {
+    cleanup();
+  });
 })();

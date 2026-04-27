@@ -1,13 +1,11 @@
 /**
- * tasks.js — Lista de tareas con persistencia en LocalStorage
+ * tasks.js — Lista de tareas con persistencia en Supabase
+ * Se inicializa cuando se recibe el evento 'auth:ready'
  * Permite agregar, completar y eliminar tareas
  */
 
 (function () {
   'use strict';
-
-  // --- Constantes ---
-  const STORAGE_KEY = 'mozzpcc_tareas';
 
   // --- Elementos del DOM ---
   const taskInput = document.getElementById('task-input');
@@ -16,30 +14,48 @@
   const taskCounter = document.getElementById('task-counter');
 
   // --- Estado ---
-  let tareas = cargarTareas();
+  let tareas = [];
+  let userId = null;
+  let isInitialized = false;
 
   /**
-   * Carga las tareas desde LocalStorage
-   * @returns {Array} Lista de tareas
+   * Obtiene el cliente Supabase
+   * @returns {Object|null}
    */
-  function cargarTareas() {
-    try {
-      const datos = localStorage.getItem(STORAGE_KEY);
-      return datos ? JSON.parse(datos) : [];
-    } catch (e) {
-      console.warn('Error al cargar tareas:', e);
-      return [];
-    }
+  function getSupabase() {
+    return window.supabaseClient || null;
   }
 
   /**
-   * Guarda las tareas en LocalStorage
+   * Carga las tareas desde Supabase
    */
-  function guardarTareas() {
+  async function cargarTareas() {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(tareas));
+      const { data, error } = await client
+        .from('tasks')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Error al cargar tareas:', error);
+        return;
+      }
+
+      // Mapear datos de Supabase al formato local
+      tareas = (data || []).map(t => ({
+        id: t.id,
+        texto: t.text,
+        completada: t.completed,
+        created_at: t.created_at
+      }));
+
+      renderizarTareas();
     } catch (e) {
-      console.warn('Error al guardar tareas:', e);
+      console.warn('Error al cargar tareas:', e);
     }
   }
 
@@ -60,11 +76,11 @@
     checkbox.setAttribute('aria-checked', tarea.completada);
     checkbox.setAttribute('tabindex', '0');
     checkbox.innerHTML = tarea.completada ? '<i class="fa-solid fa-check"></i>' : '';
-    checkbox.addEventListener('click', () => toggleTarea(tarea.id));
+    checkbox.addEventListener('click', () => toggleTarea(tarea.id, !tarea.completada));
     checkbox.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        toggleTarea(tarea.id);
+        toggleTarea(tarea.id, !tarea.completada);
       }
     });
 
@@ -123,33 +139,84 @@
   /**
    * Agrega una nueva tarea
    */
-  function agregarTarea() {
+  async function agregarTarea() {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
     const texto = taskInput.value.trim();
     if (!texto) return;
 
-    const nuevaTarea = {
-      id: Date.now().toString(),
-      texto: texto,
-      completada: false
-    };
+    // Deshabilitar botón mientras se agrega
+    taskAddBtn.disabled = true;
+    taskAddBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    tareas.unshift(nuevaTarea); // Agregar al inicio
-    guardarTareas();
-    renderizarTareas();
-    taskInput.value = '';
-    taskInput.focus();
+    try {
+      const { data, error } = await client
+        .from('tasks')
+        .insert({
+          user_id: userId,
+          text: texto,
+          completed: false
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.warn('Error al agregar tarea:', error);
+        return;
+      }
+
+      // Agregar al inicio de la lista local
+      tareas.unshift({
+        id: data.id,
+        texto: data.text,
+        completada: data.completed,
+        created_at: data.created_at
+      });
+
+      renderizarTareas();
+      taskInput.value = '';
+      taskInput.focus();
+    } catch (e) {
+      console.warn('Error al agregar tarea:', e);
+    } finally {
+      taskAddBtn.disabled = false;
+      taskAddBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar';
+    }
   }
 
   /**
    * Alterna el estado de una tarea (completada/pendiente)
    * @param {string} id - ID de la tarea
+   * @param {boolean} newStatus - Nuevo estado
    */
-  function toggleTarea(id) {
+  async function toggleTarea(id, newStatus) {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
+    // Optimistic update en la UI
     const tarea = tareas.find(t => t.id === id);
     if (tarea) {
-      tarea.completada = !tarea.completada;
-      guardarTareas();
+      tarea.completada = newStatus;
       renderizarTareas();
+    }
+
+    try {
+      const { error } = await client
+        .from('tasks')
+        .update({ completed: newStatus })
+        .eq('id', id);
+
+      if (error) {
+        console.warn('Error al actualizar tarea:', error);
+        // Revertir en caso de error
+        if (tarea) {
+          tarea.completada = !newStatus;
+          renderizarTareas();
+        }
+      }
+    } catch (e) {
+      console.warn('Error al actualizar tarea:', e);
     }
   }
 
@@ -157,10 +224,44 @@
    * Elimina una tarea
    * @param {string} id - ID de la tarea
    */
-  function eliminarTarea(id) {
+  async function eliminarTarea(id) {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
+    // Optimistic update en la UI
     tareas = tareas.filter(t => t.id !== id);
-    guardarTareas();
     renderizarTareas();
+
+    try {
+      const { error } = await client
+        .from('tasks')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.warn('Error al eliminar tarea:', error);
+        // Recargar tareas para restaurar el estado correcto
+        cargarTareas();
+      }
+    } catch (e) {
+      console.warn('Error al eliminar tarea:', e);
+      cargarTareas();
+    }
+  }
+
+  /**
+   * Limpia el estado (al cerrar sesión)
+   */
+  function cleanup() {
+    tareas = [];
+    userId = null;
+    taskList.innerHTML = '';
+    taskInput.value = '';
+    const spans = taskCounter.querySelectorAll('span');
+    if (spans.length >= 2) {
+      spans[0].textContent = '0';
+      spans[1].textContent = '0';
+    }
   }
 
   // --- Eventos ---
@@ -172,14 +273,17 @@
     }
   });
 
-  // --- Inicialización ---
-  function init() {
-    renderizarTareas();
-  }
+  // Escuchar evento de autenticación lista
+  window.addEventListener('auth:ready', (e) => {
+    userId = e.detail.userId;
+    if (!isInitialized) {
+      isInitialized = true;
+    }
+    cargarTareas();
+  });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Escuchar cierre de sesión
+  window.addEventListener('auth:logout', () => {
+    cleanup();
+  });
 })();

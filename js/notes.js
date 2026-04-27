@@ -1,15 +1,14 @@
 /**
- * notes.js — Notas rápidas con persistencia en LocalStorage
+ * notes.js — Notas rápidas con persistencia en Supabase
+ * Se inicializa cuando se recibe el evento 'auth:ready'
  * Soporte para múltiples notas con colores editables
+ * Debounced save (800ms) para contenteditable
  */
 
 (function () {
   'use strict';
 
-  // --- Constantes ---
-  const STORAGE_KEY = 'mozzpcc_notas';
-
-  // Colores disponibles para las notas
+  // --- Colores disponibles para las notas ---
   const COLORES = [
     { nombre: 'yellow', valor: '#fbbf24' },
     { nombre: 'green', valor: '#34d399' },
@@ -23,31 +22,83 @@
   const newNoteBtn = document.getElementById('new-note-btn');
 
   // --- Estado ---
-  let notas = cargarNotas();
+  let notas = [];
+  let userId = null;
+  let isInitialized = false;
+
+  // Mapa de debounce timers por nota ID
+  const debounceTimers = {};
 
   /**
-   * Carga las notas desde LocalStorage
-   * @returns {Array} Lista de notas
+   * Obtiene el cliente Supabase
+   * @returns {Object|null}
    */
-  function cargarNotas() {
+  function getSupabase() {
+    return window.supabaseClient || null;
+  }
+
+  /**
+   * Carga las notas desde Supabase
+   */
+  async function cargarNotas() {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
     try {
-      const datos = localStorage.getItem(STORAGE_KEY);
-      return datos ? JSON.parse(datos) : [];
+      const { data, error } = await client
+        .from('notes')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.warn('Error al cargar notas:', error);
+        return;
+      }
+
+      // Mapear datos de Supabase al formato local
+      notas = (data || []).map(n => ({
+        id: n.id,
+        titulo: n.title || '',
+        contenido: n.content || '',
+        color: n.color || 'yellow',
+        created_at: n.created_at
+      }));
+
+      renderizarNotas();
     } catch (e) {
       console.warn('Error al cargar notas:', e);
-      return [];
     }
   }
 
   /**
-   * Guarda las notas en LocalStorage
+   * Guarda una nota en Supabase (debounced)
+   * @param {string} id - ID de la nota
+   * @param {Object} updates - Campos a actualizar
    */
-  function guardarNotas() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(notas));
-    } catch (e) {
-      console.warn('Error al guardar notas:', e);
+  function guardarNotaDebounced(id, updates) {
+    // Limpiar timer anterior si existe
+    if (debounceTimers[id]) {
+      clearTimeout(debounceTimers[id]);
     }
+
+    debounceTimers[id] = setTimeout(async () => {
+      const client = getSupabase();
+      if (!client || !userId) return;
+
+      try {
+        const { error } = await client
+          .from('notes')
+          .update(updates)
+          .eq('id', id);
+
+        if (error) {
+          console.warn('Error al guardar nota:', error);
+        }
+      } catch (e) {
+        console.warn('Error al guardar nota:', e);
+      }
+    }, 800);
   }
 
   /**
@@ -74,11 +125,11 @@
     const titulo = document.createElement('input');
     titulo.className = 'note-title';
     titulo.type = 'text';
-    titulo.value = nota.titulo || 'Sin título';
+    titulo.value = nota.titulo || '';
     titulo.placeholder = 'Título...';
     titulo.addEventListener('input', () => {
       nota.titulo = titulo.value;
-      guardarNotas();
+      guardarNotaDebounced(nota.id, { title: nota.titulo });
     });
 
     const acciones = document.createElement('div');
@@ -102,7 +153,7 @@
     contenido.textContent = nota.contenido || '';
     contenido.addEventListener('input', () => {
       nota.contenido = contenido.textContent;
-      guardarNotas();
+      guardarNotaDebounced(nota.id, { content: nota.contenido });
     });
 
     // Placeholder personalizado
@@ -124,10 +175,27 @@
       dot.className = `color-dot${color.nombre === nota.color ? ' active' : ''}`;
       dot.dataset.color = color.nombre;
       dot.setAttribute('title', color.nombre);
-      dot.addEventListener('click', () => {
+      dot.addEventListener('click', async () => {
+        // Actualizar UI inmediatamente
         nota.color = color.nombre;
-        guardarNotas();
-        renderizarNotas();
+        colorBar.style.background = color.valor;
+
+        // Actualizar dots activos
+        colorPicker.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+
+        // Guardar en Supabase
+        const client = getSupabase();
+        if (client && userId) {
+          try {
+            await client
+              .from('notes')
+              .update({ color: color.nombre })
+              .eq('id', nota.id);
+          } catch (e) {
+            console.warn('Error al cambiar color:', e);
+          }
+        }
       });
       colorPicker.appendChild(dot);
     });
@@ -162,23 +230,54 @@
   /**
    * Crea una nueva nota
    */
-  function crearNota() {
-    const nuevaNota = {
-      id: Date.now().toString(),
-      titulo: '',
-      contenido: '',
-      color: COLORES[Math.floor(Math.random() * COLORES.length)].nombre
-    };
+  async function crearNota() {
+    const client = getSupabase();
+    if (!client || !userId) return;
 
-    notas.unshift(nuevaNota);
-    guardarNotas();
-    renderizarNotas();
+    newNoteBtn.disabled = true;
+    newNoteBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
 
-    // Enfocar el título de la nueva nota
-    const primeraNota = notesGrid.querySelector('.note');
-    if (primeraNota) {
-      const tituloInput = primeraNota.querySelector('.note-title');
-      if (tituloInput) tituloInput.focus();
+    try {
+      const randomColor = COLORES[Math.floor(Math.random() * COLORES.length)].nombre;
+
+      const { data, error } = await client
+        .from('notes')
+        .insert({
+          user_id: userId,
+          title: '',
+          content: '',
+          color: randomColor
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.warn('Error al crear nota:', error);
+        return;
+      }
+
+      // Agregar al inicio
+      notas.unshift({
+        id: data.id,
+        titulo: data.title || '',
+        contenido: data.content || '',
+        color: data.color,
+        created_at: data.created_at
+      });
+
+      renderizarNotas();
+
+      // Enfocar el título de la nueva nota
+      const primeraNota = notesGrid.querySelector('.note');
+      if (primeraNota) {
+        const tituloInput = primeraNota.querySelector('.note-title');
+        if (tituloInput) tituloInput.focus();
+      }
+    } catch (e) {
+      console.warn('Error al crear nota:', e);
+    } finally {
+      newNoteBtn.disabled = false;
+      newNoteBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Nueva nota';
     }
   }
 
@@ -186,23 +285,58 @@
    * Elimina una nota
    * @param {string} id - ID de la nota
    */
-  function eliminarNota(id) {
+  async function eliminarNota(id) {
+    const client = getSupabase();
+    if (!client || !userId) return;
+
+    // Optimistic update
     notas = notas.filter(n => n.id !== id);
-    guardarNotas();
     renderizarNotas();
+
+    try {
+      const { error } = await client
+        .from('notes')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.warn('Error al eliminar nota:', error);
+        cargarNotas();
+      }
+    } catch (e) {
+      console.warn('Error al eliminar nota:', e);
+      cargarNotas();
+    }
+  }
+
+  /**
+   * Limpia el estado (al cerrar sesión)
+   */
+  function cleanup() {
+    notas = [];
+    userId = null;
+    // Limpiar todos los timers de debounce
+    Object.keys(debounceTimers).forEach(key => {
+      clearTimeout(debounceTimers[key]);
+      delete debounceTimers[key];
+    });
+    notesGrid.innerHTML = '';
   }
 
   // --- Eventos ---
   newNoteBtn.addEventListener('click', crearNota);
 
-  // --- Inicialización ---
-  function init() {
-    renderizarNotas();
-  }
+  // Escuchar evento de autenticación lista
+  window.addEventListener('auth:ready', (e) => {
+    userId = e.detail.userId;
+    if (!isInitialized) {
+      isInitialized = true;
+    }
+    cargarNotas();
+  });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Escuchar cierre de sesión
+  window.addEventListener('auth:logout', () => {
+    cleanup();
+  });
 })();
