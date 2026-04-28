@@ -984,6 +984,7 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto 16px;
 }
 
 .auth-logo-icon img {
