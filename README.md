@@ -14,7 +14,7 @@
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
   <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white" alt="Supabase">
   <img src="https://img.shields.io/badge/GitHub_Pages-222222?style=flat-square&logo=github&logoColor=white" alt="GitHub Pages">
-  <br><br>
+  <br>
   <img src="https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey?style=flat-square" alt="License">
   <img src="https://img.shields.io/badge/No_Frameworks-vanilla_JS-purple?style=flat-square" alt="No Frameworks">
   <img src="https://img.shields.io/badge/Auth-Email%20%7C%20Google%20%7C%20GitHub%20%7C%20Magic_Link-7c3aed?style=flat-square" alt="Auth Providers">
