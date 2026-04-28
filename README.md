@@ -45,7 +45,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 - Tarjetas con efecto glassmorphism (vidrio esmerilado)
 - Navegacion vertical con snap scroll e indicadores laterales
 - Dock estilo macOS con magnificacion al hover
-- 5 paletas de colores personalizables:
+- 6 paletas de colores personalizables:
 
 | Tema | Colores | Vibra |
 |------|---------|-------|
@@ -54,6 +54,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Emerald | green + teal + blue | Matrix / nature |
 | Rose | pink + red + magenta | Calido y bold |
 | Amber | gold + orange + yellow | Calido y premium |
+| Twitter | blue + dark blue + gray | Social / clean |
 
 - Animaciones suaves de entrada y transiciones
 - Diseno responsivo (escritorio, tablet y mobile)

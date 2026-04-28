@@ -207,6 +207,22 @@
         '--bg-glow-c': 'rgba(245, 158, 11, 0.08)',
         '--border-accent': 'rgba(251, 191, 36, 0.3)'
       }
+    },
+    {
+      id: 'twitter',
+      name: 'Twitter',
+      swatches: ['#1d9bf0', '#0d8bd9', '#8899a6', '#c4d4e0'],
+      vars: {
+        '--accent': '#1d9bf0',
+        '--accent-dim': 'rgba(29, 155, 240, 0.15)',
+        '--accent-glow': 'rgba(29, 155, 240, 0.4)',
+        '--accent-secondary': '#0d8bd9',
+        '--shadow-glow': '0 0 20px rgba(29, 155, 240, 0.15)',
+        '--bg-glow-a': 'rgba(29, 155, 240, 0.12)',
+        '--bg-glow-b': 'rgba(13, 139, 217, 0.1)',
+        '--bg-glow-c': 'rgba(136, 153, 166, 0.08)',
+        '--border-accent': 'rgba(29, 155, 240, 0.3)'
+      }
     }
   ];
 
