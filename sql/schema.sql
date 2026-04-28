@@ -99,3 +99,73 @@ CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id);
 CREATE INDEX IF NOT EXISTS idx_tasks_created_at ON tasks(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id);
 CREATE INDEX IF NOT EXISTS idx_pomodoro_sessions_user_id ON pomodoro_sessions(user_id);
+
+-- =============================================
+-- 8. Dock Groups table (customizable dock groups)
+-- =============================================
+CREATE TABLE IF NOT EXISTS user_dock_groups (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  icon TEXT NOT NULL DEFAULT 'fa-solid fa-folder',
+  "order" INTEGER DEFAULT 0,
+  is_default BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =============================================
+-- 9. Dock Links table (links within dock groups)
+-- =============================================
+CREATE TABLE IF NOT EXISTS user_dock_links (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  group_id UUID REFERENCES user_dock_groups(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  icon TEXT NOT NULL DEFAULT 'fa-solid fa-link',
+  "order" INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =============================================
+-- 10. Enable RLS on dock tables
+-- =============================================
+ALTER TABLE user_dock_groups ENABLE ROW LEVEL SECURITY;
+ALTER TABLE user_dock_links ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
+-- 11. RLS Policies — Dock Groups
+-- =============================================
+CREATE POLICY "Users can view own dock_groups" ON user_dock_groups
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own dock_groups" ON user_dock_groups
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own dock_groups" ON user_dock_groups
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own dock_groups" ON user_dock_groups
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- =============================================
+-- 12. RLS Policies — Dock Links
+-- =============================================
+CREATE POLICY "Users can view own dock_links" ON user_dock_links
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert own dock_links" ON user_dock_links
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own dock_links" ON user_dock_links
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own dock_links" ON user_dock_links
+  FOR DELETE USING (auth.uid() = user_id);
+
+-- =============================================
+-- 13. Indexes for dock tables
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_dock_groups_user_id ON user_dock_groups(user_id);
+CREATE INDEX IF NOT EXISTS idx_dock_links_user_id ON user_dock_links(user_id);
+CREATE INDEX IF NOT EXISTS idx_dock_links_group_id ON user_dock_links(group_id);

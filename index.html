@@ -104,9 +104,11 @@
         <i class="fa-solid fa-user"></i>
       </div>
       <span id="user-email-display" class="user-email"></span>
+      <button id="settings-btn" class="btn-settings" aria-label="Configuración">
+        <i class="fa-solid fa-gear"></i>
+      </button>
       <button id="logout-btn" class="btn-logout" aria-label="Cerrar sesión">
         <i class="fa-solid fa-right-from-bracket"></i>
-        <span>Salir</span>
       </button>
     </div>
   </div>
@@ -248,61 +250,94 @@
 
     <!-- ===== DOCK estilo macOS ===== -->
     <nav class="dock" id="dock">
-      <div class="dock-panel">
-
-        <!-- Grupo: Widgets -->
-        <div class="dock-group" data-group="widgets">
-          <div class="dock-expand">
-            <button class="dock-icon" data-scroll="section-clock" aria-label="Reloj">
-              <i class="fa-regular fa-clock"></i>
-              <span class="dock-tooltip">Reloj</span>
-            </button>
-            <button class="dock-icon" data-scroll="section-productivity" aria-label="Tareas y Pomodoro">
-              <i class="fa-solid fa-bolt"></i>
-              <span class="dock-tooltip">Productividad</span>
-            </button>
-            <button class="dock-icon" data-scroll="section-notes" aria-label="Notas">
-              <i class="fa-solid fa-note-sticky"></i>
-              <span class="dock-tooltip">Notas</span>
-            </button>
-            <button class="dock-icon" data-scroll="section-quotes" aria-label="Inspiración">
-              <i class="fa-solid fa-quote-left"></i>
-              <span class="dock-tooltip">Inspiracion</span>
-            </button>
-          </div>
-          <button class="dock-icon dock-trigger" aria-label="Widgets">
-            <i class="fa-solid fa-grip"></i>
-            <span class="dock-tooltip">Secciones</span>
-          </button>
-        </div>
-
-        <div class="dock-separator"></div>
-
-        <!-- Grupo: Links -->
-        <div class="dock-group" data-group="links">
-          <div class="dock-expand">
-            <a class="dock-icon" href="https://github.com/MozzVader" target="_blank" rel="noopener" aria-label="GitHub">
-              <i class="fa-brands fa-github"></i>
-              <span class="dock-tooltip">GitHub</span>
-            </a>
-            <a class="dock-icon" href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">
-              <i class="fa-brands fa-youtube"></i>
-              <span class="dock-tooltip">YouTube</span>
-            </a>
-            <a class="dock-icon" href="https://chat.z.ai" target="_blank" rel="noopener" aria-label="Chat Z.AI">
-              <i class="fa-solid fa-robot"></i>
-              <span class="dock-tooltip">Chat Z.AI</span>
-            </a>
-          </div>
-          <button class="dock-icon dock-trigger" aria-label="Links">
-            <i class="fa-solid fa-globe"></i>
-            <span class="dock-tooltip">Links</span>
-          </button>
-        </div>
-
+      <div class="dock-panel" id="dock-panel">
+        <!-- Se renderiza dinámicamente desde settings.js / dock.js -->
       </div>
     </nav>
   </main>
+
+  <!-- ===== MODAL DE CONFIGURACIÓN ===== -->
+  <div id="settings-modal" class="settings-overlay" style="display:none;">
+    <div class="settings-modal">
+      <!-- Header del modal -->
+      <div class="settings-header">
+        <h2><i class="fa-solid fa-gear"></i> Configurar Dock</h2>
+        <button id="settings-close" class="settings-close" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="settings-body">
+        <!-- Panel izquierdo: Grupos -->
+        <div class="settings-panel settings-groups">
+          <div class="settings-panel-header">
+            <h3>Grupos</h3>
+            <button id="settings-add-group" class="settings-btn-add" aria-label="Agregar grupo">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="settings-groups-list" class="settings-groups-list"></div>
+        </div>
+
+        <!-- Panel derecho: Links del grupo seleccionado -->
+        <div class="settings-panel settings-links">
+          <div class="settings-panel-header">
+            <h3 id="settings-links-title">Links</h3>
+            <button id="settings-add-link" class="settings-btn-add" aria-label="Agregar link">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+          <div id="settings-links-list" class="settings-links-list"></div>
+          <p id="settings-no-group" class="settings-empty-msg">Seleccioná un grupo para ver sus links</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formularios flotantes -->
+    <!-- Formulario nuevo/editar grupo -->
+    <div id="group-form" class="settings-form-overlay" style="display:none;">
+      <div class="settings-form">
+        <h3 id="group-form-title">Nuevo Grupo</h3>
+        <div class="settings-form-row">
+          <label for="group-name-input">Nombre</label>
+          <input type="text" id="group-name-input" placeholder="Ej: Herramientas" maxlength="20">
+        </div>
+        <div class="settings-form-row">
+          <label>Icono</label>
+          <div id="group-icon-picker" class="icon-picker"></div>
+          <input type="hidden" id="group-icon-input" value="fa-solid fa-folder">
+        </div>
+        <div class="settings-form-actions">
+          <button id="group-form-cancel" class="settings-form-btn cancel">Cancelar</button>
+          <button id="group-form-save" class="settings-form-btn save">Guardar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario nuevo/editar link -->
+    <div id="link-form" class="settings-form-overlay" style="display:none;">
+      <div class="settings-form">
+        <h3 id="link-form-title">Nuevo Link</h3>
+        <div class="settings-form-row">
+          <label for="link-name-input">Nombre</label>
+          <input type="text" id="link-name-input" placeholder="Ej: Google" maxlength="20">
+        </div>
+        <div class="settings-form-row">
+          <label for="link-url-input">URL</label>
+          <input type="url" id="link-url-input" placeholder="https://...">
+        </div>
+        <div class="settings-form-row">
+          <label>Icono</label>
+          <div id="link-icon-picker" class="icon-picker"></div>
+          <input type="hidden" id="link-icon-input" value="fa-solid fa-link">
+        </div>
+        <div class="settings-form-actions">
+          <button id="link-form-cancel" class="settings-form-btn cancel">Cancelar</button>
+          <button id="link-form-save" class="settings-form-btn save">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts — Orden CRÍTICO -->
   <script src="/MozzPCC/js/supabase.js"></script>
@@ -313,6 +348,7 @@
   <script src="/MozzPCC/js/quotes.js"></script>
   <script src="/MozzPCC/js/app.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
+  <script src="/MozzPCC/js/settings.js"></script>
 
 </body>
 </html>
