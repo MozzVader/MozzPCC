@@ -289,14 +289,15 @@
   // EVENTOS
   // =============================================
 
-  // Keyboard shortcut: Cmd+K / Ctrl+K
+  // Keyboard shortcut: Cmd+K / Ctrl+K (capture phase para evitar que Chrome lo intercepte)
   document.addEventListener('keydown', function (e) {
-    // No abrir si estamos en un input/textarea (excepto el propio input)
+    // No abrir si estamos en un input/textarea (excepto el propio input del palette)
     var tag = (e.target.tagName || '').toLowerCase();
     var isInput = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
 
     if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
       e.preventDefault();
+      e.stopPropagation();
       toggle();
       return;
     }
@@ -326,7 +327,7 @@
       executeItem(selectedIndex);
       return;
     }
-  });
+  }, true); // true = capture phase — atrapa el evento antes que el browser
 
   // Input typing
   input.addEventListener('input', function () {
