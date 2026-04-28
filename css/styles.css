@@ -104,6 +104,12 @@ body::before {
   scroll-padding-bottom: 80px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  /* Ocultar scrollbar */
+  scrollbar-width: none;
+}
+
+.dashboard::-webkit-scrollbar {
+  display: none;
 }
 
 /* --- Secciones snap (100vh cada una) --- */
