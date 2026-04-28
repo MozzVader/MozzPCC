@@ -112,110 +112,123 @@
   </div>
 
   <!-- ===== DASHBOARD ===== -->
-  <main class="dashboard" style="display:none;">
-    <div class="dashboard-grid">
+  <main class="dashboard" id="dashboard-scroll" style="display:none;">
 
-      <!-- ===== RELOJ Y SALUDO ===== -->
-      <section class="card widget-clock" aria-label="Reloj y saludo">
-        <p class="greeting" id="greeting"></p>
-        <div class="clock-time" id="clock-time">
-          00:00<span class="seconds">00</span>
+    <!-- ===== SECCIÓN 1: RELOJ Y SALUDO ===== -->
+    <section class="snap-section section-clock" id="section-clock" aria-label="Reloj y saludo">
+      <div class="snap-section-inner">
+        <div class="card widget-clock">
+          <p class="greeting" id="greeting"></p>
+          <div class="clock-time" id="clock-time">
+            00:00<span class="seconds">00</span>
+          </div>
+          <p class="clock-date" id="clock-date"></p>
         </div>
-        <p class="clock-date" id="clock-date"></p>
-      </section>
+      </div>
+    </section>
 
-      <!-- ===== LISTA DE TAREAS ===== -->
-      <section class="card widget-tasks" aria-label="Lista de tareas">
-        <div class="card-header">
-          <i class="fa-solid fa-list-check"></i>
-          <h2>Tareas</h2>
-        </div>
+    <!-- ===== SECCIÓN 2: TAREAS + POMODORO ===== -->
+    <section class="snap-section section-productivity" id="section-productivity" aria-label="Productividad">
+      <div class="snap-section-inner snap-section-grid">
+        <div class="card widget-tasks">
+          <div class="card-header">
+            <i class="fa-solid fa-list-check"></i>
+            <h2>Tareas</h2>
+          </div>
 
-        <div class="task-input-container">
-          <input type="text" id="task-input" placeholder="Agrega una nueva tarea..." aria-label="Nueva tarea" maxlength="120">
-          <button class="btn-add" id="task-add-btn" aria-label="Agregar tarea">
-            <i class="fa-solid fa-plus"></i> Agregar
-          </button>
-        </div>
+          <div class="task-input-container">
+            <input type="text" id="task-input" placeholder="Agrega una nueva tarea..." aria-label="Nueva tarea" maxlength="120">
+            <button class="btn-add" id="task-add-btn" aria-label="Agregar tarea">
+              <i class="fa-solid fa-plus"></i> Agregar
+            </button>
+          </div>
 
-        <p class="task-counter" id="task-counter">
-          <span>0</span> / <span>0</span> completadas
-        </p>
+          <p class="task-counter" id="task-counter">
+            <span>0</span> / <span>0</span> completadas
+          </p>
 
-        <ul class="task-list" id="task-list"></ul>
-      </section>
-
-      <!-- ===== POMODORO TIMER ===== -->
-      <section class="card widget-pomodoro" aria-label="Temporizador Pomodoro">
-        <div class="card-header">
-          <i class="fa-solid fa-clock-rotate-left"></i>
-          <h2>Pomodoro</h2>
+          <ul class="task-list" id="task-list"></ul>
         </div>
 
-        <div class="pomodoro-display">
-          <svg class="pomodoro-svg" viewBox="0 0 200 200">
-            <circle class="bg-ring" cx="100" cy="100" r="90"></circle>
-            <circle class="progress-ring" id="pomodoro-ring" cx="100" cy="100" r="90"
-              stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
-          </svg>
-          <div class="pomodoro-time">
-            <div class="time" id="pomodoro-time">25:00</div>
-            <div class="label" id="pomodoro-label">Enfoque</div>
+        <div class="card widget-pomodoro">
+          <div class="card-header">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <h2>Pomodoro</h2>
+          </div>
+
+          <div class="pomodoro-display">
+            <svg class="pomodoro-svg" viewBox="0 0 200 200">
+              <circle class="bg-ring" cx="100" cy="100" r="90"></circle>
+              <circle class="progress-ring" id="pomodoro-ring" cx="100" cy="100" r="90"
+                stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
+            </svg>
+            <div class="pomodoro-time">
+              <div class="time" id="pomodoro-time">25:00</div>
+              <div class="label" id="pomodoro-label">Enfoque</div>
+            </div>
+          </div>
+
+          <div class="pomodoro-controls">
+            <button class="btn-pomodoro primary" id="pomodoro-start">
+              <i class="fa-solid fa-play"></i> Iniciar
+            </button>
+            <button class="btn-pomodoro" id="pomodoro-reset">
+              <i class="fa-solid fa-rotate-left"></i> Reiniciar
+            </button>
+          </div>
+
+          <div class="pomodoro-stats">
+            <div class="stat">
+              <div class="stat-value" id="pomodoro-count">0</div>
+              <div class="stat-label">Sesiones</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value" id="pomodoro-total">0m</div>
+              <div class="stat-label">Total</div>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
 
-        <div class="pomodoro-controls">
-          <button class="btn-pomodoro primary" id="pomodoro-start">
-            <i class="fa-solid fa-play"></i> Iniciar
-          </button>
-          <button class="btn-pomodoro" id="pomodoro-reset">
-            <i class="fa-solid fa-rotate-left"></i> Reiniciar
-          </button>
-        </div>
-
-        <div class="pomodoro-stats">
-          <div class="stat">
-            <div class="stat-value" id="pomodoro-count">0</div>
-            <div class="stat-label">Sesiones</div>
+    <!-- ===== SECCIÓN 3: NOTAS ===== -->
+    <section class="snap-section section-notes" id="section-notes" aria-label="Notas rápidas">
+      <div class="snap-section-inner">
+        <div class="card widget-notes">
+          <div class="card-header">
+            <i class="fa-solid fa-note-sticky"></i>
+            <h2>Notas</h2>
           </div>
-          <div class="stat">
-            <div class="stat-value" id="pomodoro-total">0m</div>
-            <div class="stat-label">Total</div>
+
+          <div class="notes-toolbar">
+            <button class="btn-new-note" id="new-note-btn">
+              <i class="fa-solid fa-plus"></i> Nueva nota
+            </button>
           </div>
-        </div>
-      </section>
 
-      <!-- ===== NOTAS RÁPIDAS ===== -->
-      <section class="card widget-notes" aria-label="Notas rápidas">
-        <div class="card-header">
-          <i class="fa-solid fa-note-sticky"></i>
-          <h2>Notas</h2>
+          <div class="notes-grid" id="notes-grid"></div>
         </div>
+      </div>
+    </section>
 
-        <div class="notes-toolbar">
-          <button class="btn-new-note" id="new-note-btn">
-            <i class="fa-solid fa-plus"></i> Nueva nota
+    <!-- ===== SECCIÓN 4: FRASES ===== -->
+    <section class="snap-section section-quotes" id="section-quotes" aria-label="Frase motivacional">
+      <div class="snap-section-inner">
+        <div class="card widget-quotes">
+          <div class="card-header">
+            <i class="fa-solid fa-quote-left"></i>
+            <h2>Inspiracion</h2>
+          </div>
+          <p class="quote-text" id="quote-text"></p>
+          <p class="quote-author" id="quote-author"></p>
+          <button class="btn-new-quote" id="new-quote-btn">
+            <i class="fa-solid fa-shuffle"></i> Nueva frase
           </button>
         </div>
+      </div>
+    </section>
 
-        <div class="notes-grid" id="notes-grid"></div>
-      </section>
-
-      <!-- ===== FRASES MOTIVACIONALES ===== -->
-      <section class="card widget-quotes" aria-label="Frase motivacional">
-        <div class="card-header">
-          <i class="fa-solid fa-quote-left"></i>
-          <h2>Inspiracion</h2>
-        </div>
-        <p class="quote-text" id="quote-text"></p>
-        <p class="quote-author" id="quote-author"></p>
-        <button class="btn-new-quote" id="new-quote-btn">
-          <i class="fa-solid fa-shuffle"></i> Nueva frase
-        </button>
-      </section>
-
-    </div>
-
+    <!-- ===== FOOTER (dentro del scroll) ===== -->
     <footer class="footer">
       <p>MozzPCC &mdash; Personal Command Center &copy; <span id="year"></span></p>
       <p class="footer-credit">
@@ -225,6 +238,14 @@
       </p>
     </footer>
 
+    <!-- ===== INDICADORES DE SECCIÓN ===== -->
+    <div class="section-indicators" id="section-indicators">
+      <button class="section-dot active" data-section="section-clock" aria-label="Reloj"></button>
+      <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
+      <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
+      <button class="section-dot" data-section="section-quotes" aria-label="Inspiración"></button>
+    </div>
+
     <!-- ===== DOCK estilo macOS ===== -->
     <nav class="dock" id="dock">
       <div class="dock-panel">
@@ -232,30 +253,26 @@
         <!-- Grupo: Widgets -->
         <div class="dock-group" data-group="widgets">
           <div class="dock-expand">
-            <button class="dock-icon" data-scroll="widget-clock" aria-label="Reloj">
+            <button class="dock-icon" data-scroll="section-clock" aria-label="Reloj">
               <i class="fa-regular fa-clock"></i>
               <span class="dock-tooltip">Reloj</span>
             </button>
-            <button class="dock-icon" data-scroll="widget-tasks" aria-label="Tareas">
-              <i class="fa-solid fa-list-check"></i>
-              <span class="dock-tooltip">Tareas</span>
+            <button class="dock-icon" data-scroll="section-productivity" aria-label="Tareas y Pomodoro">
+              <i class="fa-solid fa-bolt"></i>
+              <span class="dock-tooltip">Productividad</span>
             </button>
-            <button class="dock-icon" data-scroll="widget-pomodoro" aria-label="Pomodoro">
-              <i class="fa-solid fa-stopwatch"></i>
-              <span class="dock-tooltip">Pomodoro</span>
-            </button>
-            <button class="dock-icon" data-scroll="widget-notes" aria-label="Notas">
+            <button class="dock-icon" data-scroll="section-notes" aria-label="Notas">
               <i class="fa-solid fa-note-sticky"></i>
               <span class="dock-tooltip">Notas</span>
             </button>
-            <button class="dock-icon" data-scroll="widget-quotes" aria-label="Frases">
+            <button class="dock-icon" data-scroll="section-quotes" aria-label="Inspiración">
               <i class="fa-solid fa-quote-left"></i>
-              <span class="dock-tooltip">Frases</span>
+              <span class="dock-tooltip">Inspiracion</span>
             </button>
           </div>
           <button class="dock-icon dock-trigger" aria-label="Widgets">
             <i class="fa-solid fa-grip"></i>
-            <span class="dock-tooltip">Widgets</span>
+            <span class="dock-tooltip">Secciones</span>
           </button>
         </div>
 

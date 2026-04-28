@@ -192,7 +192,7 @@
 
     setTimeout(() => {
       authScreen.style.display = 'none';
-      dashboardMain.style.display = 'flex';
+      dashboardMain.style.display = 'block';
       isDashboardVisible = true;
       dashboardMain.classList.add('dashboard-fade-in');
       setTimeout(() => {
@@ -406,7 +406,7 @@
     if (!client) {
       console.error('MozzPCC: Supabase no está disponible. La autenticación está deshabilitada.');
       // Mostrar dashboard sin auth como fallback
-      dashboardMain.style.display = 'flex';
+      dashboardMain.style.display = 'block';
       userInfoBar.style.display = 'none';
       authScreen.style.display = 'none';
       return;
