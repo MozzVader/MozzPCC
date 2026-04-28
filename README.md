@@ -35,11 +35,26 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Pomodoro Timer | Timer circular SVG 25/5 con notificacion de audio y estadisticas en la nube |
 | Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
 | Frases Motivacionales | 25+ frases en espanol con animacion de cambio |
+| Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
+| Paletas de Colores | 5 temas personalizables que cambian accent, glow y fondo en tiempo real |
+| Snap Scroll | Navegacion vertical con snap sections e indicadores de posicion |
 
 ## Diseno
 
-- Tema oscuro con degradado profundo (tonos purpura/azul)
+- Tema oscuro con degradado profundo
 - Tarjetas con efecto glassmorphism (vidrio esmerilado)
+- Navegacion vertical con snap scroll e indicadores laterales
+- Dock estilo macOS con magnificacion al hover
+- 5 paletas de colores personalizables:
+
+| Tema | Colores | Vibra |
+|------|---------|-------|
+| Cyber | cyan + violet + green + sky | Futurista |
+| Violet | purple + pink + blue | Futurista calido |
+| Emerald | green + teal + blue | Matrix / nature |
+| Rose | pink + red + magenta | Calido y bold |
+| Amber | gold + orange + yellow | Calido y premium |
+
 - Animaciones suaves de entrada y transiciones
 - Diseno responsivo (escritorio, tablet y mobile)
 - Tipografia moderna (Inter via Google Fonts)
@@ -62,7 +77,9 @@ MozzPCC/
 │   ├── tasks.js            # Lista de tareas
 │   ├── pomodoro.js         # Temporizador Pomodoro
 │   ├── notes.js            # Notas adhesivas
-│   └── quotes.js           # Frases motivacionales
+│   ├── quotes.js           # Frases motivacionales
+│   ├── dock.js             # Dock estilo macOS con magnificacion
+│   └── settings.js         # Configuracion (dock + temas)
 ├── sql/
 │   └── schema.sql          # Schema de BD + RLS
 ├── README.md               # Este archivo
