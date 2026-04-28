@@ -185,6 +185,12 @@
       // Si no hay grupos, hacer seed con los defaults
       if (groups.length === 0) {
         await seedDefaults();
+      } else {
+        // Cargar links de cada grupo
+        for (var i = 0; i < groups.length; i++) {
+          await loadLinks(groups[i].id);
+        }
+        notifyDockUpdate();
       }
     } catch (e) {
       console.warn('Error al cargar grupos:', e);
@@ -746,6 +752,7 @@
   // --- Auth events ---
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
+    loadGroups();
   });
 
   window.addEventListener('auth:logout', function () {
