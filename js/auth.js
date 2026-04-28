@@ -32,6 +32,7 @@
 
   // --- Estado ---
   let isLoginMode = true; // true = login, false = register
+  let isDashboardVisible = false; // trackea si el dashboard ya está mostrándose
 
   // --- Funciones de utilidad ---
 
@@ -124,6 +125,7 @@
    */
   function showAuthScreen() {
     hideLoadingScreen();
+    isDashboardVisible = false;
     authScreen.style.display = 'flex';
     dashboardMain.style.display = 'none';
     userInfoBar.style.display = 'none';
@@ -167,7 +169,7 @@
     return 'Usuario';
   }
 
-  function showDashboard(session) {
+  function showDashboard(session, skipTransition) {
     hideLoadingScreen();
     const userId = session.user.id;
     const email = session.user.email;
@@ -177,6 +179,13 @@
     userEmailDisplay.textContent = displayName;
     userInfoBar.style.display = 'flex';
 
+    // Si el dashboard ya está visible (ej: Supabase re-verificó sesión al cambiar de pestaña),
+    // NO repetir la transición ni re-disparar auth:ready
+    if (isDashboardVisible && !skipTransition) {
+      console.log('MozzPCC: Dashboard ya visible, omitiendo transición.');
+      return;
+    }
+
     // Transición: fade out auth, fade in dashboard
     authScreen.classList.remove('auth-fade-in');
     authScreen.classList.add('auth-fade-out');
@@ -184,6 +193,7 @@
     setTimeout(() => {
       authScreen.style.display = 'none';
       dashboardMain.style.display = 'flex';
+      isDashboardVisible = true;
       dashboardMain.classList.add('dashboard-fade-in');
       setTimeout(() => {
         dashboardMain.classList.remove('dashboard-fade-in');
