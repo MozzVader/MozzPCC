@@ -257,8 +257,6 @@ body::after {
 /* --- Tarjeta glassmorphism --- */
 .card {
   background: var(--bg-glass);
-  backdrop-filter: blur(36px);
-  -webkit-backdrop-filter: blur(36px);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius);
   padding: 24px;
