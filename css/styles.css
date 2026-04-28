@@ -981,14 +981,16 @@ body::before {
 .auth-logo-icon {
   width: 56px;
   height: 56px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-secondary));
-  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 16px;
-  font-size: 1.4rem;
-  color: white;
+}
+
+.auth-logo-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 14px;
   box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
 }
 
