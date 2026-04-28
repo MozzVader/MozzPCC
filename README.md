@@ -113,5 +113,5 @@ Lee la licencia completa: [CC BY-NC-ND 4.0](https://creativecommons.org/licenses
 ---
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Hecho%20con%20effort%20por-MozzVader-00d4ff?style=for-the-badge" alt="Made by MozzVader">
+  <img src="https://img.shields.io/badge/Hecho%20por-MozzVader-00d4ff?style=for-the-badge" alt="Made by MozzVader">
 </p>
