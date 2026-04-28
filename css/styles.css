@@ -97,7 +97,7 @@ body::before {
 .dashboard {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 24px 24px 90px 24px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -857,7 +857,7 @@ body::before {
    ============================================ */
 @media (max-width: 768px) {
   .dashboard {
-    padding: 16px;
+    padding: 16px 16px 90px 16px;
   }
 
   .dashboard-grid {
@@ -902,7 +902,7 @@ body::before {
 
 @media (max-width: 480px) {
   .dashboard {
-    padding: 12px;
+    padding: 12px 12px 90px 12px;
   }
 
   .card {
@@ -1469,4 +1469,178 @@ body::before {
 @keyframes fa-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* ============================================
+   DOCK — Estilo macOS
+   ============================================ */
+
+/* Contenedor principal del dock */
+.dock {
+  position: fixed;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 800;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Panel glass del dock */
+.dock-panel {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 6px 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+              0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Grupo de iconos (categoría) */
+.dock-group {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Panel expandido (sub-iconos) */
+.dock-expand {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(8px) scale(0.92);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.dock-group:hover .dock-expand,
+.dock-group.active .dock-expand {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Separador entre grupos */
+.dock-separator {
+  width: 1px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 0 4px;
+  align-self: center;
+}
+
+/* Icono individual */
+.dock-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: transform 0.15s ease-out,
+              background 0.2s ease;
+  text-decoration: none;
+  transform-origin: bottom center;
+  outline: none;
+}
+
+.dock-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dock-icon:active {
+  transform: scale(0.9) !important;
+}
+
+/* Trigger (icono principal de categoría) */
+.dock-trigger {
+  font-size: 1.15rem;
+  color: var(--accent);
+}
+
+/* Tooltip */
+.dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.88);
+  color: #f0f0f5;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dock-icon:hover .dock-tooltip {
+  opacity: 1;
+}
+
+/* ============================================
+   DOCK — RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .dock-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+
+  .dock-expand {
+    gap: 1px;
+    padding: 5px 6px;
+  }
+
+  .dock-expand .dock-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dock-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .dock-expand .dock-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dock-panel {
+    padding: 5px 6px;
+    border-radius: 16px;
+  }
 }

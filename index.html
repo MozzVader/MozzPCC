@@ -224,6 +224,67 @@
         </a>
       </p>
     </footer>
+
+    <!-- ===== DOCK estilo macOS ===== -->
+    <nav class="dock" id="dock">
+      <div class="dock-panel">
+
+        <!-- Grupo: Widgets -->
+        <div class="dock-group" data-group="widgets">
+          <div class="dock-expand">
+            <button class="dock-icon" data-scroll="widget-clock" aria-label="Reloj">
+              <i class="fa-regular fa-clock"></i>
+              <span class="dock-tooltip">Reloj</span>
+            </button>
+            <button class="dock-icon" data-scroll="widget-tasks" aria-label="Tareas">
+              <i class="fa-solid fa-list-check"></i>
+              <span class="dock-tooltip">Tareas</span>
+            </button>
+            <button class="dock-icon" data-scroll="widget-pomodoro" aria-label="Pomodoro">
+              <i class="fa-solid fa-stopwatch"></i>
+              <span class="dock-tooltip">Pomodoro</span>
+            </button>
+            <button class="dock-icon" data-scroll="widget-notes" aria-label="Notas">
+              <i class="fa-solid fa-note-sticky"></i>
+              <span class="dock-tooltip">Notas</span>
+            </button>
+            <button class="dock-icon" data-scroll="widget-quotes" aria-label="Frases">
+              <i class="fa-solid fa-quote-left"></i>
+              <span class="dock-tooltip">Frases</span>
+            </button>
+          </div>
+          <button class="dock-icon dock-trigger" aria-label="Widgets">
+            <i class="fa-solid fa-grip"></i>
+            <span class="dock-tooltip">Widgets</span>
+          </button>
+        </div>
+
+        <div class="dock-separator"></div>
+
+        <!-- Grupo: Links -->
+        <div class="dock-group" data-group="links">
+          <div class="dock-expand">
+            <a class="dock-icon" href="https://github.com/MozzVader" target="_blank" rel="noopener" aria-label="GitHub">
+              <i class="fa-brands fa-github"></i>
+              <span class="dock-tooltip">GitHub</span>
+            </a>
+            <a class="dock-icon" href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube">
+              <i class="fa-brands fa-youtube"></i>
+              <span class="dock-tooltip">YouTube</span>
+            </a>
+            <a class="dock-icon" href="https://chat.z.ai" target="_blank" rel="noopener" aria-label="Chat Z.AI">
+              <i class="fa-solid fa-robot"></i>
+              <span class="dock-tooltip">Chat Z.AI</span>
+            </a>
+          </div>
+          <button class="dock-icon dock-trigger" aria-label="Links">
+            <i class="fa-solid fa-globe"></i>
+            <span class="dock-tooltip">Links</span>
+          </button>
+        </div>
+
+      </div>
+    </nav>
   </main>
 
   <!-- Scripts — Orden CRÍTICO -->
@@ -234,6 +295,7 @@
   <script src="/MozzPCC/js/notes.js"></script>
   <script src="/MozzPCC/js/quotes.js"></script>
   <script src="/MozzPCC/js/app.js"></script>
+  <script src="/MozzPCC/js/dock.js"></script>
 
 </body>
 </html>
