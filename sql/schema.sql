@@ -50,45 +50,57 @@ ALTER TABLE pomodoro_sessions ENABLE ROW LEVEL SECURITY;
 -- =============================================
 -- 4. RLS Policies — Tasks
 -- =============================================
+DROP POLICY IF EXISTS "Users can view own tasks" ON tasks;
 CREATE POLICY "Users can view own tasks" ON tasks
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own tasks" ON tasks;
 CREATE POLICY "Users can insert own tasks" ON tasks
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own tasks" ON tasks;
 CREATE POLICY "Users can update own tasks" ON tasks
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own tasks" ON tasks;
 CREATE POLICY "Users can delete own tasks" ON tasks
   FOR DELETE USING (auth.uid() = user_id);
 
 -- =============================================
 -- 5. RLS Policies — Notes
 -- =============================================
+DROP POLICY IF EXISTS "Users can view own notes" ON notes;
 CREATE POLICY "Users can view own notes" ON notes
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own notes" ON notes;
 CREATE POLICY "Users can insert own notes" ON notes
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own notes" ON notes;
 CREATE POLICY "Users can update own notes" ON notes
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own notes" ON notes;
 CREATE POLICY "Users can delete own notes" ON notes
   FOR DELETE USING (auth.uid() = user_id);
 
 -- =============================================
 -- 6. RLS Policies — Pomodoro Sessions
 -- =============================================
+DROP POLICY IF EXISTS "Users can view own pomodoro_sessions" ON pomodoro_sessions;
 CREATE POLICY "Users can view own pomodoro_sessions" ON pomodoro_sessions
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own pomodoro_sessions" ON pomodoro_sessions;
 CREATE POLICY "Users can insert own pomodoro_sessions" ON pomodoro_sessions
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own pomodoro_sessions" ON pomodoro_sessions;
 CREATE POLICY "Users can update own pomodoro_sessions" ON pomodoro_sessions
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own pomodoro_sessions" ON pomodoro_sessions;
 CREATE POLICY "Users can delete own pomodoro_sessions" ON pomodoro_sessions
   FOR DELETE USING (auth.uid() = user_id);
 
@@ -136,30 +148,38 @@ ALTER TABLE user_dock_links ENABLE ROW LEVEL SECURITY;
 -- =============================================
 -- 11. RLS Policies — Dock Groups
 -- =============================================
+DROP POLICY IF EXISTS "Users can view own dock_groups" ON user_dock_groups;
 CREATE POLICY "Users can view own dock_groups" ON user_dock_groups
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own dock_groups" ON user_dock_groups;
 CREATE POLICY "Users can insert own dock_groups" ON user_dock_groups
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own dock_groups" ON user_dock_groups;
 CREATE POLICY "Users can update own dock_groups" ON user_dock_groups
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own dock_groups" ON user_dock_groups;
 CREATE POLICY "Users can delete own dock_groups" ON user_dock_groups
   FOR DELETE USING (auth.uid() = user_id);
 
 -- =============================================
 -- 12. RLS Policies — Dock Links
 -- =============================================
+DROP POLICY IF EXISTS "Users can view own dock_links" ON user_dock_links;
 CREATE POLICY "Users can view own dock_links" ON user_dock_links
   FOR SELECT USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can insert own dock_links" ON user_dock_links;
 CREATE POLICY "Users can insert own dock_links" ON user_dock_links
   FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update own dock_links" ON user_dock_links;
 CREATE POLICY "Users can update own dock_links" ON user_dock_links
   FOR UPDATE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete own dock_links" ON user_dock_links;
 CREATE POLICY "Users can delete own dock_links" ON user_dock_links
   FOR DELETE USING (auth.uid() = user_id);
 
