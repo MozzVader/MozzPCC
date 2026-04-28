@@ -1157,7 +1157,7 @@ body::after {
    AUTENTICACIÓN — Auth Screen
    ============================================ */
 
-/* Full-screen overlay */
+/* Full-screen overlay — transparente para que se vea el fondo del body (gradiente + grid) */
 .auth-screen {
   position: fixed;
   top: 0;
@@ -1168,9 +1168,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 10, 26, 0.85);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
+  background: transparent;
   padding: 20px;
 }
 
