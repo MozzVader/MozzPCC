@@ -164,6 +164,11 @@ body::before {
   max-width: 800px;
 }
 
+/* Sección de notas: misma anchura que productividad (1200px) */
+.section-notes .widget-notes {
+  width: 100%;
+}
+
 /* Footer dentro del scroll (no es snap section, se desplaza con el contenido) */
 .footer {
   text-align: center;
