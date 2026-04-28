@@ -190,6 +190,7 @@
         for (var i = 0; i < groups.length; i++) {
           await loadLinks(groups[i].id);
         }
+        renderGroups();
         notifyDockUpdate();
       }
     } catch (e) {
@@ -221,6 +222,7 @@
         group._links = data || [];
       }
 
+      renderGroups();
       renderLinks();
     } catch (e) {
       console.warn('Error al cargar links:', e);
@@ -674,7 +676,7 @@
   // --- Notificar al dock que los datos cambiaron ---
   function notifyDockUpdate() {
     window.dispatchEvent(new CustomEvent('dock:update', {
-      detail: { groups: groups }
+      detail: { groups: getDockData() }
     }));
   }
 
