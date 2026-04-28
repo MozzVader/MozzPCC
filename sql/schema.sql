@@ -203,6 +203,9 @@ CREATE TABLE IF NOT EXISTS user_preferences (
   UNIQUE(user_id)
 );
 
+-- Para instalaciones existentes que no tienen la columna city
+ALTER TABLE user_preferences ADD COLUMN IF NOT EXISTS city TEXT DEFAULT '';
+
 -- =============================================
 -- 15. Enable RLS on user_preferences
 -- =============================================
