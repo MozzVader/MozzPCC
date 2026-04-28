@@ -8,13 +8,7 @@
 </p>
 
 <p align="center">
-  <a href="https://mozzvader.github.io/MozzPCC/" target="_blank">
-    <img src="https://img.shields.io/badge/🌐-Live_Demo-00d4ff?style=for-the-badge" alt="Live Demo">
-  </a>
-  <a href="https://github.com/MozzVader/MozzPCC" target="_blank">
-    <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
-  </a>
-  <br><br>
+<br>
   <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
   <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3">
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript">
