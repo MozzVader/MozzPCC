@@ -189,3 +189,33 @@ CREATE POLICY "Users can delete own dock_links" ON user_dock_links
 CREATE INDEX IF NOT EXISTS idx_dock_groups_user_id ON user_dock_groups(user_id);
 CREATE INDEX IF NOT EXISTS idx_dock_links_user_id ON user_dock_links(user_id);
 CREATE INDEX IF NOT EXISTS idx_dock_links_group_id ON user_dock_links(group_id);
+
+-- =============================================
+-- 14. User Preferences table (themes, settings)
+-- =============================================
+CREATE TABLE IF NOT EXISTS user_preferences (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  theme TEXT DEFAULT 'cyber' NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  UNIQUE(user_id)
+);
+
+-- =============================================
+-- 15. Enable RLS on user_preferences
+-- =============================================
+ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
+-- 16. RLS Policies — User Preferences
+-- =============================================
+DROP POLICY IF EXISTS "Users manage own preferences" ON user_preferences;
+CREATE POLICY "Users manage own preferences" ON user_preferences
+  FOR ALL USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- =============================================
+-- 17. Index for user_preferences
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
