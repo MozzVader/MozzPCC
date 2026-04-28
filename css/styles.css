@@ -13,11 +13,17 @@
   --border-glass: rgba(255, 255, 255, 0.1);
   --border-glass-hover: rgba(255, 255, 255, 0.2);
 
-  /* Acentos */
+  /* Acentos (por defecto Cyber) */
   --accent: #00d4ff;
   --accent-dim: rgba(0, 212, 255, 0.15);
   --accent-glow: rgba(0, 212, 255, 0.4);
   --accent-secondary: #7c3aed;
+
+  /* Fondos glow (se sobreescriben por tema) */
+  --bg-glow-a: rgba(124, 58, 237, 0.15);
+  --bg-glow-b: rgba(0, 212, 255, 0.1);
+  --bg-glow-c: rgba(124, 58, 237, 0.08);
+  --border-accent: rgba(0, 212, 255, 0.3);
 
   /* Texto */
   --text-primary: #f0f0f5;
@@ -76,9 +82,9 @@ body::before {
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(124, 58, 237, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 50%, var(--bg-glow-a) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, var(--bg-glow-b) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, var(--bg-glow-c) 0%, transparent 50%),
     linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   z-index: -1;
   animation: bgShift 20s ease-in-out infinite alternate;
@@ -1863,7 +1869,7 @@ body::after {
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, var(--border-accent), transparent);
 }
 
 /* Header */
@@ -2371,6 +2377,152 @@ body::after {
 }
 
 /* ============================================
+   SETTINGS — Tabs + Apariencia
+   ============================================ */
+
+/* Tabs */
+.settings-tabs {
+  display: flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+}
+
+.settings-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: none;
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  outline: none;
+  white-space: nowrap;
+}
+
+.settings-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.settings-tab.active {
+  color: var(--accent);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.settings-tab i {
+  font-size: 0.8rem;
+}
+
+/* Tab content */
+.settings-tab-content {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+}
+
+.settings-tab-content.active {
+  display: flex;
+}
+
+.settings-tab-content .settings-body {
+  width: 100%;
+}
+
+/* Appearance panel */
+.appearance-panel {
+  padding: 24px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.appearance-section h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.appearance-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Theme palette grid */
+.theme-palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.theme-palette-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  outline: none;
+}
+
+.theme-palette-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.theme-palette-card.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.theme-palette-card.active::after {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.65rem;
+  color: var(--accent);
+}
+
+/* Color swatches */
+.theme-palette-swatches {
+  display: flex;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.theme-palette-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.theme-palette-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.2;
+}
+
+.theme-palette-card.active .theme-palette-name {
+  color: var(--text-primary);
+}
+
+/* ============================================
    SETTINGS — Responsive
    ============================================ */
 
@@ -2431,6 +2583,10 @@ body::after {
 
   .icon-picker {
     grid-template-columns: repeat(8, 1fr);
+  }
+
+  .theme-palette-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
 }
 

@@ -97,6 +97,7 @@
   var noGroupMsg = document.getElementById('settings-no-group');
   var addGroupBtn = document.getElementById('settings-add-group');
   var addLinkBtn = document.getElementById('settings-add-link');
+  var themePaletteGrid = document.getElementById('theme-palette-grid');
 
   // Form: grupo
   var groupForm = document.getElementById('group-form');
@@ -123,9 +124,195 @@
   var editingGroupId = null;
   var editingLinkId = null;
   var userId = null;
+  var currentTheme = 'cyber';
+
+  // --- Paletas de colores ---
+  var THEMES = [
+    {
+      id: 'cyber',
+      name: 'Cyber',
+      swatches: ['#00d4ff', '#7c3aed', '#00ff88', '#0ea5e9'],
+      vars: {
+        '--accent': '#00d4ff',
+        '--accent-dim': 'rgba(0, 212, 255, 0.15)',
+        '--accent-glow': 'rgba(0, 212, 255, 0.4)',
+        '--accent-secondary': '#7c3aed',
+        '--shadow-glow': '0 0 20px rgba(0, 212, 255, 0.15)',
+        '--bg-glow-a': 'rgba(124, 58, 237, 0.15)',
+        '--bg-glow-b': 'rgba(0, 212, 255, 0.1)',
+        '--bg-glow-c': 'rgba(124, 58, 237, 0.08)',
+        '--border-accent': 'rgba(0, 212, 255, 0.3)'
+      }
+    },
+    {
+      id: 'violet',
+      name: 'Violet',
+      swatches: ['#a78bfa', '#c084fc', '#f472b6', '#818cf8'],
+      vars: {
+        '--accent': '#a78bfa',
+        '--accent-dim': 'rgba(167, 139, 250, 0.15)',
+        '--accent-glow': 'rgba(167, 139, 250, 0.4)',
+        '--accent-secondary': '#f472b6',
+        '--shadow-glow': '0 0 20px rgba(167, 139, 250, 0.15)',
+        '--bg-glow-a': 'rgba(244, 114, 182, 0.12)',
+        '--bg-glow-b': 'rgba(167, 139, 250, 0.1)',
+        '--bg-glow-c': 'rgba(129, 140, 248, 0.08)',
+        '--border-accent': 'rgba(167, 139, 250, 0.3)'
+      }
+    },
+    {
+      id: 'emerald',
+      name: 'Emerald',
+      swatches: ['#34d399', '#10b981', '#3b82f6', '#6ee7b7'],
+      vars: {
+        '--accent': '#34d399',
+        '--accent-dim': 'rgba(52, 211, 153, 0.15)',
+        '--accent-glow': 'rgba(52, 211, 153, 0.4)',
+        '--accent-secondary': '#3b82f6',
+        '--shadow-glow': '0 0 20px rgba(52, 211, 153, 0.15)',
+        '--bg-glow-a': 'rgba(59, 130, 246, 0.12)',
+        '--bg-glow-b': 'rgba(52, 211, 153, 0.1)',
+        '--bg-glow-c': 'rgba(16, 185, 129, 0.08)',
+        '--border-accent': 'rgba(52, 211, 153, 0.3)'
+      }
+    },
+    {
+      id: 'rose',
+      name: 'Rose',
+      swatches: ['#fb7185', '#f43f5e', '#fda4af', '#e879f9'],
+      vars: {
+        '--accent': '#fb7185',
+        '--accent-dim': 'rgba(251, 113, 133, 0.15)',
+        '--accent-glow': 'rgba(251, 113, 133, 0.4)',
+        '--accent-secondary': '#e879f9',
+        '--shadow-glow': '0 0 20px rgba(251, 113, 133, 0.15)',
+        '--bg-glow-a': 'rgba(232, 121, 249, 0.12)',
+        '--bg-glow-b': 'rgba(251, 113, 133, 0.1)',
+        '--bg-glow-c': 'rgba(244, 63, 94, 0.08)',
+        '--border-accent': 'rgba(251, 113, 133, 0.3)'
+      }
+    },
+    {
+      id: 'amber',
+      name: 'Amber',
+      swatches: ['#fbbf24', '#f59e0b', '#f97316', '#fde68a'],
+      vars: {
+        '--accent': '#fbbf24',
+        '--accent-dim': 'rgba(251, 191, 36, 0.15)',
+        '--accent-glow': 'rgba(251, 191, 36, 0.4)',
+        '--accent-secondary': '#f97316',
+        '--shadow-glow': '0 0 20px rgba(251, 191, 36, 0.15)',
+        '--bg-glow-a': 'rgba(249, 115, 22, 0.12)',
+        '--bg-glow-b': 'rgba(251, 191, 36, 0.1)',
+        '--bg-glow-c': 'rgba(245, 158, 11, 0.08)',
+        '--border-accent': 'rgba(251, 191, 36, 0.3)'
+      }
+    }
+  ];
 
   function getSupabase() {
     return window.supabaseClient || null;
+  }
+
+  // --- Tabs ---
+  function initTabs() {
+    var tabs = document.querySelectorAll('.settings-tab');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var target = tab.dataset.tab;
+        // Actualizar tabs
+        tabs.forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        // Actualizar contenido
+        document.querySelectorAll('.settings-tab-content').forEach(function (c) {
+          c.classList.remove('active');
+        });
+        var targetEl = document.getElementById('tab-' + target);
+        if (targetEl) targetEl.classList.add('active');
+      });
+    });
+  }
+
+  // --- Tema: aplicar ---
+  function applyTheme(themeId) {
+    var theme = THEMES.find(function (t) { return t.id === themeId; });
+    if (!theme) return;
+
+    currentTheme = themeId;
+    var root = document.documentElement;
+    Object.keys(theme.vars).forEach(function (key) {
+      root.style.setProperty(key, theme.vars[key]);
+    });
+
+    // Actualizar UI del grid de paletas
+    document.querySelectorAll('.theme-palette-card').forEach(function (card) {
+      card.classList.toggle('active', card.dataset.theme === themeId);
+    });
+  }
+
+  // --- Tema: renderizar paletas ---
+  function renderPalettes() {
+    if (!themePaletteGrid) return;
+    themePaletteGrid.innerHTML = '';
+
+    THEMES.forEach(function (theme) {
+      var card = document.createElement('div');
+      card.className = 'theme-palette-card' + (theme.id === currentTheme ? ' active' : '');
+      card.dataset.theme = theme.id;
+
+      // Swatches
+      var swatchesHTML = '<div class="theme-palette-swatches">';
+      theme.swatches.forEach(function (color) {
+        swatchesHTML += '<div class="theme-palette-swatch" style="background:' + color + ';"></div>';
+      });
+      swatchesHTML += '</div>';
+
+      card.innerHTML = swatchesHTML + '<div class="theme-palette-name">' + theme.name + '</div>';
+
+      card.addEventListener('click', function () {
+        applyTheme(theme.id);
+        saveTheme(theme.id);
+      });
+
+      themePaletteGrid.appendChild(card);
+    });
+  }
+
+  // --- Tema: persistencia en Supabase ---
+  async function loadTheme() {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      var { data, error } = await client
+        .from('user_preferences')
+        .select('theme')
+        .eq('user_id', userId)
+        .single();
+
+      if (!error && data && data.theme) {
+        applyTheme(data.theme);
+      }
+    } catch (e) {
+      // Tabla quizás no existe aún, usar default
+    }
+  }
+
+  async function saveTheme(themeId) {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      await client
+        .from('user_preferences')
+        .upsert({
+          user_id: userId,
+          theme: themeId,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+    } catch (e) {
+      // Silencioso — tema funciona en memoria
+    }
   }
 
   // --- Icon Picker ---
@@ -152,6 +339,7 @@
   // --- Modal open/close ---
   function openSettings() {
     settingsModal.style.display = 'flex';
+    renderPalettes();
     loadGroups();
   }
 
@@ -706,6 +894,7 @@
   }
 
   // --- Eventos ---
+  initTabs();
   settingsBtn.addEventListener('click', openSettings);
   settingsClose.addEventListener('click', closeSettings);
 
@@ -755,12 +944,15 @@
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
     loadGroups();
+    loadTheme();
   });
 
   window.addEventListener('auth:logout', function () {
     groups = [];
     selectedGroupId = null;
     userId = null;
+    currentTheme = 'cyber';
+    applyTheme('cyber');
     closeSettings();
   });
 })();

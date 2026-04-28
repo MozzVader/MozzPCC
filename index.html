@@ -261,12 +261,22 @@
     <div class="settings-modal">
       <!-- Header del modal -->
       <div class="settings-header">
-        <h2><i class="fa-solid fa-gear"></i> Configurar Dock</h2>
+        <h2><i class="fa-solid fa-gear"></i> Configuracion</h2>
+        <div class="settings-tabs">
+          <button class="settings-tab active" data-tab="dock">
+            <i class="fa-solid fa-grip"></i> Dock
+          </button>
+          <button class="settings-tab" data-tab="appearance">
+            <i class="fa-solid fa-palette"></i> Apariencia
+          </button>
+        </div>
         <button id="settings-close" class="settings-close" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
+      <!-- Tab: Dock -->
+      <div class="settings-tab-content active" id="tab-dock">
       <div class="settings-body">
         <!-- Panel izquierdo: Grupos -->
         <div class="settings-panel settings-groups">
@@ -291,6 +301,19 @@
           <p id="settings-no-group" class="settings-empty-msg">Seleccioná un grupo para ver sus links</p>
         </div>
       </div>
+      </div>
+
+      <!-- Tab: Apariencia -->
+      <div class="settings-tab-content" id="tab-appearance">
+        <div class="appearance-panel">
+          <div class="appearance-section">
+            <h3>Paleta de colores</h3>
+            <p class="appearance-hint">Elegí un tema para personalizar los colores de tu dashboard</p>
+            <div id="theme-palette-grid" class="theme-palette-grid"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Formularios flotantes -->
