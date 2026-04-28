@@ -36,7 +36,8 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
 | Frases Motivacionales | 25+ frases en espanol con animacion de cambio |
 | Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
-| Paletas de Colores | 5 temas personalizables que cambian accent, glow y fondo en tiempo real |
+| Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
+| Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
 | Snap Scroll | Navegacion vertical con snap sections e indicadores de posicion |
 
 ## Diseno
@@ -75,6 +76,7 @@ MozzPCC/
 │   ├── supabase.js         # Cliente Supabase
 │   ├── auth.js             # Sistema de autenticacion
 │   ├── app.js              # Reloj, fecha y saludo
+│   ├── weather.js           # Widget de clima (Open-Meteo)
 │   ├── tasks.js            # Lista de tareas
 │   ├── pomodoro.js         # Temporizador Pomodoro
 │   ├── notes.js            # Notas adhesivas

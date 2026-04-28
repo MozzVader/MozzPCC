@@ -126,6 +126,22 @@
           </div>
           <p class="clock-date" id="clock-date"></p>
         </div>
+        <div class="card widget-weather" id="widget-weather">
+          <div class="weather-main">
+            <div class="weather-icon" id="weather-icon">
+              <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+            <div class="weather-info">
+              <div class="weather-temp" id="weather-temp">--°</div>
+              <div class="weather-desc" id="weather-desc">Cargando...</div>
+            </div>
+          </div>
+          <div class="weather-details">
+            <span id="weather-location" class="weather-location"><i class="fa-solid fa-location-dot"></i> --</span>
+            <span id="weather-feels" class="weather-feels">Sensacion --°</span>
+            <span id="weather-hilo" class="weather-hilo"><i class="fa-solid fa-arrow-up"></i>--° <i class="fa-solid fa-arrow-down"></i>--°</span>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -311,6 +327,17 @@
             <p class="appearance-hint">Elegí un tema para personalizar los colores de tu dashboard</p>
             <div id="theme-palette-grid" class="theme-palette-grid"></div>
           </div>
+          <div class="appearance-section">
+            <h3><i class="fa-solid fa-cloud-sun" style="color:var(--accent);margin-right:6px;"></i> Clima</h3>
+            <p class="appearance-hint">Escribí tu ciudad para ver el clima actual en el dashboard</p>
+            <div class="weather-settings-row">
+              <input type="text" id="weather-city-input" class="weather-city-input" placeholder="Ej: Buenos Aires" maxlength="50">
+              <button id="weather-city-save" class="weather-city-save">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+            </div>
+            <p id="weather-city-status" class="weather-city-status"></p>
+          </div>
         </div>
       </div>
 
@@ -370,6 +397,7 @@
   <script src="/MozzPCC/js/notes.js"></script>
   <script src="/MozzPCC/js/quotes.js"></script>
   <script src="/MozzPCC/js/app.js"></script>
+  <script src="/MozzPCC/js/weather.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
 

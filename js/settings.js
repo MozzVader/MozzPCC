@@ -302,12 +302,16 @@
     try {
       var { data, error } = await client
         .from('user_preferences')
-        .select('theme')
+        .select('theme, city')
         .eq('user_id', userId)
         .single();
 
-      if (!error && data && data.theme) {
-        applyTheme(data.theme);
+      if (!error && data) {
+        if (data.theme) applyTheme(data.theme);
+        if (data.city) {
+          var cityInput = document.getElementById('weather-city-input');
+          if (cityInput) cityInput.value = data.city;
+        }
       }
     } catch (e) {
       // Tabla quizás no existe aún, usar default
