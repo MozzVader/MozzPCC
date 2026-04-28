@@ -272,6 +272,18 @@
     </nav>
   </main>
 
+  <!-- ===== COMMAND PALETTE (Ctrl+K / Cmd+K) ===== -->
+  <div id="cmd-palette" class="cmd-palette-overlay" style="display:none;">
+    <div class="cmd-palette">
+      <div class="cmd-palette-input-row">
+        <i class="fa-solid fa-magnifying-glass cmd-palette-search-icon"></i>
+        <input type="text" id="cmd-palette-input" class="cmd-palette-input" placeholder="Buscar secciones, links, tareas..." autocomplete="off" spellcheck="false">
+        <kbd class="cmd-palette-kbd">ESC</kbd>
+      </div>
+      <div class="cmd-palette-results" id="cmd-palette-results"></div>
+    </div>
+  </div>
+
   <!-- ===== MODAL DE CONFIGURACIÓN ===== -->
   <div id="settings-modal" class="settings-overlay" style="display:none;">
     <div class="settings-modal">
@@ -400,6 +412,7 @@
   <script src="/MozzPCC/js/weather.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
+  <script src="/MozzPCC/js/commandPalette.js"></script>
 
 </body>
 </html>

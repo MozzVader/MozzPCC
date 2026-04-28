@@ -37,6 +37,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Frases Motivacionales | 25+ frases en espanol con animacion de cambio |
 | Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
+| Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, acciones) |
 | Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
 | Snap Scroll | Navegacion vertical con snap sections e indicadores de posicion |
 
@@ -82,7 +83,8 @@ MozzPCC/
 │   ├── notes.js            # Notas adhesivas
 │   ├── quotes.js           # Frases motivacionales
 │   ├── dock.js             # Dock estilo macOS con magnificacion
-│   └── settings.js         # Configuracion (dock + temas)
+│   ├── settings.js         # Configuracion (dock + temas)
+│   └── commandPalette.js   # Command Palette (Ctrl+K)
 ├── sql/
 │   └── schema.sql          # Schema de BD + RLS
 ├── README.md               # Este archivo
