@@ -20,6 +20,7 @@
   var recentGamesEl = document.getElementById('steam-recent-games');
 
   var SUPABASE_URL = 'https://diaezbthqjvroexesbrr.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpYWV6YnRocWp2cm9leGVzYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjExMDgsImV4cCI6MjA5Mjg5NzEwOH0.G2VeKwY5to87N0_FoHm_5SdnwQFWY636TeFPU4dmz84';
   var FUNCTION_URL = SUPABASE_URL + '/functions/v1/steam-proxy';
   var userId = null;
 
@@ -53,7 +54,11 @@
   // --- Fetch via Edge Function ---
   async function fetchSteamData(steamId) {
     var url = FUNCTION_URL + '?steam_id=' + encodeURIComponent(steamId);
-    var res = await fetch(url);
+    var res = await fetch(url, {
+      headers: {
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      }
+    });
     if (!res.ok) {
       var err = await res.json().catch(function () { return { error: 'Network error' }; });
       throw new Error(err.error || 'Error ' + res.status);
