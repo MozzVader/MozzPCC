@@ -1298,6 +1298,7 @@ body::after {
   margin-left: auto;
   font-size: 0.75rem;
   color: var(--text-muted);
+  padding-right: 10px;
 }
 
 /* Grid: transactions + charts */
