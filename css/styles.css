@@ -2384,6 +2384,145 @@ body::after {
   font-size: 0.75rem;
 }
 
+/* Tips button in user bar */
+.btn-tips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.75rem;
+  transition: var(--transition);
+  outline: none;
+}
+
+.btn-tips:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fbbf24;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.btn-tips:active {
+  transform: scale(0.95);
+}
+
+.btn-tips i {
+  font-size: 0.8rem;
+}
+
+/* Tips modal */
+.tips-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 480px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgb(37 37 37 / 85%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+  z-index: 2001;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.tips-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.tips-header h2 i {
+  color: #fbbf24;
+}
+
+.tips-body {
+  padding: 16px 24px 24px;
+}
+
+.tip-group {
+  margin-bottom: 20px;
+}
+
+.tip-group:last-child {
+  margin-bottom: 0;
+}
+
+.tip-group h3 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tip-group h3 i {
+  color: var(--accent);
+  font-size: 0.7rem;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.tip-item:last-child {
+  border-bottom: none;
+}
+
+.tip-label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  min-width: 120px;
+}
+
+.tip-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.tip-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-size: 0.75rem;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
 /* Overlay */
 .settings-overlay {
   position: fixed;

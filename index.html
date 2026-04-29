@@ -104,6 +104,9 @@
         <i class="fa-solid fa-user"></i>
       </div>
       <span id="user-email-display" class="user-email"></span>
+      <button id="tips-btn" class="btn-tips" aria-label="Tips y atajos">
+        <i class="fa-regular fa-lightbulb"></i>
+      </button>
       <button id="settings-btn" class="btn-settings" aria-label="Configuración">
         <i class="fa-solid fa-gear"></i>
       </button>
@@ -277,6 +280,72 @@
       </div>
     </nav>
   </main>
+
+  <!-- ===== MODAL DE TIPS Y ATAJOS ===== -->
+  <div id="tips-modal" class="settings-overlay" style="display:none;">
+    <div class="tips-modal">
+      <div class="tips-header">
+        <h2><i class="fa-regular fa-lightbulb"></i> Tips y Atajos</h2>
+        <button id="tips-close" class="settings-close" aria-label="Cerrar">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="tips-body">
+        <div class="tip-group">
+          <h3><i class="fa-solid fa-keyboard"></i> Atajos de teclado</h3>
+          <div class="tip-item">
+            <span class="tip-label">Busqueda rapida</span>
+            <kbd class="tip-kbd">Ctrl</kbd> + <kbd class="tip-kbd">K</kbd>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Cerrar modal</span>
+            <kbd class="tip-kbd">Esc</kbd>
+          </div>
+        </div>
+        <div class="tip-group">
+          <h3><i class="fa-solid fa-compass"></i> Navegacion</h3>
+          <div class="tip-item">
+            <span class="tip-label">Moverte entre secciones</span>
+            <span class="tip-desc">Usa el scroll o los indicadores laterales</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Dock</span>
+            <span class="tip-desc">Hacé hover sobre los iconos para ver el efecto de magnificacion</span>
+          </div>
+        </div>
+        <div class="tip-group">
+          <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Funcionalidades</h3>
+          <div class="tip-item">
+            <span class="tip-label">Acceso Rapido</span>
+            <span class="tip-desc">Agrega tus links frecuentes desde Configuracion &rarr; Rapidos</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Steam Stats</span>
+            <span class="tip-desc">Configura tu Steam ID en Configuracion &rarr; Apariencia</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Clima</span>
+            <span class="tip-desc">Configura tu ciudad en Configuracion &rarr; Apariencia</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Temas</span>
+            <span class="tip-desc">Cambiá la paleta de colores desde Configuracion &rarr; Apariencia</span>
+          </div>
+        </div>
+        <div class="tip-group">
+          <h3><i class="fa-solid fa-palette"></i> Personalizacion</h3>
+          <div class="tip-item">
+            <span class="tip-label">Dock</span>
+            <span class="tip-desc">Creá grupos y agregá links desde Configuracion &rarr; Dock</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Notas</span>
+            <span class="tip-desc">Hacé clic en el color de una nota para cambiarlo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ===== COMMAND PALETTE (Ctrl+K / Cmd+K) ===== -->
   <div id="cmd-palette" class="cmd-palette-overlay" style="display:none;">
@@ -482,6 +551,7 @@
   <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
+  <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
 
 </body>
