@@ -1219,7 +1219,6 @@ body::after {
   gap: 12px;
   margin-top: 14px;
   padding-top: 14px;
-  border-top: 1px solid var(--border-glass);
 }
 
 .fin-summary-box {
