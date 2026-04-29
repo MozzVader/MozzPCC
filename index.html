@@ -255,6 +255,32 @@
       </div>
     </section>
 
+    <!-- ===== SECCIÓN 4: VER MÁS TARDE ===== -->
+    <section class="snap-section section-read-later" id="section-read-later" aria-label="Ver mas tarde">
+      <div class="snap-section-inner">
+        <div class="card widget-read-later">
+          <div class="card-header">
+            <i class="fa-regular fa-bookmark"></i>
+            <h2>Ver Mas Tarde</h2>
+          </div>
+
+          <div class="read-later-input-row">
+            <input type="text" id="rl-title-input" placeholder="Descripcion..." aria-label="Descripcion" maxlength="120">
+            <input type="url" id="rl-url-input" placeholder="https://..." aria-label="URL" maxlength="500">
+            <button class="btn-add" id="rl-add-btn" aria-label="Agregar link">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+          </div>
+
+          <p class="read-later-counter" id="rl-counter">
+            <span>0</span> links guardados
+          </p>
+
+          <ul class="read-later-list" id="rl-list"></ul>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== FOOTER (dentro del scroll) ===== -->
     <footer class="footer">
       <p>MozzPCC &mdash; Personal Command Center &copy; <span id="year"></span></p>
@@ -271,6 +297,7 @@
       <button class="section-dot" data-section="section-quick-access" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
       <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
+      <button class="section-dot" data-section="section-read-later" aria-label="Ver Mas Tarde"></button>
     </div>
 
     <!-- ===== DOCK estilo macOS ===== -->
@@ -551,6 +578,7 @@
   <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
+  <script src="/MozzPCC/js/readLater.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
 

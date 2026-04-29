@@ -72,7 +72,7 @@
         { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
         { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 3 },
-        { name: 'Steam', url: '#section-steam', icon: 'fa-brands fa-steam', order: 4 }
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 4 }
       ]
     },
     {
