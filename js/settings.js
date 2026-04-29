@@ -71,8 +71,9 @@
         { name: 'Reloj', url: '#section-clock', icon: 'fa-regular fa-clock', order: 0 },
         { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
-        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 3 },
-        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 4 }
+        { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
+        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 4 },
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 5 }
       ]
     },
     {
@@ -410,6 +411,8 @@
         for (var i = 0; i < groups.length; i++) {
           await loadLinks(groups[i].id);
         }
+        // Migrar: agregar links faltantes al grupo "Secciones" default
+        await migrateDefaultSections();
         renderGroups();
         notifyDockUpdate();
       }
@@ -890,6 +893,120 @@
       notifyDockUpdate();
     } catch (e) {
       console.warn('Error al seed datos default:', e);
+    }
+  }
+
+  // --- Migrar links faltantes en el grupo "Secciones" default ---
+  async function migrateDefaultSections() {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    var defaultGroup = groups.find(function (g) { return g.is_default === true; });
+    if (!defaultGroup) return;
+
+    var existingLinks = defaultGroup._links || [];
+    var existingUrls = existingLinks.map(function (l) { return l.url; });
+    var needsUpdate = false;
+
+    // Remover links obsoletos (Inspiración ya no existe)
+    var obsoleteNames = ['Inspiracion', 'Inspiración'];
+    for (var r = 0; r < existingLinks.length; r++) {
+      if (obsoleteNames.indexOf(existingLinks[r].name) !== -1) {
+        try {
+          await client.from('user_dock_links').delete().eq('id', existingLinks[r].id);
+          needsUpdate = true;
+        } catch (e) { /* silencioso */ }
+      }
+    }
+    // Limpiar del estado local
+    defaultGroup._links = (defaultGroup._links || []).filter(function (l) {
+      return obsoleteNames.indexOf(l.name) === -1;
+    });
+    existingLinks = defaultGroup._links;
+    existingUrls = existingLinks.map(function (l) { return l.url; });
+
+    // Links que deberían estar en el grupo Secciones
+    var requiredLinks = [
+      { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 5 }
+    ];
+
+    for (var i = 0; i < requiredLinks.length; i++) {
+      var rl = requiredLinks[i];
+      // Para Steam, checkear por nombre ya que comparte URL con Productividad
+      var exists = (rl.name === 'Steam')
+        ? existingLinks.some(function (l) { return l.name === 'Steam'; })
+        : existingUrls.indexOf(rl.url) !== -1;
+
+      if (!exists) {
+        try {
+          var { data: linkData, error: lError } = await client
+            .from('user_dock_links')
+            .insert({
+              user_id: userId,
+              group_id: defaultGroup.id,
+              name: rl.name,
+              url: rl.url,
+              icon: rl.icon,
+              order: rl.order
+            })
+            .select()
+            .single();
+
+          if (!lError && linkData) {
+            if (!defaultGroup._links) defaultGroup._links = [];
+            defaultGroup._links.push(linkData);
+            needsUpdate = true;
+            existingUrls.push(rl.url);
+          }
+        } catch (e) {
+          console.warn('Error al migrar link default:', e);
+        }
+      }
+    }
+
+    // Reordenar todos los links del grupo según el orden esperado
+    if (needsUpdate) {
+      var expectedOrder = [
+        '#section-clock',
+        '#section-quick-access',
+        '#section-productivity',
+        '#section-notes',
+        '#section-read-later'
+      ];
+
+      var allLinks = defaultGroup._links || [];
+      var steamLinks = allLinks.filter(function (l) { return l.name === 'Steam'; });
+      var otherLinks = allLinks.filter(function (l) { return l.name !== 'Steam'; });
+
+      var ordered = [];
+      var steamInserted = false;
+
+      for (var j = 0; j < expectedOrder.length; j++) {
+        var url = expectedOrder[j];
+        if (url === '#section-productivity' && steamLinks.length > 0 && !steamInserted) {
+          var prodNonSteam = otherLinks.filter(function (l) { return l.url === url; });
+          prodNonSteam.forEach(function (l) { ordered.push(l); });
+          steamLinks.forEach(function (l) { ordered.push(l); });
+          steamInserted = true;
+        } else if (url === '#section-productivity' && steamInserted) {
+          continue;
+        } else {
+          otherLinks.filter(function (l) { return l.url === url; }).forEach(function (l) { ordered.push(l); });
+        }
+      }
+
+      for (var k = 0; k < ordered.length; k++) {
+        try {
+          await client
+            .from('user_dock_links')
+            .update({ order: k })
+            .eq('id', ordered[k].id);
+          ordered[k].order = k;
+        } catch (e) { /* silencioso */ }
+      }
+
+      defaultGroup._links = ordered;
     }
   }
 
