@@ -15,6 +15,7 @@
 - [Paso 6: Configurar GitHub OAuth (Opcional)](#paso-6-configurar-github-oauth-opcional)
 - [Paso 7: Desplegar en GitHub Pages](#paso-7-desplegar-en-github-pages)
 - [Paso 8: Probar Localmente](#paso-8-probar-localmente)
+- [Paso 9: Configurar Steam Stats (Opcional)](#paso-9-configurar-steam-stats-opcional)
 - [Solucion de Problemas](#solucion-de-problemas)
 
 ---
@@ -27,8 +28,9 @@ Antes de empezar necesitas tener:
 - Una cuenta en [GitHub](https://github.com) (para clonar el repo y deployar)
 - (Opcional) Una cuenta de Google para configurar Google OAuth
 - (Opcional) Una cuenta de GitHub Developer para configurar GitHub OAuth
+- (Opcional) Una [Steam Web API Key](https://steamcommunity.com/dev/apikey) para el widget de Steam Stats
 
-No necesitas instalar nada en tu computadora si solo vas a deployar. Si queres probar localmente, te sirve tener un servidor como [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) para VS Code.
+No necesitas instalar nada en tu computadora si solo vas a deployar. Si queres usar el widget de Steam Stats, vas a necesitar el [Supabase CLI](https://supabase.com/docs/guides/cli) para deployar la Edge Function. Si queres probar localmente, te sirve tener un servidor como [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) para VS Code.
 
 ---
 
@@ -267,6 +269,108 @@ Asegurate de haber agregado `http://localhost:5500/` en las Redirect URLs de Sup
 
 ---
 
+## Paso 9: Configurar Steam Stats (Opcional)
+
+El widget de Steam Stats muestra tu perfil, juegos recientes, total de juegos y horas acumuladas directamente en el dashboard. Para que funcione, necesita una **Edge Function** en Supabase que hace de proxy hacia la Steam Web API (esto resuelve el problema de CORS que tiene Steam).
+
+### 9.1: Obtener tu Steam Web API Key
+
+1. Andá a [https://steamcommunity.com/dev/apikey](https://steamcommunity.com/dev/apikey)
+2. Iniciá sesion con tu cuenta de Steam
+3. En "Domain Name", poné cualquier cosa (ej: `localhost`) — no es relevante para uso personal
+4. Hacé clic en **"Register"**
+5. Copiá la **API Key** que te muestra (formato: 32 caracteres hexadecimales)
+
+> **Importante**: Esta clave es **SECRETA**. Nunca la pongas en el codigo frontend ni la compartas. Se almacena directamente en Supabase como un secret de la Edge Function.
+
+### 9.2: Ejecutar la Migration de Steam
+
+El widget usa una tabla separada para guardar el Steam ID de cada usuario.
+
+1. En tu proyecto de Supabase, andá al **SQL Editor**
+2. Hacé clic en **"+ New query"**
+3. Abrí el archivo `sql/steam_migration.sql` que esta en este repo y copiá **TODO** su contenido
+4. Pegalo en el editor SQL de Supabase
+5. Hacé clic en **"Run"** (o presiona `Ctrl+Enter`)
+
+Esto crea la tabla `user_steam_settings` con RLS habilitado (cada usuario solo ve y edita su propio Steam ID).
+
+Para verificar:
+1. Andá al **Table Editor**
+2. Deberias ver la nueva tabla `user_steam_settings` con las columnas: `user_id`, `steam_id`, `vanity_url`, `created_at`
+
+### 9.3: Deployar la Edge Function (Steam Proxy)
+
+La Edge Function es el intermediario entre tu navegador y la Steam API. El codigo ya esta en el repo en `supabase/functions/steam-proxy/index.ts`.
+
+#### Opcion A: Via Supabase CLI (recomendado)
+
+```bash
+# Instalar Supabase CLI (solo la primera vez)
+npm install -g supabase
+
+# Loguearse a Supabase
+supabase login
+
+# Linkear al proyecto (reemplazá TU-PROYECTO-REF)
+supabase link --project-ref TU-PROYECTO-REF
+
+# Deployar la Edge Function
+supabase functions deploy steam-proxy
+```
+
+> El `project-ref` es la parte antes de `.supabase.co` en tu Project URL. Ejemplo: si tu URL es `https://abc123def.supabase.co`, el ref es `abc123def`.
+
+#### Opcion B: Via Dashboard de Supabase
+
+1. En tu proyecto de Supabase, andá a **Edge Functions** en el menu izquierdo
+2. Hacé clic en **"+ Create function"**
+3. Poné el nombre exacto: `steam-proxy` (todo en minuscula)
+4. Seleccioná **"TypeScript"** como lenguaje
+5. Borra el contenido por defecto y reemplazalo con TODO el contenido del archivo `supabase/functions/steam-proxy/index.ts`
+6. Hacé clic en **"Deploy"**
+
+> **Importante**: El nombre de la funcion DEBE ser `steam-proxy` (todo en minuscula). Supabase es case-sensitive y el codigo frontend lo llama asi.
+
+### 9.4: Configurar el Secret de la API Key
+
+La API Key de Steam se configura como un secret dentro de Supabase. De esta manera, nunca queda expuesta en el codigo.
+
+#### Via Supabase CLI:
+
+```bash
+supabase secrets set STEAM_API_KEY=TU-STEAM-API-KEY
+```
+
+#### Via Dashboard de Supabase:
+
+1. Andá a **Settings** (engranaje) → **Edge Functions**
+2. Seccion **"Function secrets"**
+3. Hacé clic en **"Add a new secret"**
+4. Name: `STEAM_API_KEY`
+5. Value: pegá tu API Key de Steam
+6. Hacé clic en **"Add secret"**
+
+### 9.5: Configurar tu Steam ID
+
+Una vez que todo este deployado:
+
+1. Logueate en tu instancia de MozzPCC
+2. Hacé clic en el icono de engranaje (ajustes)
+3. En la pestana **"Apariencia"**, busca la seccion **"Steam Stats"**
+4. Ingresá tu **Steam ID** (numerico, 17 digitos, ej: `76561198XXXXXXXXX`)
+5. Hacé clic en **"Guardar"**
+
+Tu Steam ID numerico lo podes encontrar en: [https://steamid.io/](https://steamid.io/) — ingresá tu perfil de Steam y te muestra el `steamID64`.
+
+### 9.6: Verificar que funciona
+
+1. Cerrá y volvé a abrir el dashboard (o hacé clic en el boton "Actualizar" del widget)
+2. Deberias ver tu avatar, nombre, estado online y juegos recientes
+3. Si no ves nada, revisá la seccion de [Solucion de Problemas](#steam-stats-no-carga-o-muestra-error)
+
+---
+
 ## Solucion de Problemas
 
 ### "No puedo iniciar sesion con Google"
@@ -303,6 +407,17 @@ Asegurate de haber agregado `http://localhost:5500/` en las Redirect URLs de Sup
 - Probá borrar las tablas y re-ejecutar el schema SQL
 - Revisá la consola del navegador para ver el error exacto
 
+### "Steam Stats no carga" o muestra error
+
+- Verificá que ejecutaste `sql/steam_migration.sql` en el SQL Editor de Supabase (tabla `user_steam_settings`)
+- Verificá que la Edge Function `steam-proxy` este deployada (andá a Edge Functions en el dashboard)
+- **El nombre de la Edge Function debe ser `steam-proxy` (minuscula)**. Si la creaste con mayusculas (`Steam-Proxy`), renombrala o borra y volvé a crearla
+- Verificá que el secret `STEAM_API_KEY` este configurado en Settings → Edge Functions → Secrets
+- Verificá que tu Steam ID sea el correcto (17 digitos, formato `76561198XXXXXXXXX`). Lo podes verificar en [steamid.io](https://steamid.io/)
+- Verificá que tu perfil de Steam tenga **"Detalles del juego"** en Publico (Perfil → Editar perfil → Privacidad)
+- Si usás Supabase CLI para deployar, asegurate de haber hecho `supabase link` con el project-ref correcto
+- Revisá la consola del navegador (F12) para ver el error exacto
+
 ### "Quiero resetear todo mi datos"
 
 Podes borrar los datos directamente desde Supabase:
@@ -315,6 +430,7 @@ Podes borrar los datos directamente desde Supabase:
    DELETE FROM tasks WHERE user_id = 'TU-USER-ID';
    DELETE FROM notes WHERE user_id = 'TU-USER-ID';
    DELETE FROM pomodoro_sessions WHERE user_id = 'TU-USER-ID';
+   DELETE FROM user_steam_settings WHERE user_id = 'TU-USER-ID';
    ```
 
 Para obtener tu user ID, podes buscarlo en **Authentication → Users** en Supabase.
@@ -335,9 +451,15 @@ MozzPCC/
 │   ├── tasks.js            # CRUD de tareas (Supabase)
 │   ├── pomodoro.js         # Timer Pomodoro con stats en la nube
 │   ├── notes.js            # Notas adhesivas (Supabase)
+│   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
 │   └── quotes.js           # Frases motivacionales en español
 ├── sql/
-│   └── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)
+│   ├── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)
+│   └── steam_migration.sql # Migration para tabla user_steam_settings
+├── supabase/
+│   └── functions/
+│       └── steam-proxy/
+│           └── index.ts    # Edge Function: proxy para Steam Web API
 ├── README.md               # Descripcion general del proyecto
 └── SETUP.md                # Esta guia de configuracion
 ```
@@ -357,6 +479,8 @@ MozzPCC/
 | Google Fonts | Tipografia (Inter) |
 | Font Awesome 6 | Iconos |
 | Web Audio API | Notificacion sonora del Pomodoro |
+| Steam Web API | Datos de perfil y juegos del widget Steam Stats |
+| Supabase Edge Functions | Proxy para Steam API (resuelve CORS) |
 
 ---
 

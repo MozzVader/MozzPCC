@@ -34,7 +34,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Lista de Tareas | CRUD completo con persistencia en Supabase (sincronizado entre dispositivos) |
 | Pomodoro Timer | Timer circular SVG 25/5 con notificacion de audio y estadisticas en la nube |
 | Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
-| Frases Motivacionales | 25+ frases en espanol con animacion de cambio |
+| Steam Stats | Perfil, estado online, juegos recientes, total de juegos y horas (via Steam API) |
 | Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
 | Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, acciones) |
@@ -81,12 +81,18 @@ MozzPCC/
 │   ├── tasks.js            # Lista de tareas
 │   ├── pomodoro.js         # Temporizador Pomodoro
 │   ├── notes.js            # Notas adhesivas
+│   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
 │   ├── quotes.js           # Frases motivacionales
 │   ├── dock.js             # Dock estilo macOS con magnificacion
 │   ├── settings.js         # Configuracion (dock + temas)
 │   └── commandPalette.js   # Command Palette (Ctrl+K)
 ├── sql/
-│   └── schema.sql          # Schema de BD + RLS
+│   ├── schema.sql          # Schema de BD + RLS
+│   └── steam_migration.sql # Migration para tabla user_steam_settings
+├── supabase/
+│   └── functions/
+│       └── steam-proxy/
+│           └── index.ts    # Edge Function: proxy para Steam Web API
 ├── README.md               # Este archivo
 └── SETUP.md                # Guia de configuracion paso a paso
 ```
@@ -99,10 +105,11 @@ Resumen rapido:
 
 1. Creá un proyecto en [Supabase](https://supabase.com)
 2. Ejecutá `sql/schema.sql` en el SQL Editor
-3. Actualizá las credenciales en `js/supabase.js`
-4. Configurá las Redirect URLs en Authentication
-5. (Opcional) Activá Google/GitHub OAuth
-6. Deployá en GitHub Pages
+3. (Opcional) Ejecutá `sql/steam_migration.sql` y deployá la Edge Function para Steam Stats — ver [SETUP.md](SETUP.md#paso-9-configurar-steam-stats-opcional)
+4. Actualizá las credenciales en `js/supabase.js`
+5. Configurá las Redirect URLs en Authentication
+6. (Opcional) Activá Google/GitHub OAuth
+7. Deployá en GitHub Pages
 
 ## Tecnologias
 
@@ -113,6 +120,7 @@ Resumen rapido:
 - Google Fonts (Inter)
 - Font Awesome 6
 - Web Audio API
+- Steam Web API (via Supabase Edge Functions)
 
 ## Seguridad
 
