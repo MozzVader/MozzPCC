@@ -93,7 +93,7 @@ Ademas se configuran:
 ### Verificar que se crearon correctamente
 
 1. Andá a **Table Editor** en el menu izquierdo
-2. Deberias ver las 3 tablas: `tasks`, `notes`, `pomodoro_sessions`
+2. Deberias ver todas las tablas listadas arriba
 3. Si hacés clic en cada una, vas a ver la estructura de las columnas
 
 ---
@@ -456,17 +456,25 @@ MozzPCC/
 │   ├── supabase.js         # Configuracion del cliente Supabase
 │   ├── auth.js             # Sistema de autenticacion completo
 │   ├── app.js              # Reloj, fecha y saludo dinamico
+│   ├── quickAccess.js      # Accesos rapidos
 │   ├── tasks.js            # CRUD de tareas (Supabase)
 │   ├── pomodoro.js         # Timer Pomodoro con stats en la nube
 │   ├── notes.js            # Notas adhesivas (Supabase)
-│   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
 │   ├── finances.js         # Finanzas personales (transacciones + graficos)
 │   ├── readLater.js        # Links guardados para leer mas tarde
 │   ├── backup.js           # Backup/restore de datos
+│   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
+│   ├── tips.js             # Tips de uso
+│   ├── weather.js           # Widget de clima (Open-Meteo)
+│   ├── dock.js             # Dock estilo macOS con magnificacion
+│   ├── settings.js         # Configuracion (dock + temas + moneda)
+│   ├── commandPalette.js   # Command Palette (Ctrl+K)
 │   └── quotes.js           # Frases motivacionales en español
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)
-│   └── steam_migration.sql # Migration para tabla user_steam_settings
+│   ├── steam_migration.sql # Migration para tabla user_steam_settings
+│   ├── read_later_migration.sql      # Migration para tabla read_later_items
+│   └── read_later_tag_migration.sql  # Migration para tabla read_later_tags
 ├── supabase/
 │   └── functions/
 │       └── steam-proxy/

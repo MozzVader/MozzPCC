@@ -34,12 +34,16 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Lista de Tareas | CRUD completo con persistencia en Supabase (sincronizado entre dispositivos) |
 | Pomodoro Timer | Timer circular SVG 25/5 con notificacion de audio y estadisticas en la nube |
 | Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
+| Finanzas Personales | Transacciones de ingresos/gastos con categorias, graficos (donut + barras) y resumen mensual |
+| Ver Mas Tarde | Links guardados con tags de color, filtros y drag & drop |
+| Backup/Restore | Exportar e importar todos tus datos en JSON |
 | Steam Stats | Perfil, estado online, juegos recientes, total de juegos y horas (via Steam API) |
 | Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
-| Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, acciones) |
+| Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, finanzas, acciones) |
 | Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
-| Snap Scroll | Navegacion vertical con snap sections e indicadores de posicion |
+| Snap Scroll | Navegacion vertical con snap sections e indicadores con tooltips |
+| Moneda Configurable | Simbolo de moneda personalizable (ARS, USD, EUR, etc.) |
 
 ## Diseno
 
@@ -78,17 +82,24 @@ MozzPCC/
 │   ├── auth.js             # Sistema de autenticacion
 │   ├── app.js              # Reloj, fecha y saludo
 │   ├── weather.js           # Widget de clima (Open-Meteo)
+│   ├── quickAccess.js       # Accesos rapidos
 │   ├── tasks.js            # Lista de tareas
 │   ├── pomodoro.js         # Temporizador Pomodoro
 │   ├── notes.js            # Notas adhesivas
+│   ├── finances.js         # Finanzas personales (transacciones + graficos)
+│   ├── readLater.js        # Links guardados para leer mas tarde
+│   ├── backup.js           # Backup/restore de datos
 │   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
+│   ├── tips.js             # Tips de uso
 │   ├── quotes.js           # Frases motivacionales
 │   ├── dock.js             # Dock estilo macOS con magnificacion
-│   ├── settings.js         # Configuracion (dock + temas)
+│   ├── settings.js         # Configuracion (dock + temas + moneda)
 │   └── commandPalette.js   # Command Palette (Ctrl+K)
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS
-│   └── steam_migration.sql # Migration para tabla user_steam_settings
+│   ├── steam_migration.sql # Migration para tabla user_steam_settings
+│   ├── read_later_migration.sql      # Migration para tabla read_later_items
+│   └── read_later_tag_migration.sql  # Migration para tabla read_later_tags
 ├── supabase/
 │   └── functions/
 │       └── steam-proxy/
@@ -117,6 +128,7 @@ Resumen rapido:
 - CSS3 (Custom Properties, Grid, Glassmorphism, Animaciones)
 - JavaScript ES6+ (vanilla, sin frameworks)
 - Supabase (Auth + PostgreSQL + RLS)
+- Chart.js 4 (graficos de dona y barras para finanzas)
 - Google Fonts (Inter)
 - Font Awesome 6
 - Web Audio API
