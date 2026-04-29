@@ -11,7 +11,8 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const STEAM_API_KEY = Deno.env.get("STEAM_API_KEY") ?? "";
-const STEAM_BASE = "https://api.steampowered.com/ISteamUser";
+const STEAM_USER = "https://api.steampowered.com/ISteamUser";
+const STEAM_PLAYER = "https://api.steampowered.com/IPlayerService";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,8 +27,8 @@ function json(data: Record<string, unknown>, status = 200) {
   });
 }
 
-async function steamFetch(path: string) {
-  const url = `${STEAM_BASE}${path}&key=${STEAM_API_KEY}&format=json`;
+async function steamFetch(base: string, path: string) {
+  const url = `${base}${path}&key=${STEAM_API_KEY}&format=json`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Steam API error: ${res.status}`);
   return res.json();
@@ -35,7 +36,7 @@ async function steamFetch(path: string) {
 
 /** Resuelve vanity URL a steam64 ID */
 async function resolveVanity(vanity: string): Promise<string> {
-  const data = await steamFetch(
+  const data = await steamFetch(STEAM_USER,
     `/ResolveVanityURL/v0001/?vanityurl=${encodeURIComponent(vanity)}`
   );
   const id = data?.response?.steamid;
@@ -45,7 +46,7 @@ async function resolveVanity(vanity: string): Promise<string> {
 
 /** Obtiene perfil del usuario */
 async function getPlayerSummary(steamId: string) {
-  const data = await steamFetch(
+  const data = await steamFetch(STEAM_USER,
     `/GetPlayerSummaries/v0002/?steamids=${steamId}`
   );
   const players = data?.response?.players ?? [];
@@ -64,7 +65,7 @@ async function getPlayerSummary(steamId: string) {
 /** Últimos juegos jugados (2 semanas) — tolera perfil privado (401/403) */
 async function getRecentGames(steamId: string) {
   try {
-    const data = await steamFetch(
+    const data = await steamFetch(STEAM_PLAYER,
       `/GetRecentlyPlayedGames/v0001/?steamid=${steamId}&format=json`
     );
     const games = (data?.response?.games ?? []).slice(0, 5).map(
@@ -87,7 +88,7 @@ async function getRecentGames(steamId: string) {
 /** Juegos owned + stats totales — tolera perfil privado (401/403) */
 async function getOwnedGames(steamId: string) {
   try {
-    const data = await steamFetch(
+    const data = await steamFetch(STEAM_PLAYER,
       `/GetOwnedGames/v0001/?steamid=${steamId}&include_appinfo=1&include_played_free_games=1&format=json`
     );
     const games = data?.response?.games ?? [];
