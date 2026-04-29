@@ -223,3 +223,35 @@ CREATE POLICY "Users manage own preferences" ON user_preferences
 -- 17. Index for user_preferences
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
+
+-- =============================================
+-- 18. Quick Links table (accesos rápidos del usuario)
+-- =============================================
+CREATE TABLE IF NOT EXISTS user_quick_links (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  url TEXT NOT NULL,
+  icon_type TEXT NOT NULL DEFAULT 'fontawesome' CHECK (icon_type IN ('fontawesome', 'image')),
+  icon_value TEXT NOT NULL DEFAULT 'fa-solid fa-globe',
+  position INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =============================================
+-- 19. Enable RLS on user_quick_links
+-- =============================================
+ALTER TABLE user_quick_links ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
+-- 20. RLS Policies — Quick Links
+-- =============================================
+DROP POLICY IF EXISTS "Users manage own quick links" ON user_quick_links;
+CREATE POLICY "Users manage own quick links" ON user_quick_links
+  FOR ALL USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- =============================================
+-- 21. Index for user_quick_links
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_quick_links_user_id ON user_quick_links(user_id);

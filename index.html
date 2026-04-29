@@ -145,7 +145,28 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 2: TAREAS + POMODORO ===== -->
+    <!-- ===== SECCIÓN 2: ACCESO RÁPIDO ===== -->
+    <section class="snap-section section-quick-access" id="section-quick-access" aria-label="Acceso rapido">
+      <div class="snap-section-inner">
+        <div class="card widget-quick-access">
+          <div class="card-header">
+            <i class="fa-solid fa-rocket"></i>
+            <h2>Acceso Rapido</h2>
+          </div>
+          <div class="quick-search-bar">
+            <i class="fa-brands fa-google"></i>
+            <input type="text" id="quick-search-input" placeholder="Buscar en Google..." autocomplete="off">
+          </div>
+          <div class="quick-links-grid" id="quick-links-grid"></div>
+          <div class="quick-empty" id="quick-empty">
+            <i class="fa-regular fa-star"></i>
+            <p>Agrega tus accesos rapidos desde Configuracion</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 3: TAREAS + POMODORO ===== -->
     <section class="snap-section section-productivity" id="section-productivity" aria-label="Productividad">
       <div class="snap-section-inner snap-section-grid">
         <div class="card widget-tasks">
@@ -259,9 +280,10 @@
     <!-- ===== INDICADORES DE SECCIÓN ===== -->
     <div class="section-indicators" id="section-indicators">
       <button class="section-dot active" data-section="section-clock" aria-label="Reloj"></button>
+      <button class="section-dot" data-section="section-quick-access" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
       <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
-      <button class="section-dot" data-section="section-quotes" aria-label="Inspiración"></button>
+      <button class="section-dot" data-section="section-quotes" aria-label="Inspiracion"></button>
     </div>
 
     <!-- ===== DOCK estilo macOS ===== -->
@@ -293,6 +315,9 @@
         <div class="settings-tabs">
           <button class="settings-tab active" data-tab="dock">
             <i class="fa-solid fa-grip"></i> Dock
+          </button>
+          <button class="settings-tab" data-tab="quickaccess">
+            <i class="fa-solid fa-rocket"></i> Rapidos
           </button>
           <button class="settings-tab" data-tab="appearance">
             <i class="fa-solid fa-palette"></i> Apariencia
@@ -331,6 +356,22 @@
       </div>
       </div>
 
+      <!-- Tab: Acceso Rapido -->
+      <div class="settings-tab-content" id="tab-quickaccess">
+        <div class="settings-body">
+          <div class="settings-panel settings-quickaccess">
+            <div class="settings-panel-header">
+              <h3>Accesos Rapidos</h3>
+              <button id="settings-add-quicklink" class="settings-btn-add" aria-label="Agregar acceso">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div id="settings-quicklinks-list" class="settings-quicklinks-list"></div>
+            <p id="settings-no-quicklinks" class="settings-empty-msg">No hay accesos rapidos. Agrega uno!</p>
+          </div>
+        </div>
+      </div>
+
       <!-- Tab: Apariencia -->
       <div class="settings-tab-content" id="tab-appearance">
         <div class="appearance-panel">
@@ -353,6 +394,41 @@
         </div>
       </div>
 
+    </div>
+
+    <!-- Formulario nuevo/editar quick link -->
+    <div id="quicklink-form" class="settings-form-overlay" style="display:none;">
+      <div class="settings-form">
+        <h3 id="quicklink-form-title">Nuevo Acceso Rapido</h3>
+        <div class="settings-form-row">
+          <label for="quicklink-name-input">Nombre</label>
+          <input type="text" id="quicklink-name-input" placeholder="Ej: YouTube" maxlength="20">
+        </div>
+        <div class="settings-form-row">
+          <label for="quicklink-url-input">URL</label>
+          <input type="url" id="quicklink-url-input" placeholder="https://...">
+        </div>
+        <div class="settings-form-row">
+          <label>Tipo de icono</label>
+          <div class="quicklink-icon-type-toggle">
+            <button type="button" class="ql-type-btn active" data-type="fontawesome">Icono</button>
+            <button type="button" class="ql-type-btn" data-type="image">Imagen</button>
+          </div>
+        </div>
+        <div class="settings-form-row" id="ql-fontawesome-row">
+          <label>Icono</label>
+          <div id="quicklink-icon-picker" class="icon-picker"></div>
+          <input type="hidden" id="quicklink-icon-input" value="fa-solid fa-globe">
+        </div>
+        <div class="settings-form-row" id="ql-image-row" style="display:none;">
+          <label>URL de imagen</label>
+          <input type="url" id="quicklink-image-input" placeholder="https://ejemplo.com/favicon.ico">
+        </div>
+        <div class="settings-form-actions">
+          <button id="quicklink-form-cancel" class="settings-form-btn cancel">Cancelar</button>
+          <button id="quicklink-form-save" class="settings-form-btn save">Guardar</button>
+        </div>
+      </div>
     </div>
 
     <!-- Formularios flotantes -->
@@ -411,6 +487,7 @@
   <script src="/MozzPCC/js/app.js"></script>
   <script src="/MozzPCC/js/weather.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
+  <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
 

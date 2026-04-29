@@ -69,9 +69,10 @@
       order: 0,
       links: [
         { name: 'Reloj', url: '#section-clock', icon: 'fa-regular fa-clock', order: 0 },
-        { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 1 },
-        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 2 },
-        { name: 'Inspiracion', url: '#section-quotes', icon: 'fa-solid fa-quote-left', order: 3 }
+        { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
+        { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
+        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 3 },
+        { name: 'Inspiracion', url: '#section-quotes', icon: 'fa-solid fa-quote-left', order: 4 }
       ]
     },
     {
@@ -913,6 +914,182 @@
     return div.innerHTML;
   }
 
+  // --- Quick Links Settings (Tab "Rápidos") ---
+  var qlList = document.getElementById('settings-quicklinks-list');
+  var qlNoMsg = document.getElementById('settings-no-quicklinks');
+  var qlAddBtn = document.getElementById('settings-add-quicklink');
+  var qlForm = document.getElementById('quicklink-form');
+  var qlFormTitle = document.getElementById('quicklink-form-title');
+  var qlNameInput = document.getElementById('quicklink-name-input');
+  var qlUrlInput = document.getElementById('quicklink-url-input');
+  var qlIconPicker = document.getElementById('quicklink-icon-picker');
+  var qlIconInput = document.getElementById('quicklink-icon-input');
+  var qlImageRow = document.getElementById('ql-image-row');
+  var qlFaRow = document.getElementById('ql-fontawesome-row');
+  var qlImageInput = document.getElementById('quicklink-image-input');
+  var qlFormCancel = document.getElementById('quicklink-form-cancel');
+  var qlFormSave = document.getElementById('quicklink-form-save');
+  var qlTypeToggle = document.querySelectorAll('.ql-type-btn');
+
+  var editingQuickLinkId = null;
+  var qlIconType = 'fontawesome';
+
+  function renderQuickLinksSettings() {
+    if (!qlList) return;
+    qlList.innerHTML = '';
+
+    var links = (typeof window.QuickAccess !== 'undefined') ? window.QuickAccess.getAll() : [];
+
+    if (links.length === 0) {
+      qlNoMsg.style.display = 'block';
+      qlAddBtn.style.display = 'flex';
+      return;
+    }
+
+    qlNoMsg.style.display = 'none';
+    qlAddBtn.style.display = 'flex';
+
+    links.forEach(function (link) {
+      var item = document.createElement('div');
+      item.className = 'settings-quicklink-item';
+
+      var iconHtml = '';
+      if (link.icon_type === 'image' && link.icon_value) {
+        iconHtml = '<img src="' + escapeHtml(link.icon_value) + '" alt="">';
+      } else {
+        iconHtml = '<i class="' + escapeHtml(link.icon_value) + '"></i>';
+      }
+
+      item.innerHTML =
+        '<div class="ql-item-icon">' + iconHtml + '</div>' +
+        '<div class="ql-item-info">' +
+          '<div class="ql-item-name">' + escapeHtml(link.name) + '</div>' +
+          '<div class="ql-item-url">' + escapeHtml(link.url) + '</div>' +
+        '</div>' +
+        '<div class="ql-item-actions">' +
+          '<button class="ql-action-btn edit" title="Editar"><i class="fa-solid fa-pen"></i></button>' +
+          '<button class="ql-action-btn move-up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>' +
+          '<button class="ql-action-btn move-down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>' +
+          '<button class="ql-action-btn delete" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>' +
+        '</div>';
+
+      item.querySelector('.edit').addEventListener('click', function () { openQuicklinkForm(link); });
+      item.querySelector('.move-up').addEventListener('click', function () {
+        if (window.QuickAccess) window.QuickAccess.move(link.id, -1);
+        renderQuickLinksSettings();
+      });
+      item.querySelector('.move-down').addEventListener('click', function () {
+        if (window.QuickAccess) window.QuickAccess.move(link.id, 1);
+        renderQuickLinksSettings();
+      });
+      item.querySelector('.delete').addEventListener('click', function () {
+        if (confirm('Eliminar este acceso rapido?')) {
+          if (window.QuickAccess) window.QuickAccess.delete(link.id);
+          renderQuickLinksSettings();
+        }
+      });
+
+      qlList.appendChild(item);
+    });
+  }
+
+  // Exponer para que quickAccess.js pueda llamar
+  window.renderQuickLinksSettings = renderQuickLinksSettings;
+
+  function openQuicklinkForm(link) {
+    editingQuickLinkId = link ? link.id : null;
+    qlFormTitle.textContent = link ? 'Editar Acceso Rapido' : 'Nuevo Acceso Rapido';
+    qlNameInput.value = link ? link.name : '';
+    qlUrlInput.value = link ? link.url : '';
+
+    // Determinar tipo de icono
+    if (link && link.icon_type === 'image') {
+      qlIconType = 'image';
+      qlImageInput.value = link.icon_value;
+      qlImageRow.style.display = 'flex';
+      qlFaRow.style.display = 'none';
+      qlTypeToggle.forEach(function (b) { b.classList.toggle('active', b.dataset.type === 'image'); });
+    } else {
+      qlIconType = 'fontawesome';
+      qlImageInput.value = '';
+      qlImageRow.style.display = 'none';
+      qlFaRow.style.display = 'flex';
+      qlTypeToggle.forEach(function (b) { b.classList.toggle('active', b.dataset.type === 'fontawesome'); });
+      buildIconPicker(qlIconPicker, qlIconInput, link ? link.icon_value : 'fa-solid fa-globe');
+    }
+
+    qlForm.style.display = 'flex';
+    qlNameInput.focus();
+  }
+
+  function closeQuicklinkForm() {
+    qlForm.style.display = 'none';
+    editingQuickLinkId = null;
+  }
+
+  async function saveQuicklink() {
+    var name = qlNameInput.value.trim();
+    var url = qlUrlInput.value.trim();
+
+    if (!name || !url) {
+      if (!name) qlNameInput.focus();
+      else qlUrlInput.focus();
+      return;
+    }
+
+    // Ensure protocol
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'https://' + url;
+    }
+
+    var iconType = qlIconType;
+    var iconValue = iconType === 'image' ? qlImageInput.value.trim() : qlIconInput.value;
+
+    if (!iconValue) {
+      iconType = 'fontawesome';
+      iconValue = 'fa-solid fa-globe';
+    }
+
+    if (editingQuickLinkId) {
+      if (window.QuickAccess) await window.QuickAccess.update(editingQuickLinkId, { name: name, url: url, icon_type: iconType, icon_value: iconValue });
+    } else {
+      if (window.QuickAccess) await window.QuickAccess.add({ name: name, url: url, icon_type: iconType, icon_value: iconValue });
+    }
+
+    closeQuicklinkForm();
+    renderQuickLinksSettings();
+  }
+
+  // --- Eventos Quick Links ---
+  if (qlAddBtn) qlAddBtn.addEventListener('click', function () { openQuicklinkForm(null); });
+  if (qlFormCancel) qlFormCancel.addEventListener('click', closeQuicklinkForm);
+  if (qlFormSave) qlFormSave.addEventListener('click', saveQuicklink);
+
+  if (qlForm) qlForm.addEventListener('click', function (e) {
+    if (e.target === qlForm) closeQuicklinkForm();
+  });
+
+  qlNameInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') qlUrlInput.focus(); });
+  qlUrlInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') saveQuicklink(); });
+
+  // Toggle icon type
+  qlTypeToggle.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      qlIconType = btn.dataset.type;
+      qlTypeToggle.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+
+      if (qlIconType === 'image') {
+        qlImageRow.style.display = 'flex';
+        qlFaRow.style.display = 'none';
+      } else {
+        qlImageRow.style.display = 'none';
+        qlFaRow.style.display = 'flex';
+        buildIconPicker(qlIconPicker, qlIconInput, qlIconInput.value);
+      }
+    });
+  });
+
   // --- Eventos ---
   initTabs();
   settingsBtn.addEventListener('click', openSettings);
@@ -920,7 +1097,10 @@
 
   // Click en overlay para cerrar (no en el modal)
   settingsModal.addEventListener('click', function (e) {
-    if (e.target === settingsModal) closeSettings();
+    if (e.target === settingsModal) {
+      closeQuicklinkForm();
+      closeSettings();
+    }
   });
 
   addGroupBtn.addEventListener('click', function () { openGroupForm(null); });
@@ -954,7 +1134,8 @@
   // Escape para cerrar todo
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {
-      if (linkForm.style.display === 'flex') closeLinkForm();
+      if (qlForm && qlForm.style.display === 'flex') closeQuicklinkForm();
+      else if (linkForm.style.display === 'flex') closeLinkForm();
       else if (groupForm.style.display === 'flex') closeGroupForm();
       else if (settingsModal.style.display === 'flex') closeSettings();
     }
@@ -965,6 +1146,7 @@
     userId = e.detail.userId;
     loadGroups();
     loadTheme();
+    renderQuickLinksSettings();
   });
 
   window.addEventListener('auth:logout', function () {

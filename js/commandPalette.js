@@ -25,6 +25,7 @@
   function getSections() {
     return [
       { id: 'sec-clock',    group: 'Secciones', icon: 'fa-regular fa-clock',      label: 'Reloj',         hint: 'Ir al reloj',            action: function () { scrollTo('section-clock'); } },
+      { id: 'sec-quick',    group: 'Secciones', icon: 'fa-solid fa-rocket',        label: 'Acceso Rapido', hint: 'Accesos directos',      action: function () { scrollTo('section-quick-access'); } },
       { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Tareas y pomodoro',      action: function () { scrollTo('section-productivity'); } },
       { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } },
       { id: 'sec-quotes',   group: 'Secciones', icon: 'fa-solid fa-quote-left',    label: 'Inspiracion',   hint: 'Frase motivacional',     action: function () { scrollTo('section-quotes'); } }
@@ -48,6 +49,22 @@
       });
     });
     return links;
+  }
+
+  /** Quick links desde quickAccess.js */
+  function getQuickLinks() {
+    var links = (typeof window.QuickAccess !== 'undefined') ? window.QuickAccess.getAll() : [];
+    return links.map(function (link) {
+      var icon = link.icon_type === 'image' ? 'fa-solid fa-image' : link.icon_value;
+      return {
+        id: 'ql-' + link.id,
+        group: 'Accesos Rapidos',
+        icon: icon,
+        label: link.name,
+        hint: link.url,
+        action: function () { window.open(link.url, '_blank', 'noopener'); }
+      };
+    });
   }
 
   /** Acciones rápidas */
@@ -117,6 +134,7 @@
     var allItems = []
       .concat(getSections())
       .concat(getDockLinks())
+      .concat(getQuickLinks())
       .concat(getActions())
       .concat(getTasks())
       .concat(getNotes());
