@@ -1091,7 +1091,7 @@ body::after {
 }
 
 .btn-add.fin-form-toggle {
-  color: #fff;
+  color: #fff !important;
 }
 
 /* Form panel (colapsable) */
