@@ -3659,6 +3659,10 @@ body::after {
   border-radius: 4px;
 }
 
+.settings-groups-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 /* Group item */
 .settings-group-item {
   display: flex;
@@ -3771,6 +3775,10 @@ body::after {
 .settings-links-list::-webkit-scrollbar-thumb {
   background: var(--border-glass);
   border-radius: 4px;
+}
+
+.settings-links-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 /* Link item */
@@ -4109,6 +4117,23 @@ body::after {
   flex-direction: column;
 }
 
+.settings-quickaccess-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.settings-quickaccess-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-quickaccess-panel::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.settings-quickaccess-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
 .settings-quickaccess-panel .settings-panel-header {
   flex-shrink: 0;
 }
@@ -4118,6 +4143,23 @@ body::after {
   padding: 24px;
   overflow-y: auto;
   width: 100%;
+}
+
+.appearance-panel::-webkit-scrollbar {
+  width: 4px;
+}
+
+.appearance-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.appearance-panel::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.appearance-panel::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .appearance-section h3 {
