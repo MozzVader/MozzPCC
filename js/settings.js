@@ -72,8 +72,9 @@
         { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
         { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 4 },
-        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 5 }
+        { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
+        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 5 },
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
       ]
     },
     {
@@ -928,7 +929,8 @@
     // Links que deberían estar en el grupo Secciones
     var requiredLinks = [
       { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 5 }
+      { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
     ];
 
     for (var i = 0; i < requiredLinks.length; i++) {
@@ -971,6 +973,7 @@
         '#section-clock',
         '#section-quick-access',
         '#section-productivity',
+        '#section-finances',
         '#section-notes',
         '#section-read-later'
       ];
@@ -1299,6 +1302,33 @@
   if (steamIdInput) steamIdInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') saveSteamId();
   });
+
+  // --- Currency Settings ---
+  var currencySelect = document.getElementById('currency-select');
+  var currencyStatus = document.getElementById('currency-status');
+
+  function loadCurrency() {
+    var saved = localStorage.getItem('mozzpcc-currency');
+    if (saved && currencySelect) {
+      currencySelect.value = saved;
+    }
+  }
+
+  function saveCurrency() {
+    if (!currencySelect) return;
+    var val = currencySelect.value;
+    localStorage.setItem('mozzpcc-currency', val);
+    if (currencyStatus) {
+      currencyStatus.textContent = 'Moneda guardada';
+      currencyStatus.style.color = 'var(--note-green)';
+      setTimeout(function () { currencyStatus.textContent = ''; }, 2000);
+    }
+  }
+
+  loadCurrency();
+  if (currencySelect) {
+    currencySelect.addEventListener('change', saveCurrency);
+  }
 
   // --- Eventos ---
   initTabs();

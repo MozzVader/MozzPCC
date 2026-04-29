@@ -255,3 +255,61 @@ CREATE POLICY "Users manage own quick links" ON user_quick_links
 -- 21. Index for user_quick_links
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_quick_links_user_id ON user_quick_links(user_id);
+
+-- =============================================
+-- 22. Finance Categories table
+-- =============================================
+CREATE TABLE IF NOT EXISTS finance_categories (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  name TEXT NOT NULL,
+  icon TEXT NOT NULL DEFAULT 'fa-solid fa-tag',
+  color TEXT NOT NULL DEFAULT '#6b7280',
+  type TEXT NOT NULL DEFAULT 'gasto' CHECK (type IN ('ingreso', 'gasto')),
+  "order" INTEGER DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =============================================
+-- 23. Finance Transactions table
+-- =============================================
+CREATE TABLE IF NOT EXISTS finance_transactions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  type TEXT NOT NULL DEFAULT 'gasto' CHECK (type IN ('ingreso', 'gasto')),
+  amount NUMERIC(12,2) NOT NULL DEFAULT 0,
+  category_id UUID REFERENCES finance_categories(id) ON DELETE SET NULL,
+  description TEXT DEFAULT '',
+  date DATE NOT NULL DEFAULT CURRENT_DATE,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- =============================================
+-- 24. Enable RLS on finance tables
+-- =============================================
+ALTER TABLE finance_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE finance_transactions ENABLE ROW LEVEL SECURITY;
+
+-- =============================================
+-- 25. RLS Policies — Finance Categories
+-- =============================================
+DROP POLICY IF EXISTS "Users manage own finance_categories" ON finance_categories;
+CREATE POLICY "Users manage own finance_categories" ON finance_categories
+  FOR ALL USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- =============================================
+-- 26. RLS Policies — Finance Transactions
+-- =============================================
+DROP POLICY IF EXISTS "Users manage own finance_transactions" ON finance_transactions;
+CREATE POLICY "Users manage own finance_transactions" ON finance_transactions
+  FOR ALL USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
+
+-- =============================================
+-- 27. Indexes for finance tables
+-- =============================================
+CREATE INDEX IF NOT EXISTS idx_finance_categories_user_id ON finance_categories(user_id);
+CREATE INDEX IF NOT EXISTS idx_finance_transactions_user_id ON finance_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_finance_transactions_category_id ON finance_transactions(category_id);
+CREATE INDEX IF NOT EXISTS idx_finance_transactions_date ON finance_transactions(date DESC);

@@ -77,9 +77,17 @@ Si todo sale bien, vas a ver un mensaje de exito y se habran creado:
 | `tasks` | Almacena las tareas de cada usuario |
 | `notes` | Almacena las notas adhesivas |
 | `pomodoro_sessions` | Registra cada sesion de pomodoro completada |
+| `user_dock_groups` | Grupos del dock |
+| `user_dock_links` | Links dentro de cada grupo del dock |
+| `user_preferences` | Preferencias del usuario (tema, ciudad, etc.) |
+| `user_quick_links` | Accesos rapidos del usuario |
+| `finance_categories` | Categorias de ingresos/gastos |
+| `finance_transactions` | Transacciones financieras del usuario |
+| `read_later_items` | Links guardados para leer mas tarde |
+| `user_steam_settings` | Configuracion de Steam Stats |
 
 Ademas se configuran:
-- **Row Level Security (RLS)** en las 3 tablas: cada usuario solo puede ver, crear, editar y eliminar sus propios datos
+- **Row Level Security (RLS)** en todas las tablas: cada usuario solo puede ver, crear, editar y eliminar sus propios datos
 - **Indices** en las columnas `user_id` y `created_at` para mejor performance
 
 ### Verificar que se crearon correctamente
@@ -452,6 +460,9 @@ MozzPCC/
 │   ├── pomodoro.js         # Timer Pomodoro con stats en la nube
 │   ├── notes.js            # Notas adhesivas (Supabase)
 │   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
+│   ├── finances.js         # Finanzas personales (transacciones + graficos)
+│   ├── readLater.js        # Links guardados para leer mas tarde
+│   ├── backup.js           # Backup/restore de datos
 │   └── quotes.js           # Frases motivacionales en español
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)
@@ -478,6 +489,7 @@ MozzPCC/
 | Row Level Security | Seguridad a nivel de fila (cada usuario ve solo sus datos) |
 | Google Fonts | Tipografia (Inter) |
 | Font Awesome 6 | Iconos |
+| Chart.js 4 | Graficos (donut + barras) para finanzas |
 | Web Audio API | Notificacion sonora del Pomodoro |
 | Steam Web API | Datos de perfil y juegos del widget Steam Stats |
 | Supabase Edge Functions | Proxy para Steam API (resuelve CORS) |

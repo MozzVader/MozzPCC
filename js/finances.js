@@ -1,0 +1,1125 @@
+/**
+ * finances.js — Modulo de finanzas personales con persistencia en Supabase
+ * Se inicializa cuando se recibe el evento 'auth:ready'
+ * Permite agregar, eliminar y visualizar transacciones (ingresos/gastos)
+ * Incluye graficos con Chart.js (donut + bar)
+ */
+
+(function () {
+  'use strict';
+
+  // --- Estado global del modulo ---
+  var client = null;
+  var userId = null;
+  var initialized = false;
+  var categories = [];
+  var transactions = [];
+  var currentType = 'gasto';
+  var donutChart = null;
+  var barChart = null;
+
+  // Meses en espanol (corto)
+  var MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  var MONTH_NAMES_FULL = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
+  // Categorias por defecto (se siembran solo la primera vez)
+  var DEFAULT_CATEGORIES = [
+    // GASTOS
+    { name: 'Compras', icon: 'fa-solid fa-bag-shopping', color: '#ef4444', type: 'gasto', order: 0 },
+    { name: 'Transporte', icon: 'fa-solid fa-car', color: '#f97316', type: 'gasto', order: 1 },
+    { name: 'Entretenimiento', icon: 'fa-solid fa-gamepad', color: '#a855f7', type: 'gasto', order: 2 },
+    { name: 'Salud', icon: 'fa-solid fa-heart-pulse', color: '#ec4899', type: 'gasto', order: 3 },
+    { name: 'Educacion', icon: 'fa-solid fa-graduation-cap', color: '#3b82f6', type: 'gasto', order: 4 },
+    { name: 'Supermercado', icon: 'fa-solid fa-cart-shopping', color: '#22c55e', type: 'gasto', order: 5 },
+    { name: 'Vivienda', icon: 'fa-solid fa-house', color: '#14b8a6', type: 'gasto', order: 6 },
+    { name: 'Servicios', icon: 'fa-solid fa-file-invoice-dollar', color: '#eab308', type: 'gasto', order: 7 },
+    { name: 'Otros', icon: 'fa-solid fa-ellipsis', color: '#6b7280', type: 'gasto', order: 8 },
+    // INGRESOS
+    { name: 'Sueldo', icon: 'fa-solid fa-wallet', color: '#22c55e', type: 'ingreso', order: 9 },
+    { name: 'Freelance', icon: 'fa-solid fa-laptop-code', color: '#3b82f6', type: 'ingreso', order: 10 },
+    { name: 'Inversiones', icon: 'fa-solid fa-chart-line', color: '#a855f7', type: 'ingreso', order: 11 },
+    { name: 'Otros', icon: 'fa-solid fa-ellipsis', color: '#6b7280', type: 'ingreso', order: 12 }
+  ];
+
+  // =========================================================================
+  //  FUNCIONES AUXILIARES
+  // =========================================================================
+
+  /**
+   * Escapa HTML para prevenir inyeccion XSS
+   * @param {string} text
+   * @returns {string}
+   */
+  function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
+  }
+
+  /**
+   * Obtiene la fecha actual en formato YYYY-MM-DD
+   * @returns {string}
+   */
+  function getToday() {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = String(d.getMonth() + 1).padStart(2, '0');
+    var day = String(d.getDate()).padStart(2, '0');
+    return year + '-' + month + '-' + day;
+  }
+
+  /**
+   * Obtiene el mes actual en formato YYYY-MM
+   * @returns {string}
+   */
+  function getCurrentMonth() {
+    var d = new Date();
+    var year = d.getFullYear();
+    var month = String(d.getMonth() + 1).padStart(2, '0');
+    return year + '-' + month;
+  }
+
+  /**
+   * Convierte "YYYY-MM" en "Mes Anio" (ej: "Abril 2026")
+   * @param {string} ym - Formato YYYY-MM
+   * @returns {string}
+   */
+  function getMonthLabel(ym) {
+    if (!ym || ym.length < 7) return '';
+    var parts = ym.split('-');
+    var monthIndex = parseInt(parts[1], 10) - 1;
+    return MONTH_NAMES_FULL[monthIndex] + ' ' + parts[0];
+  }
+
+  /**
+   * Convierte fecha ISO (YYYY-MM-DD) a DD/MM/YYYY
+   * @param {string} dateStr
+   * @returns {string}
+   */
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var parts = dateStr.split('-');
+    if (parts.length < 3) return dateStr;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  /**
+   * Obtiene la categoria por ID del array local
+   * @param {string} id
+   * @returns {Object|null}
+   */
+  function getCategoryById(id) {
+    if (!id || !categories.length) return null;
+    for (var i = 0; i < categories.length; i++) {
+      if (categories[i].id === id) return categories[i];
+    }
+    return null;
+  }
+
+  /**
+   * Obtiene el simbolo de moneda desde localStorage
+   * @returns {string}
+   */
+  function getCurrency() {
+    return localStorage.getItem('mozzpcc-currency') || '$';
+  }
+
+  /**
+   * Formatea un numero con formato argentino: 1.234,56
+   * @param {number} number
+   * @returns {string}
+   */
+  function formatAmount(number) {
+    if (number === null || number === undefined || isNaN(number)) {
+      return getCurrency() + '0,00';
+    }
+    var abs = Math.abs(number);
+    var formatted = abs.toLocaleString('es-AR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    var prefix = number < 0 ? '-' + getCurrency() : getCurrency();
+    return prefix + formatted;
+  }
+
+  // =========================================================================
+  //  CATEGORIAS
+  // =========================================================================
+
+  /**
+   * Siembra las categorias por defecto si el usuario no tiene ninguna
+   */
+  async function seedCategories() {
+    if (!client || !userId) return;
+
+    try {
+      var { count, error } = await client
+        .from('finance_categories')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId);
+
+      if (error) {
+        console.warn('[Finanzas] Error al verificar categorias:', error);
+        return;
+      }
+
+      if (count === 0) {
+        var rows = [];
+        for (var i = 0; i < DEFAULT_CATEGORIES.length; i++) {
+          var cat = DEFAULT_CATEGORIES[i];
+          rows.push({
+            user_id: userId,
+            name: cat.name,
+            icon: cat.icon,
+            color: cat.color,
+            type: cat.type,
+            order: cat.order
+          });
+        }
+
+        var { error: insertError } = await client
+          .from('finance_categories')
+          .insert(rows);
+
+        if (insertError) {
+          console.warn('[Finanzas] Error al sembrar categorias:', insertError);
+        } else {
+          console.log('[Finanzas] Categorias por defecto creadas');
+        }
+      }
+    } catch (e) {
+      console.warn('[Finanzas] Error en seedCategories:', e);
+    }
+  }
+
+  /**
+   * Carga todas las categorias del usuario desde Supabase
+   */
+  async function loadCategories() {
+    if (!client || !userId) return;
+
+    try {
+      var { data, error } = await client
+        .from('finance_categories')
+        .select('*')
+        .eq('user_id', userId)
+        .order('order', { ascending: true });
+
+      if (error) {
+        console.warn('[Finanzas] Error al cargar categorias:', error);
+        return;
+      }
+
+      categories = data || [];
+      populateCategorySelect(currentType);
+      populateCategoryFilter();
+    } catch (e) {
+      console.warn('[Finanzas] Error en loadCategories:', e);
+    }
+  }
+
+  /**
+   * Llena el select de categorias en el formulario
+   * @param {string} typeFilter - 'gasto' o 'ingreso'
+   */
+  function populateCategorySelect(typeFilter) {
+    var select = document.getElementById('fin-category-select');
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    var placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Seleccionar...';
+    select.appendChild(placeholder);
+
+    for (var i = 0; i < categories.length; i++) {
+      var cat = categories[i];
+      if (cat.type !== typeFilter) continue;
+
+      var option = document.createElement('option');
+      option.value = cat.id;
+      option.innerHTML = '<i class="' + escapeHtml(cat.icon) + '" style="margin-right:4px;"></i> ' + escapeHtml(cat.name);
+      select.appendChild(option);
+    }
+  }
+
+  /**
+   * Llena el select de filtro de categorias
+   */
+  function populateCategoryFilter() {
+    var select = document.getElementById('fin-category-filter');
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    var allOption = document.createElement('option');
+    allOption.value = 'all';
+    allOption.textContent = 'Todas';
+    select.appendChild(allOption);
+
+    for (var i = 0; i < categories.length; i++) {
+      var cat = categories[i];
+      var option = document.createElement('option');
+      option.value = cat.id;
+      option.textContent = cat.name;
+      select.appendChild(option);
+    }
+  }
+
+  // =========================================================================
+  //  TRANSACCIONES
+  // =========================================================================
+
+  /**
+   * Carga todas las transacciones del usuario desde Supabase
+   */
+  async function loadTransactions() {
+    if (!client || !userId) return;
+
+    try {
+      var { data, error } = await client
+        .from('finance_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
+
+      if (error) {
+        console.warn('[Finanzas] Error al cargar transacciones:', error);
+        return;
+      }
+
+      transactions = data || [];
+      filterTransactions();
+    } catch (e) {
+      console.warn('[Finanzas] Error en loadTransactions:', e);
+    }
+  }
+
+  /**
+   * Aplica los filtros de mes y categoria, y re-renderiza
+   */
+  function filterTransactions() {
+    var monthFilter = document.getElementById('fin-month-filter');
+    var categoryFilter = document.getElementById('fin-category-filter');
+
+    var monthVal = monthFilter ? monthFilter.value : 'all';
+    var catVal = categoryFilter ? categoryFilter.value : 'all';
+
+    var filtered = [];
+
+    for (var i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+
+      // Filtro de mes
+      if (monthVal !== 'all') {
+        var txMonth = t.date ? t.date.substring(0, 7) : '';
+        if (txMonth !== monthVal) continue;
+      }
+
+      // Filtro de categoria
+      if (catVal !== 'all') {
+        if (t.category_id !== catVal) continue;
+      }
+
+      filtered.push(t);
+    }
+
+    renderTransactions(filtered);
+  }
+
+  /**
+   * Renderiza la lista de transacciones filtradas
+   * @param {Array} filtered
+   */
+  function renderTransactions(filtered) {
+    var list = document.getElementById('fin-list');
+    var counter = document.getElementById('fin-counter');
+    if (!list) return;
+
+    list.innerHTML = '';
+
+    if (!filtered || filtered.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'fin-empty';
+      empty.innerHTML = '<i class="fa-regular fa-credit-card" style="font-size:1.5rem;display:block;margin-bottom:6px;opacity:0.5;"></i>No hay transacciones';
+      list.appendChild(empty);
+
+      if (counter) {
+        counter.textContent = '0 transacciones';
+      }
+      return;
+    }
+
+    for (var i = 0; i < filtered.length; i++) {
+      var t = filtered[i];
+      var cat = getCategoryById(t.category_id);
+
+      var item = document.createElement('div');
+      item.className = 'fin-item';
+      item.dataset.id = t.id;
+
+      // Indicador de color + icono de categoria
+      var colorDot = cat ? cat.color : '#6b7280';
+      var catIcon = cat ? cat.icon : 'fa-solid fa-circle';
+
+      // Contenedor izquierdo: icono + info
+      var left = document.createElement('div');
+      left.className = 'fin-item-left';
+
+      var iconWrap = document.createElement('div');
+      iconWrap.className = 'fin-item-icon';
+      iconWrap.style.background = colorDot + '22';
+      iconWrap.innerHTML = '<i class="' + escapeHtml(catIcon) + '" style="color:' + colorDot + ';"></i>';
+
+      var info = document.createElement('div');
+      info.className = 'fin-item-info';
+
+      var desc = document.createElement('span');
+      desc.className = 'fin-item-desc';
+      desc.textContent = t.description || (cat ? cat.name : 'Sin descripcion');
+
+      var date = document.createElement('span');
+      date.className = 'fin-item-date';
+      date.textContent = formatDate(t.date);
+
+      info.appendChild(desc);
+      info.appendChild(date);
+      left.appendChild(iconWrap);
+      left.appendChild(info);
+
+      // Monto
+      var amount = document.createElement('span');
+      amount.className = 'fin-item-amount';
+      if (t.type === 'ingreso') {
+        amount.style.color = '#22c55e';
+        amount.textContent = '+' + formatAmount(t.amount);
+      } else {
+        amount.style.color = '#ef4444';
+        amount.textContent = '-' + formatAmount(t.amount);
+      }
+
+      // Boton eliminar
+      var delBtn = document.createElement('button');
+      delBtn.className = 'fin-item-delete';
+      delBtn.setAttribute('aria-label', 'Eliminar transaccion');
+      delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+      delBtn.dataset.id = t.id;
+
+      item.appendChild(left);
+      item.appendChild(amount);
+      item.appendChild(delBtn);
+      list.appendChild(item);
+    }
+
+    if (counter) {
+      counter.textContent = filtered.length + (filtered.length === 1 ? ' transaccion' : ' transacciones');
+    }
+  }
+
+  /**
+   * Agrega una nueva transaccion desde el formulario
+   */
+  async function addTransaction() {
+    if (!client || !userId) return;
+
+    var categorySelect = document.getElementById('fin-category-select');
+    var descriptionInput = document.getElementById('fin-description-input');
+    var amountInput = document.getElementById('fin-amount-input');
+    var dateInput = document.getElementById('fin-date-input');
+    var addBtn = document.getElementById('fin-add-btn');
+
+    var categoryId = categorySelect ? categorySelect.value : '';
+    var description = descriptionInput ? descriptionInput.value.trim() : '';
+    var amountStr = amountInput ? amountInput.value.trim() : '';
+    var dateVal = dateInput ? dateInput.value : getToday();
+
+    // Validaciones
+    if (!categoryId) {
+      console.warn('[Finanzas] Categoria requerida');
+      if (categorySelect) categorySelect.focus();
+      return;
+    }
+
+    var amount = parseFloat(amountStr);
+    if (!amountStr || isNaN(amount) || amount <= 0) {
+      console.warn('[Finanzas] Monto invalido');
+      if (amountInput) amountInput.focus();
+      return;
+    }
+
+    if (!dateVal) {
+      dateVal = getToday();
+    }
+
+    // Deshabilitar boton mientras se inserta
+    if (addBtn) {
+      addBtn.disabled = true;
+      addBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+      var { data, error } = await client
+        .from('finance_transactions')
+        .insert({
+          user_id: userId,
+          type: currentType,
+          amount: amount,
+          category_id: categoryId,
+          description: description,
+          date: dateVal
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.warn('[Finanzas] Error al agregar transaccion:', error);
+        return;
+      }
+
+      // Limpiar formulario
+      if (categorySelect) categorySelect.value = '';
+      if (descriptionInput) descriptionInput.value = '';
+      if (amountInput) amountInput.value = '';
+      if (dateInput) dateInput.value = getToday();
+
+      // Recargar datos
+      await loadTransactions();
+      updateSummary();
+      renderCharts();
+    } catch (e) {
+      console.warn('[Finanzas] Error en addTransaction:', e);
+    } finally {
+      if (addBtn) {
+        addBtn.disabled = false;
+        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar';
+      }
+    }
+  }
+
+  /**
+   * Elimina una transaccion por ID
+   * @param {string} id
+   */
+  async function deleteTransaction(id) {
+    if (!client || !userId) return;
+
+    // Optimistic update: quitar del array local y re-renderizar
+    transactions = transactions.filter(function (t) { return t.id !== id; });
+    filterTransactions();
+
+    try {
+      var { error } = await client
+        .from('finance_transactions')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.warn('[Finanzas] Error al eliminar transaccion:', error);
+        // Recargar para restaurar estado correcto
+        await loadTransactions();
+      } else {
+        updateSummary();
+        renderCharts();
+      }
+    } catch (e) {
+      console.warn('[Finanzas] Error en deleteTransaction:', e);
+      await loadTransactions();
+    }
+  }
+
+  // =========================================================================
+  //  RESUMEN
+  // =========================================================================
+
+  /**
+   * Calcula y actualiza el resumen: balance, ingresos y gastos del mes
+   */
+  function updateSummary() {
+    var balanceEl = document.getElementById('fin-balance-value');
+    var incomeEl = document.getElementById('fin-income-value');
+    var expenseEl = document.getElementById('fin-expense-value');
+
+    var currentMonth = getCurrentMonth();
+    var totalIncome = 0;
+    var totalExpense = 0;
+    var allIncome = 0;
+    var allExpense = 0;
+
+    for (var i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+      var amount = parseFloat(t.amount) || 0;
+      var txMonth = t.date ? t.date.substring(0, 7) : '';
+
+      if (t.type === 'ingreso') {
+        allIncome += amount;
+        if (txMonth === currentMonth) {
+          totalIncome += amount;
+        }
+      } else {
+        allExpense += amount;
+        if (txMonth === currentMonth) {
+          totalExpense += amount;
+        }
+      }
+    }
+
+    var balance = allIncome - allExpense;
+
+    if (balanceEl) balanceEl.textContent = formatAmount(balance);
+    if (incomeEl) incomeEl.textContent = '+' + formatAmount(totalIncome);
+    if (expenseEl) expenseEl.textContent = '-' + formatAmount(totalExpense);
+  }
+
+  // =========================================================================
+  //  GRAFICOS (Chart.js)
+  // =========================================================================
+
+  /**
+   * Renderiza el grafico de dona (gastos por categoria del mes)
+   * y el grafico de barras (ingresos vs gastos ultimos 6 meses)
+   */
+  function renderCharts() {
+    renderDonutChart();
+    renderBarChart();
+  }
+
+  /**
+   * Renderiza el grafico de dona con gastos del mes por categoria
+   */
+  function renderDonutChart() {
+    var canvas = document.getElementById('fin-donut-canvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    // Destruir instancia anterior si existe
+    if (donutChart) {
+      donutChart.destroy();
+      donutChart = null;
+    }
+
+    var currentMonth = getCurrentMonth();
+    var categoryMap = {};
+
+    for (var i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+      if (t.type !== 'gasto') continue;
+      var txMonth = t.date ? t.date.substring(0, 7) : '';
+      if (txMonth !== currentMonth) continue;
+
+      var cat = getCategoryById(t.category_id);
+      var catName = cat ? cat.name : 'Sin categoria';
+      var catColor = cat ? cat.color : '#6b7280';
+
+      if (!categoryMap[t.category_id]) {
+        categoryMap[t.category_id] = { name: catName, color: catColor, total: 0 };
+      }
+      categoryMap[t.category_id].total += parseFloat(t.amount) || 0;
+    }
+
+    var keys = Object.keys(categoryMap);
+
+    if (keys.length === 0) {
+      // Sin datos: mostrar dona vacia con gris
+      donutChart = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels: ['Sin datos'],
+          datasets: [{
+            data: [1],
+            backgroundColor: ['#334155'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          cutout: '65%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          }
+        }
+      });
+      return;
+    }
+
+    var labels = [];
+    var values = [];
+    var colors = [];
+
+    for (var j = 0; j < keys.length; j++) {
+      var entry = categoryMap[keys[j]];
+      labels.push(entry.name);
+      values.push(parseFloat(entry.total.toFixed(2)));
+      colors.push(entry.color);
+    }
+
+    // Calcular total para texto central
+    var grandTotal = 0;
+    for (var k = 0; k < values.length; k++) {
+      grandTotal += values[k];
+    }
+
+    var currency = getCurrency();
+
+    donutChart = new Chart(canvas, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: values,
+          backgroundColor: colors,
+          borderWidth: 2,
+          borderColor: 'rgba(0,0,0,0.1)',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '65%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 12,
+              usePointStyle: true,
+              pointStyleWidth: 8,
+              font: { size: 11 },
+              color: '#94a3b8'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var label = context.label || '';
+                var value = context.parsed || 0;
+                return label + ': ' + currency + value.toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                });
+              }
+            }
+          }
+        },
+        plugins: [{
+          id: 'centerText',
+          afterDraw: function (chart) {
+            var ctx = chart.ctx;
+            var width = chart.width;
+            var height = chart.height;
+
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            var centerX = width / 2;
+            var centerY = height / 2 - 8;
+
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillStyle = '#e2e8f0';
+            ctx.fillText(currency + grandTotal.toLocaleString('es-AR', {
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0
+            }), centerX, centerY);
+
+            ctx.font = '11px sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('Gastos del mes', centerX, centerY + 18);
+
+            ctx.restore();
+          }
+        }]
+      }
+    });
+  }
+
+  /**
+   * Renderiza el grafico de barras (ingresos vs gastos ultimos 6 meses)
+   */
+  function renderBarChart() {
+    var canvas = document.getElementById('fin-bar-canvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    // Destruir instancia anterior si existe
+    if (barChart) {
+      barChart.destroy();
+      barChart = null;
+    }
+
+    // Calcular ultimos 6 meses
+    var labels = [];
+    var incomeData = [];
+    var expenseData = [];
+    var now = new Date();
+
+    for (var m = 5; m >= 0; m--) {
+      var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      var year = d.getFullYear();
+      var month = String(d.getMonth() + 1).padStart(2, '0');
+      var ym = year + '-' + month;
+      var monthLabel = MONTH_NAMES[d.getMonth()];
+
+      labels.push(monthLabel);
+
+      var monthIncome = 0;
+      var monthExpense = 0;
+
+      for (var i = 0; i < transactions.length; i++) {
+        var t = transactions[i];
+        var txMonth = t.date ? t.date.substring(0, 7) : '';
+        if (txMonth !== ym) continue;
+
+        var amount = parseFloat(t.amount) || 0;
+        if (t.type === 'ingreso') {
+          monthIncome += amount;
+        } else {
+          monthExpense += amount;
+        }
+      }
+
+      incomeData.push(parseFloat(monthIncome.toFixed(2)));
+      expenseData.push(parseFloat(monthExpense.toFixed(2)));
+    }
+
+    barChart = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Ingresos',
+            data: incomeData,
+            backgroundColor: 'rgba(34, 197, 94, 0.7)',
+            borderColor: '#22c55e',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          },
+          {
+            label: 'Gastos',
+            data: expenseData,
+            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+            borderColor: '#ef4444',
+            borderWidth: 1,
+            borderRadius: 4,
+            barPercentage: 0.6,
+            categoryPercentage: 0.7
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { size: 11 } }
+          },
+          y: {
+            beginAtZero: true,
+            grid: { color: 'rgba(148, 163, 184, 0.1)' },
+            ticks: {
+              color: '#94a3b8',
+              font: { size: 10 },
+              callback: function (value) {
+                if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
+                return value;
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 16,
+              usePointStyle: true,
+              pointStyleWidth: 8,
+              font: { size: 11 },
+              color: '#94a3b8'
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var label = context.dataset.label || '';
+                var value = context.parsed.y || 0;
+                return label + ': ' + getCurrency() + value.toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                });
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // =========================================================================
+  //  FORMULARIO
+  // =========================================================================
+
+  /**
+   * Alterna entre tipo 'gasto' e 'ingreso' en el formulario
+   */
+  function toggleFormType() {
+    var btn = document.getElementById('fin-type-btn');
+    var formPanel = document.getElementById('fin-form-panel');
+
+    if (currentType === 'gasto') {
+      currentType = 'ingreso';
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i> Ingreso';
+      }
+      if (formPanel) {
+        formPanel.classList.remove('fin-type-gasto');
+        formPanel.classList.add('fin-type-ingreso');
+      }
+    } else {
+      currentType = 'gasto';
+      if (btn) {
+        btn.innerHTML = '<i class="fa-solid fa-arrow-trend-down"></i> Gasto';
+      }
+      if (formPanel) {
+        formPanel.classList.remove('fin-type-ingreso');
+        formPanel.classList.add('fin-type-gasto');
+      }
+    }
+
+    // Re-popular categorias para el nuevo tipo
+    populateCategorySelect(currentType);
+  }
+
+  /**
+   * Muestra/oculta el panel del formulario
+   */
+  function toggleFormPanel() {
+    var panel = document.getElementById('fin-form-panel');
+    if (!panel) return;
+    panel.classList.toggle('fin-form-open');
+  }
+
+  /**
+   * Llena el filtro de meses con opciones
+   */
+  function populateMonthFilter() {
+    var select = document.getElementById('fin-month-filter');
+    if (!select) return;
+
+    select.innerHTML = '';
+
+    // Opcion "Todos"
+    var allOption = document.createElement('option');
+    allOption.value = 'all';
+    allOption.textContent = 'Todos los meses';
+    select.appendChild(allOption);
+
+    // Generar ultimos 12 meses
+    var now = new Date();
+    for (var m = 0; m < 12; m++) {
+      var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      var year = d.getFullYear();
+      var month = String(d.getMonth() + 1).padStart(2, '0');
+      var ym = year + '-' + month;
+      var label = MONTH_NAMES_FULL[d.getMonth()] + ' ' + year;
+
+      var option = document.createElement('option');
+      option.value = ym;
+      option.textContent = label;
+
+      // Seleccionar mes actual por defecto
+      if (m === 0) option.selected = true;
+
+      select.appendChild(option);
+    }
+  }
+
+  /**
+   * Limpia el estado del modulo (al cerrar sesion)
+   */
+  function cleanup() {
+    categories = [];
+    transactions = [];
+    userId = null;
+    currentType = 'gasto';
+    donutChart = null;
+    barChart = null;
+    initialized = false;
+
+    var list = document.getElementById('fin-list');
+    if (list) list.innerHTML = '';
+
+    var balanceEl = document.getElementById('fin-balance-value');
+    if (balanceEl) balanceEl.textContent = getCurrency() + '0,00';
+
+    var incomeEl = document.getElementById('fin-income-value');
+    if (incomeEl) incomeEl.textContent = '+' + getCurrency() + '0,00';
+
+    var expenseEl = document.getElementById('fin-expense-value');
+    if (expenseEl) expenseEl.textContent = '-' + getCurrency() + '0,00';
+
+    var counter = document.getElementById('fin-counter');
+    if (counter) counter.textContent = '0 transacciones';
+  }
+
+  // =========================================================================
+  //  INICIALIZACION
+  // =========================================================================
+
+  /**
+   * Inicializa el modulo de finanzas
+   */
+  async function init() {
+    if (initialized) return;
+    initialized = true;
+
+    client = window.supabaseClient || null;
+    if (!client) {
+      console.warn('[Finanzas] Supabase client no disponible');
+      initialized = false;
+      return;
+    }
+
+    try {
+      var { data, error } = await client.auth.getSession();
+      if (error || !data || !data.session) {
+        console.warn('[Finanzas] No hay sesion activa');
+        initialized = false;
+        return;
+      }
+
+      userId = data.session.user.id;
+    } catch (e) {
+      console.warn('[Finanzas] Error al obtener sesion:', e);
+      initialized = false;
+      return;
+    }
+
+    // Sembrar categorias por defecto si es necesario
+    await seedCategories();
+
+    // Cargar categorias
+    await loadCategories();
+
+    // Poblar filtro de meses
+    populateMonthFilter();
+
+    // Establecer tipo inicial del formulario
+    var formPanel = document.getElementById('fin-form-panel');
+    if (formPanel) {
+      formPanel.classList.add('fin-type-gasto');
+    }
+
+    // Cargar transacciones
+    await loadTransactions();
+
+    // Actualizar resumen
+    updateSummary();
+
+    // Renderizar graficos (con pequeño delay para asegurar canvas esta visible)
+    setTimeout(function () {
+      renderCharts();
+    }, 300);
+
+    // Configurar fecha por defecto
+    var dateInput = document.getElementById('fin-date-input');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = getToday();
+    }
+
+    console.log('[Finanzas] Modulo inicializado');
+  }
+
+  // =========================================================================
+  //  EVENT LISTENERS (se configuran una vez)
+  // =========================================================================
+
+  // Boton toggle tipo (gasto/ingreso)
+  var typeBtn = document.getElementById('fin-type-btn');
+  if (typeBtn) {
+    typeBtn.addEventListener('click', function () {
+      toggleFormType();
+    });
+  }
+
+  // Boton agregar transaccion
+  var addBtn = document.getElementById('fin-add-btn');
+  if (addBtn) {
+    addBtn.addEventListener('click', function () {
+      addTransaction();
+    });
+  }
+
+  // Boton toggle panel del formulario
+  var formToggle = document.getElementById('fin-form-toggle');
+  if (formToggle) {
+    formToggle.addEventListener('click', function () {
+      toggleFormPanel();
+    });
+  }
+
+  // Filtro de mes
+  var monthFilter = document.getElementById('fin-month-filter');
+  if (monthFilter) {
+    monthFilter.addEventListener('change', function () {
+      filterTransactions();
+      updateSummary();
+      renderCharts();
+    });
+  }
+
+  // Filtro de categoria
+  var categoryFilter = document.getElementById('fin-category-filter');
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', function () {
+      filterTransactions();
+    });
+  }
+
+  // Delegacion de eventos para botones de eliminar en la lista
+  var finList = document.getElementById('fin-list');
+  if (finList) {
+    finList.addEventListener('click', function (e) {
+      var target = e.target.closest('.fin-item-delete');
+      if (target && target.dataset.id) {
+        deleteTransaction(target.dataset.id);
+      }
+    });
+  }
+
+  // Enter en campo de monto para agregar
+  var amountInput = document.getElementById('fin-amount-input');
+  if (amountInput) {
+    amountInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        addTransaction();
+      }
+    });
+  }
+
+  // Enter en campo de descripcion para saltar a monto
+  var descriptionInput = document.getElementById('fin-description-input');
+  if (descriptionInput) {
+    descriptionInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        if (amountInput) amountInput.focus();
+      }
+    });
+  }
+
+  // Escuchar evento de autenticacion lista
+  window.addEventListener('auth:ready', function () {
+    init();
+  });
+
+  // Escuchar cierre de sesion
+  window.addEventListener('auth:logout', function () {
+    cleanup();
+  });
+
+})();

@@ -24,6 +24,8 @@
     'user_quick_links',
     'tasks',
     'notes',
+    'finance_categories',
+    'finance_transactions',
     'read_later_items',
     'user_steam_settings'
   ];
@@ -224,7 +226,7 @@
           Object.keys(row).forEach(function (key) {
             // Skip id y campos de auditoría
             if (key === 'id') return;
-            if (key === 'created_at' && table !== 'tasks' && table !== 'notes' && table !== 'user_dock_groups' && table !== 'user_dock_links' && table !== 'user_quick_links' && table !== 'read_later_items') return;
+            if (key === 'created_at' && table !== 'tasks' && table !== 'notes' && table !== 'user_dock_groups' && table !== 'user_dock_links' && table !== 'user_quick_links' && table !== 'read_later_items' && table !== 'finance_categories') return;
             if (key === 'updated_at') return;
 
             // Forzar el user_id actual

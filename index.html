@@ -17,6 +17,9 @@
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/MozzPCC/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/MozzPCC/assets/favicon-16x16.png">
@@ -235,7 +238,98 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 3: NOTAS ===== -->
+    <!-- ===== SECCIÓN 4: FINANZAS ===== -->
+    <section class="snap-section section-finances" id="section-finances" aria-label="Finanzas personales">
+      <div class="snap-section-inner">
+        <div class="card widget-finances">
+          <!-- Sticky header -->
+          <div class="finances-sticky-header">
+            <div class="card-header">
+              <i class="fa-solid fa-wallet"></i>
+              <h2>Finanzas</h2>
+              <button class="btn-add fin-form-toggle" id="fin-form-toggle" aria-label="Agregar transaccion">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+
+            <!-- Form panel (colapsable) -->
+            <div class="fin-form-panel" id="fin-form-panel">
+              <div class="fin-form-type-row">
+                <button id="fin-type-btn" class="fin-type-btn fin-type-gasto">
+                  <i class="fa-solid fa-arrow-down"></i> Gasto
+                </button>
+              </div>
+              <div class="fin-form-row">
+                <select id="fin-category-select" class="fin-select" aria-label="Categoria">
+                  <option value="">Seleccionar...</option>
+                </select>
+              </div>
+              <div class="fin-form-row">
+                <input type="text" id="fin-description-input" class="fin-input" placeholder="Descripcion..." maxlength="80" aria-label="Descripcion">
+              </div>
+              <div class="fin-form-row">
+                <input type="number" id="fin-amount-input" class="fin-input" placeholder="0,00" step="0.01" min="0" aria-label="Monto">
+                <input type="date" id="fin-date-input" class="fin-input fin-date" aria-label="Fecha">
+              </div>
+              <div class="fin-form-actions">
+                <button id="fin-add-btn" class="fin-btn-add">
+                  <i class="fa-solid fa-check"></i> Agregar
+                </button>
+              </div>
+            </div>
+
+            <!-- Summary row -->
+            <div class="fin-summary-row">
+              <div class="fin-summary-box fin-summary-income">
+                <span class="fin-summary-label">Ingresos del mes</span>
+                <span class="fin-summary-value" id="fin-income-value">$0,00</span>
+              </div>
+              <div class="fin-summary-box fin-summary-expense">
+                <span class="fin-summary-label">Gastos del mes</span>
+                <span class="fin-summary-value" id="fin-expense-value">$0,00</span>
+              </div>
+              <div class="fin-summary-box fin-summary-balance">
+                <span class="fin-summary-label">Balance total</span>
+                <span class="fin-summary-value" id="fin-balance-value">$0,00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scrollable content -->
+          <div class="finances-content">
+            <!-- Filters -->
+            <div class="fin-filters-row">
+              <select id="fin-month-filter" class="fin-select fin-filter" aria-label="Filtrar por mes">
+                <option value="all">Todos los meses</option>
+              </select>
+              <select id="fin-category-filter" class="fin-select fin-filter" aria-label="Filtrar por categoria">
+                <option value="all">Todas las categorias</option>
+              </select>
+              <p class="fin-counter" id="fin-counter">0 transacciones</p>
+            </div>
+
+            <!-- Charts + Transactions grid -->
+            <div class="fin-grid">
+              <!-- Transactions list -->
+              <div class="fin-transactions-col">
+                <ul class="fin-list" id="fin-list"></ul>
+              </div>
+              <!-- Charts column -->
+              <div class="fin-charts-col">
+                <div class="fin-chart-box">
+                  <canvas id="fin-donut-canvas"></canvas>
+                </div>
+                <div class="fin-chart-box">
+                  <canvas id="fin-bar-canvas"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 5: NOTAS ===== -->
     <section class="snap-section section-notes" id="section-notes" aria-label="Notas rápidas">
       <div class="snap-section-inner">
         <div class="card widget-notes">
@@ -305,6 +399,7 @@
       <button class="section-dot active" data-section="section-clock" aria-label="Reloj"></button>
       <button class="section-dot" data-section="section-quick-access" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
+      <button class="section-dot" data-section="section-finances" aria-label="Finanzas"></button>
       <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
       <button class="section-dot" data-section="section-read-later" aria-label="Ver Mas Tarde"></button>
     </div>
@@ -493,6 +588,22 @@
             <p id="steam-id-status" class="weather-city-status"></p>
             <p class="appearance-hint" style="margin-top:4px;">Encontralo en steamcommunity.com/profiles/<strong>TU_ID</strong></p>
           </div>
+          <div class="appearance-section">
+            <h3><i class="fa-solid fa-wallet" style="color:var(--accent);margin-right:6px;"></i> Moneda</h3>
+            <p class="appearance-hint">Elegí la moneda para la seccion de Finanzas</p>
+            <select id="currency-select" class="weather-city-input" style="cursor:pointer;">
+              <option value="$">$ (Peso / Dolar)</option>
+              <option value="US$">US$ (Dolar USD)</option>
+              <option value="€">Euro</option>
+              <option value="R$">Real (BRL)</option>
+              <option value="£">Libra (GBP)</option>
+              <option value="MXN$">Peso Mexicano</option>
+              <option value="CLP$">Peso Chileno</option>
+              <option value="COL$">Peso Colombiano</option>
+              <option value="¥">Yen (JPY)</option>
+            </select>
+            <p id="currency-status" class="weather-city-status"></p>
+          </div>
         </div>
       </div>
 
@@ -630,6 +741,7 @@
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
   <script src="/MozzPCC/js/readLater.js"></script>
+  <script src="/MozzPCC/js/finances.js"></script>
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
