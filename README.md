@@ -23,7 +23,7 @@
 
 ## Descripcion
 
-MozzPCC es un dashboard personal disenado como centro de comando diario. Construido con HTML, CSS y JavaScript puro (sin frameworks), alojado en GitHub Pages y con persistencia en la nube gracias a Supabase. Pensado para tener todo lo que necesitas en un solo lugar: tareas, notas, pomodoro y mas.
+MozzPCC es un dashboard personal disenado como centro de comando diario. Construido con HTML, CSS y JavaScript puro (sin frameworks), alojado en GitHub Pages y con persistencia en la nube gracias a Supabase. Pensado para tener todo lo que necesitas en un solo lugar: tareas, notas, finanzas y mas.
 
 ## Funcionalidades
 
@@ -32,7 +32,6 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Autenticacion | Login/registro con email, Google OAuth, GitHub OAuth y Magic Link |
 | Reloj y Saludo | Reloj digital en tiempo real con fecha en espanol y saludo personalizado |
 | Lista de Tareas | CRUD completo con persistencia en Supabase (sincronizado entre dispositivos) |
-| Pomodoro Timer | Timer circular SVG 25/5 con notificacion de audio y estadisticas en la nube |
 | Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
 | Finanzas Personales | Transacciones de ingresos/gastos con categorias, graficos (donut + barras) y resumen mensual |
 | Ver Mas Tarde | Links guardados con tags de color, filtros y drag & drop |
@@ -84,14 +83,12 @@ MozzPCC/
 │   ├── weather.js           # Widget de clima (Open-Meteo)
 │   ├── quickAccess.js       # Accesos rapidos
 │   ├── tasks.js            # Lista de tareas
-│   ├── pomodoro.js         # Temporizador Pomodoro
 │   ├── notes.js            # Notas adhesivas
 │   ├── finances.js         # Finanzas personales (transacciones + graficos)
 │   ├── readLater.js        # Links guardados para leer mas tarde
 │   ├── backup.js           # Backup/restore de datos
 │   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
 │   ├── tips.js             # Tips de uso
-│   ├── quotes.js           # Frases motivacionales
 │   ├── dock.js             # Dock estilo macOS con magnificacion
 │   ├── settings.js         # Configuracion (dock + temas + moneda)
 │   └── commandPalette.js   # Command Palette (Ctrl+K)
@@ -131,7 +128,6 @@ Resumen rapido:
 - Chart.js 4 (graficos de dona y barras para finanzas)
 - Google Fonts (Inter)
 - Font Awesome 6
-- Web Audio API
 - Steam Web API (via Supabase Edge Functions)
 
 ## Seguridad

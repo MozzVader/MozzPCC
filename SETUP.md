@@ -36,7 +36,7 @@ No necesitas instalar nada en tu computadora si solo vas a deployar. Si queres u
 
 ## Paso 1: Crear un Proyecto en Supabase
 
-Supabase es nuestro backend: maneja la autenticacion, la base de datos y el almacenamiento en la nube de todas tus tareas, notas y sesiones de pomodoro.
+Supabase es nuestro backend: maneja la autenticacion, la base de datos y el almacenamiento en la nube de todas tus tareas, notas, finanzas y demas datos del dashboard.
 
 1. Andá a [https://supabase.com](https://supabase.com) e iniciá sesion (podes usar GitHub para loguearte mas rapido)
 2. Una vez dentro del dashboard, hacé clic en **"New Project"**
@@ -76,7 +76,6 @@ Si todo sale bien, vas a ver un mensaje de exito y se habran creado:
 |-------|---------------|
 | `tasks` | Almacena las tareas de cada usuario |
 | `notes` | Almacena las notas adhesivas |
-| `pomodoro_sessions` | Registra cada sesion de pomodoro completada |
 | `user_dock_groups` | Grupos del dock |
 | `user_dock_links` | Links dentro de cada grupo del dock |
 | `user_preferences` | Preferencias del usuario (tema, ciudad, etc.) |
@@ -397,7 +396,7 @@ Tu Steam ID numerico lo podes encontrar en: [https://steamid.io/](https://steami
 ### "Error al cargar datos" o las tareas/notas no se guardan
 
 - Verificá que ejecutaste el archivo `sql/schema.sql` en el SQL Editor de Supabase
-- Verificá que las tablas `tasks`, `notes` y `pomodoro_sessions` existen en el Table Editor
+- Verificá que las tablas existen en el Table Editor
 - Abrí la consola del navegador (F12) y buscá errores en la consola
 - Verificá que las credenciales en `js/supabase.js` sean correctas
 
@@ -437,7 +436,6 @@ Podes borrar los datos directamente desde Supabase:
    ```sql
    DELETE FROM tasks WHERE user_id = 'TU-USER-ID';
    DELETE FROM notes WHERE user_id = 'TU-USER-ID';
-   DELETE FROM pomodoro_sessions WHERE user_id = 'TU-USER-ID';
    DELETE FROM user_steam_settings WHERE user_id = 'TU-USER-ID';
    ```
 
@@ -458,7 +456,6 @@ MozzPCC/
 │   ├── app.js              # Reloj, fecha y saludo dinamico
 │   ├── quickAccess.js      # Accesos rapidos
 │   ├── tasks.js            # CRUD de tareas (Supabase)
-│   ├── pomodoro.js         # Timer Pomodoro con stats en la nube
 │   ├── notes.js            # Notas adhesivas (Supabase)
 │   ├── finances.js         # Finanzas personales (transacciones + graficos)
 │   ├── readLater.js        # Links guardados para leer mas tarde
@@ -469,7 +466,6 @@ MozzPCC/
 │   ├── dock.js             # Dock estilo macOS con magnificacion
 │   ├── settings.js         # Configuracion (dock + temas + moneda)
 │   ├── commandPalette.js   # Command Palette (Ctrl+K)
-│   └── quotes.js           # Frases motivacionales en español
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)
 │   ├── steam_migration.sql # Migration para tabla user_steam_settings
@@ -498,7 +494,6 @@ MozzPCC/
 | Google Fonts | Tipografia (Inter) |
 | Font Awesome 6 | Iconos |
 | Chart.js 4 | Graficos (donut + barras) para finanzas |
-| Web Audio API | Notificacion sonora del Pomodoro |
 | Steam Web API | Datos de perfil y juegos del widget Steam Stats |
 | Supabase Edge Functions | Proxy para Steam API (resuelve CORS) |
 
