@@ -61,40 +61,48 @@ async function getPlayerSummary(steamId: string) {
   };
 }
 
-/** Últimos juegos jugados (2 semanas) */
+/** Últimos juegos jugados (2 semanas) — tolera perfil privado (401/403) */
 async function getRecentGames(steamId: string) {
-  const data = await steamFetch(
-    `/GetRecentlyPlayedGames/v0001/?steamid=${steamId}&format=json`
-  );
-  const games = (data?.response?.games ?? []).slice(0, 5).map(
-    (g: Record<string, unknown>) => ({
-      name: g.name,
-      appId: g.appid,
-      playtime2weeks: Math.round((g.playtime_2weeks as number) / 60),
-      playtimeForever: Math.round((g.playtime_forever as number) / 60),
-      imgIconUrl: g.img_icon_url
-        ? `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg`
-        : null,
-    })
-  );
-  return { games, totalCount: data?.response?.total_count ?? 0 };
+  try {
+    const data = await steamFetch(
+      `/GetRecentlyPlayedGames/v0001/?steamid=${steamId}&format=json`
+    );
+    const games = (data?.response?.games ?? []).slice(0, 5).map(
+      (g: Record<string, unknown>) => ({
+        name: g.name,
+        appId: g.appid,
+        playtime2weeks: Math.round((g.playtime_2weeks as number) / 60),
+        playtimeForever: Math.round((g.playtime_forever as number) / 60),
+        imgIconUrl: g.img_icon_url
+          ? `https://media.steampowered.com/steamcommunity/public/images/apps/${g.appid}/${g.img_icon_url}.jpg`
+          : null,
+      })
+    );
+    return { games, totalCount: data?.response?.total_count ?? 0 };
+  } catch {
+    return { games: [], totalCount: 0 };
+  }
 }
 
-/** Juegos owned + stats totales */
+/** Juegos owned + stats totales — tolera perfil privado (401/403) */
 async function getOwnedGames(steamId: string) {
-  const data = await steamFetch(
-    `/GetOwnedGames/v0001/?steamid=${steamId}&include_appinfo=1&include_played_free_games=1&format=json`
-  );
-  const games = data?.response?.games ?? [];
-  const totalGames = games.length;
-  const totalHours = Math.round(
-    games.reduce(
-      (acc: number, g: Record<string, unknown>) =>
-        acc + ((g.playtime_forever as number) ?? 0),
-      0
-    ) / 60
-  );
-  return { totalGames, totalHours };
+  try {
+    const data = await steamFetch(
+      `/GetOwnedGames/v0001/?steamid=${steamId}&include_appinfo=1&include_played_free_games=1&format=json`
+    );
+    const games = data?.response?.games ?? [];
+    const totalGames = games.length;
+    const totalHours = Math.round(
+      games.reduce(
+        (acc: number, g: Record<string, unknown>) =>
+          acc + ((g.playtime_forever as number) ?? 0),
+        0
+      ) / 60
+    );
+    return { totalGames, totalHours };
+  } catch {
+    return { totalGames: 0, totalHours: 0 };
+  }
 }
 
 Deno.serve(async (req: Request) => {
