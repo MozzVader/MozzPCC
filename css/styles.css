@@ -253,6 +253,34 @@ body::after {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0;
   outline: none;
+  position: relative;
+}
+
+/* Tooltip */
+.section-dot::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgb(37 37 37 / 90%);
+  backdrop-filter: blur(8px);
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.section-dot:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
 
 .section-dot:hover {
