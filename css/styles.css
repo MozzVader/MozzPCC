@@ -157,10 +157,10 @@ body::after {
   justify-content: center;
 }
 
-/* Grid interno para la sección de productividad */
+/* Grid interno para la sección de productividad (tareas + steam) */
 .snap-section-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 24px;
   align-items: stretch;
   max-height: calc(100dvh - 200px);

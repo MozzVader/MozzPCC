@@ -166,7 +166,7 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 3: TAREAS + POMODORO ===== -->
+    <!-- ===== SECCIÓN 3: TAREAS + STEAM STATS ===== -->
     <section class="snap-section section-productivity" id="section-productivity" aria-label="Productividad">
       <div class="snap-section-inner snap-section-grid">
         <div class="card widget-tasks">
@@ -189,70 +189,6 @@
           <ul class="task-list" id="task-list"></ul>
         </div>
 
-        <div class="card widget-pomodoro">
-          <div class="card-header">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <h2>Pomodoro</h2>
-          </div>
-
-          <div class="pomodoro-display">
-            <svg class="pomodoro-svg" viewBox="0 0 200 200">
-              <circle class="bg-ring" cx="100" cy="100" r="90"></circle>
-              <circle class="progress-ring" id="pomodoro-ring" cx="100" cy="100" r="90"
-                stroke-dasharray="565.48" stroke-dashoffset="0"></circle>
-            </svg>
-            <div class="pomodoro-time">
-              <div class="time" id="pomodoro-time">25:00</div>
-              <div class="label" id="pomodoro-label">Enfoque</div>
-            </div>
-          </div>
-
-          <div class="pomodoro-controls">
-            <button class="btn-pomodoro primary" id="pomodoro-start">
-              <i class="fa-solid fa-play"></i> Iniciar
-            </button>
-            <button class="btn-pomodoro" id="pomodoro-reset">
-              <i class="fa-solid fa-rotate-left"></i> Reiniciar
-            </button>
-          </div>
-
-          <div class="pomodoro-stats">
-            <div class="stat">
-              <div class="stat-value" id="pomodoro-count">0</div>
-              <div class="stat-label">Sesiones</div>
-            </div>
-            <div class="stat">
-              <div class="stat-value" id="pomodoro-total">0m</div>
-              <div class="stat-label">Total</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== SECCIÓN 3: NOTAS ===== -->
-    <section class="snap-section section-notes" id="section-notes" aria-label="Notas rápidas">
-      <div class="snap-section-inner">
-        <div class="card widget-notes">
-          <div class="card-header">
-            <i class="fa-solid fa-note-sticky"></i>
-            <h2>Notas</h2>
-          </div>
-
-          <div class="notes-toolbar">
-            <button class="btn-new-note" id="new-note-btn">
-              <i class="fa-solid fa-plus"></i> Nueva nota
-            </button>
-          </div>
-
-          <div class="notes-grid" id="notes-grid"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== SECCIÓN 4: STEAM STATS ===== -->
-    <section class="snap-section section-steam" id="section-steam" aria-label="Steam Stats">
-      <div class="snap-section-inner">
         <div class="card widget-steam">
           <div class="card-header">
             <i class="fa-brands fa-steam"></i>
@@ -296,6 +232,26 @@
       </div>
     </section>
 
+    <!-- ===== SECCIÓN 3: NOTAS ===== -->
+    <section class="snap-section section-notes" id="section-notes" aria-label="Notas rápidas">
+      <div class="snap-section-inner">
+        <div class="card widget-notes">
+          <div class="card-header">
+            <i class="fa-solid fa-note-sticky"></i>
+            <h2>Notas</h2>
+          </div>
+
+          <div class="notes-toolbar">
+            <button class="btn-new-note" id="new-note-btn">
+              <i class="fa-solid fa-plus"></i> Nueva nota
+            </button>
+          </div>
+
+          <div class="notes-grid" id="notes-grid"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== FOOTER (dentro del scroll) ===== -->
     <footer class="footer">
       <p>MozzPCC &mdash; Personal Command Center &copy; <span id="year"></span></p>
@@ -312,7 +268,6 @@
       <button class="section-dot" data-section="section-quick-access" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
       <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
-      <button class="section-dot" data-section="section-steam" aria-label="Steam"></button>
     </div>
 
     <!-- ===== DOCK estilo macOS ===== -->
@@ -520,7 +475,6 @@
   <script src="/MozzPCC/js/supabase.js"></script>
   <script src="/MozzPCC/js/auth.js"></script>
   <script src="/MozzPCC/js/tasks.js"></script>
-  <script src="/MozzPCC/js/pomodoro.js"></script>
   <script src="/MozzPCC/js/notes.js"></script>
   <script src="/MozzPCC/js/steamStats.js"></script>
   <script src="/MozzPCC/js/app.js"></script>

@@ -26,9 +26,8 @@
     return [
       { id: 'sec-clock',    group: 'Secciones', icon: 'fa-regular fa-clock',      label: 'Reloj',         hint: 'Ir al reloj',            action: function () { scrollTo('section-clock'); } },
       { id: 'sec-quick',    group: 'Secciones', icon: 'fa-solid fa-rocket',        label: 'Acceso Rapido', hint: 'Accesos directos',      action: function () { scrollTo('section-quick-access'); } },
-      { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Tareas y pomodoro',      action: function () { scrollTo('section-productivity'); } },
-      { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } },
-      { id: 'sec-quotes',   group: 'Secciones', icon: 'fa-solid fa-quote-left',    label: 'Inspiracion',   hint: 'Frase motivacional',     action: function () { scrollTo('section-quotes'); } }
+      { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Tareas y Steam',      action: function () { scrollTo('section-productivity'); } },
+      { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } }
     ];
   }
 
@@ -72,8 +71,6 @@
     return [
       { id: 'act-newtask',  group: 'Acciones', icon: 'fa-solid fa-plus',        label: 'Nueva tarea',          hint: 'Agregar tarea',    shortcut: '',    action: function () { focusElement('task-input'); } },
       { id: 'act-newnote',  group: 'Acciones', icon: 'fa-solid fa-note-sticky', label: 'Nueva nota',           hint: 'Crear nota',        shortcut: '',    action: function () { clickElement('new-note-btn'); } },
-      { id: 'act-pomo',     group: 'Acciones', icon: 'fa-solid fa-play',        label: 'Iniciar pomodoro',     hint: 'Empezar timer',     shortcut: '',    action: function () { clickElement('pomodoro-start'); } },
-      { id: 'act-quote',    group: 'Acciones', icon: 'fa-solid fa-shuffle',     label: 'Nueva frase',          hint: 'Cambiar cita',      shortcut: '',    action: function () { clickElement('new-quote-btn'); } },
       { id: 'act-settings', group: 'Acciones', icon: 'fa-solid fa-gear',        label: 'Configuracion',        hint: 'Abrir settings',    shortcut: '',    action: function () { clickElement('settings-btn'); } }
     ];
   }
