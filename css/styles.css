@@ -340,6 +340,11 @@ body::after {
   font-size: 1.1rem;
 }
 
+.card-header .btn-add i {
+  color: inherit;
+  font-size: inherit;
+}
+
 .card-header h2 {
   font-size: 0.95rem;
   font-weight: 600;
@@ -1084,14 +1089,9 @@ body::after {
   z-index: 2;
 }
 
-/* Form toggle button */
-.fin-form-toggle {
+/* Form toggle button — push to right */
+#fin-form-toggle {
   margin-left: auto;
-  color: #fff;
-}
-
-.btn-add.fin-form-toggle {
-  color: #fff !important;
 }
 
 /* Form panel (colapsable) */
