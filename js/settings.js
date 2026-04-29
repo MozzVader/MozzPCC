@@ -72,7 +72,7 @@
         { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
         { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 3 },
-        { name: 'Inspiracion', url: '#section-quotes', icon: 'fa-solid fa-quote-left', order: 4 }
+        { name: 'Steam', url: '#section-steam', icon: 'fa-brands fa-steam', order: 4 }
       ]
     },
     {
@@ -1100,6 +1100,89 @@
     });
   });
 
+  // --- Steam ID Settings ---
+  var steamIdInput = document.getElementById('steam-id-input');
+  var steamIdSave = document.getElementById('steam-id-save');
+  var steamIdStatus = document.getElementById('steam-id-status');
+
+  async function loadSteamId() {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      var result = await client
+        .from('user_steam_settings')
+        .select('steam_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (result.data && result.data.steam_id && steamIdInput) {
+        steamIdInput.value = result.data.steam_id;
+      }
+    } catch (e) {
+      // Tabla quizás no existe aún
+    }
+  }
+
+  async function saveSteamId() {
+    var value = steamIdInput.value.trim();
+    if (!value) {
+      if (steamIdStatus) {
+        steamIdStatus.textContent = 'Ingresa un Steam ID';
+        steamIdStatus.style.color = '#fb7185';
+      }
+      return;
+    }
+
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    if (steamIdSave) {
+      steamIdSave.disabled = true;
+      steamIdSave.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+      var result = await client
+        .from('user_steam_settings')
+        .upsert(
+          { user_id: userId, steam_id: value },
+          { onConflict: 'user_id' }
+        );
+
+      if (result.error) {
+        if (steamIdStatus) {
+          steamIdStatus.textContent = 'Error: ' + result.error.message;
+          steamIdStatus.style.color = '#fb7185';
+        }
+      } else {
+        if (steamIdStatus) {
+          steamIdStatus.textContent = 'Steam ID guardado correctamente';
+          steamIdStatus.style.color = '#57cbde';
+        }
+        // Refresh Steam widget
+        if (typeof window.SteamStats !== 'undefined' && typeof window.SteamStats.load === 'function') {
+          window.SteamStats.load();
+        }
+      }
+    } catch (e) {
+      if (steamIdStatus) {
+        steamIdStatus.textContent = 'Error: ' + e.message;
+        steamIdStatus.style.color = '#fb7185';
+      }
+    }
+
+    if (steamIdSave) {
+      steamIdSave.disabled = false;
+      steamIdSave.innerHTML = '<i class="fa-solid fa-check"></i>';
+    }
+  }
+
+  if (steamIdSave) steamIdSave.addEventListener('click', saveSteamId);
+  if (steamIdInput) steamIdInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') saveSteamId();
+  });
+
   // --- Eventos ---
   initTabs();
   settingsBtn.addEventListener('click', openSettings);
@@ -1156,6 +1239,7 @@
     userId = e.detail.userId;
     loadGroups();
     loadTheme();
+    loadSteamId();
     renderQuickLinksSettings();
   });
 

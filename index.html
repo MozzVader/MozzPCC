@@ -250,19 +250,48 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 4: FRASES ===== -->
-    <section class="snap-section section-quotes" id="section-quotes" aria-label="Frase motivacional">
+    <!-- ===== SECCIÓN 4: STEAM STATS ===== -->
+    <section class="snap-section section-steam" id="section-steam" aria-label="Steam Stats">
       <div class="snap-section-inner">
-        <div class="card widget-quotes">
+        <div class="card widget-steam">
           <div class="card-header">
-            <i class="fa-solid fa-quote-left"></i>
-            <h2>Inspiracion</h2>
+            <i class="fa-brands fa-steam"></i>
+            <h2>Steam</h2>
           </div>
-          <p class="quote-text" id="quote-text"></p>
-          <p class="quote-author" id="quote-author"></p>
-          <button class="btn-new-quote" id="new-quote-btn">
-            <i class="fa-solid fa-shuffle"></i> Nueva frase
-          </button>
+          <div id="steam-content">
+            <div id="steam-loading" class="steam-loading">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Cargando perfil...</p>
+            </div>
+            <div id="steam-empty" class="steam-empty" style="display:none;">
+              <i class="fa-brands fa-steam"></i>
+              <p>Configura tu Steam ID en <strong>Ajustes</strong></p>
+            </div>
+            <div id="steam-profile" class="steam-profile" style="display:none;">
+              <div class="steam-profile-header">
+                <img id="steam-avatar" class="steam-avatar" src="" alt="">
+                <div class="steam-profile-info">
+                  <span class="steam-name" id="steam-name"></span>
+                  <span class="steam-status" id="steam-status"></span>
+                  <span class="steam-game" id="steam-game" style="display:none;"></span>
+                </div>
+              </div>
+              <div class="steam-stats-row">
+                <div class="steam-stat-box">
+                  <div class="steam-stat-value" id="steam-total-games">0</div>
+                  <div class="steam-stat-label">Juegos</div>
+                </div>
+                <div class="steam-stat-box">
+                  <div class="steam-stat-value" id="steam-total-hours">0h</div>
+                  <div class="steam-stat-label">Horas</div>
+                </div>
+              </div>
+              <div class="steam-recent-section" id="steam-recent-section" style="display:none;">
+                <div class="steam-recent-title">Jugado recientemente</div>
+                <div id="steam-recent-games" class="steam-recent-games"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -283,7 +312,7 @@
       <button class="section-dot" data-section="section-quick-access" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" aria-label="Productividad"></button>
       <button class="section-dot" data-section="section-notes" aria-label="Notas"></button>
-      <button class="section-dot" data-section="section-quotes" aria-label="Inspiracion"></button>
+      <button class="section-dot" data-section="section-steam" aria-label="Steam"></button>
     </div>
 
     <!-- ===== DOCK estilo macOS ===== -->
@@ -389,6 +418,18 @@
             </div>
             <p id="weather-city-status" class="weather-city-status"></p>
           </div>
+          <div class="appearance-section">
+            <h3><i class="fa-brands fa-steam" style="color:#57cbde;margin-right:6px;"></i> Steam</h3>
+            <p class="appearance-hint">Ingresa tu Steam ID para ver tus stats en el dashboard</p>
+            <div class="weather-settings-row">
+              <input type="text" id="steam-id-input" class="weather-city-input" placeholder="76561198XXXXXXXXX" maxlength="80">
+              <button id="steam-id-save" class="weather-city-save">
+                <i class="fa-solid fa-check"></i>
+              </button>
+            </div>
+            <p id="steam-id-status" class="weather-city-status"></p>
+            <p class="appearance-hint" style="margin-top:4px;">Encontralo en steamcommunity.com/profiles/<strong>TU_ID</strong></p>
+          </div>
         </div>
       </div>
 
@@ -481,7 +522,7 @@
   <script src="/MozzPCC/js/tasks.js"></script>
   <script src="/MozzPCC/js/pomodoro.js"></script>
   <script src="/MozzPCC/js/notes.js"></script>
-  <script src="/MozzPCC/js/quotes.js"></script>
+  <script src="/MozzPCC/js/steamStats.js"></script>
   <script src="/MozzPCC/js/app.js"></script>
   <script src="/MozzPCC/js/weather.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
