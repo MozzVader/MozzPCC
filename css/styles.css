@@ -1137,7 +1137,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.5rem;
+  font-size: 3.75rem;
   color: var(--text-primary);
   transition: var(--transition);
   overflow: hidden;
@@ -1166,20 +1166,21 @@ body::after {
   white-space: nowrap;
 }
 
-/* Settings: lista de quick links */
+/* Settings: lista de quick links (estilo tabla) */
 .settings-quicklinks-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  max-height: 400px;
+  gap: 2px;
+  max-height: 500px;
   overflow-y: auto;
 }
 
 .settings-quicklink-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 28px 40px 1fr 1fr auto;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 8px 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: var(--radius-xs);
@@ -1190,9 +1191,16 @@ body::after {
   background: rgba(255, 255, 255, 0.06);
 }
 
+.ql-item-pos {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 600;
+}
+
 .ql-item-icon {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.06);
   display: flex;
@@ -1205,8 +1213,8 @@ body::after {
 }
 
 .ql-item-icon img {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
   border-radius: 2px;
 }
@@ -1214,16 +1222,20 @@ body::after {
 .ql-item-info {
   flex: 1;
   min-width: 0;
+  overflow: hidden;
 }
 
 .ql-item-name {
   font-size: 0.85rem;
   color: var(--text-primary);
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ql-item-url {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1301,7 +1313,7 @@ body::after {
   .quick-link-icon-wrap {
     width: 85px;
     height: 65px;
-    font-size: 1.5rem;
+    font-size: 2.25rem;
     border-radius: 16px;
   }
 
@@ -1338,7 +1350,7 @@ body::after {
   .quick-link-icon-wrap {
     width: 75px;
     height: 55px;
-    font-size: 1.3rem;
+    font-size: 2rem;
     border-radius: 14px;
   }
 

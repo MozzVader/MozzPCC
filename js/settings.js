@@ -246,6 +246,17 @@
         });
         var targetEl = document.getElementById('tab-' + target);
         if (targetEl) targetEl.classList.add('active');
+        // Renderizar quick links al abrir la pestaña
+        if (target === 'quickaccess' && typeof renderQuickLinksSettings === 'function') {
+          // Asegurar que los datos estén cargados desde Supabase
+          if (window.QuickAccess && typeof window.QuickAccess.load === 'function') {
+            window.QuickAccess.load().then(function () {
+              renderQuickLinksSettings();
+            });
+          } else {
+            renderQuickLinksSettings();
+          }
+        }
       });
     });
   }
@@ -949,7 +960,7 @@
     qlNoMsg.style.display = 'none';
     qlAddBtn.style.display = 'flex';
 
-    links.forEach(function (link) {
+    links.forEach(function (link, index) {
       var item = document.createElement('div');
       item.className = 'settings-quicklink-item';
 
@@ -961,6 +972,7 @@
       }
 
       item.innerHTML =
+        '<div class="ql-item-pos">' + (index + 1) + '</div>' +
         '<div class="ql-item-icon">' + iconHtml + '</div>' +
         '<div class="ql-item-info">' +
           '<div class="ql-item-name">' + escapeHtml(link.name) + '</div>' +
@@ -968,8 +980,8 @@
         '</div>' +
         '<div class="ql-item-actions">' +
           '<button class="ql-action-btn edit" title="Editar"><i class="fa-solid fa-pen"></i></button>' +
-          '<button class="ql-action-btn move-up" title="Subir"><i class="fa-solid fa-chevron-up"></i></button>' +
-          '<button class="ql-action-btn move-down" title="Bajar"><i class="fa-solid fa-chevron-down"></i></button>' +
+          '<button class="ql-action-btn move-up" title="Subir"' + (index === 0 ? ' disabled style="opacity:0.3;pointer-events:none"' : '') + '><i class="fa-solid fa-chevron-up"></i></button>' +
+          '<button class="ql-action-btn move-down" title="Bajar"' + (index === links.length - 1 ? ' disabled style="opacity:0.3;pointer-events:none"' : '') + '><i class="fa-solid fa-chevron-down"></i></button>' +
           '<button class="ql-action-btn delete" title="Eliminar"><i class="fa-solid fa-trash-can"></i></button>' +
         '</div>';
 
