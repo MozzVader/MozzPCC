@@ -364,15 +364,13 @@
       var colorDot = cat ? cat.color : '#6b7280';
       var catIcon = cat ? cat.icon : 'fa-solid fa-circle';
 
-      // Contenedor izquierdo: icono + info
-      var left = document.createElement('div');
-      left.className = 'fin-item-left';
-
+      // Icono de categoria (columna izquierda)
       var iconWrap = document.createElement('div');
       iconWrap.className = 'fin-item-icon';
       iconWrap.style.background = colorDot + '22';
       iconWrap.innerHTML = '<i class="' + escapeHtml(catIcon) + '" style="color:' + colorDot + ';"></i>';
 
+      // Info (columna central)
       var info = document.createElement('div');
       info.className = 'fin-item-info';
 
@@ -386,17 +384,15 @@
 
       info.appendChild(desc);
       info.appendChild(date);
-      left.appendChild(iconWrap);
-      left.appendChild(info);
 
-      // Monto
+      // Monto (columna derecha)
       var amount = document.createElement('span');
       amount.className = 'fin-item-amount';
       if (t.type === 'ingreso') {
-        amount.style.color = '#22c55e';
+        amount.classList.add('fin-income');
         amount.textContent = '+' + formatAmount(t.amount);
       } else {
-        amount.style.color = '#ef4444';
+        amount.classList.add('fin-expense');
         amount.textContent = '-' + formatAmount(t.amount);
       }
 
@@ -407,7 +403,8 @@
       delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
       delBtn.dataset.id = t.id;
 
-      item.appendChild(left);
+      item.appendChild(iconWrap);
+      item.appendChild(info);
       item.appendChild(amount);
       item.appendChild(delBtn);
       list.appendChild(item);
@@ -442,7 +439,9 @@
       return;
     }
 
-    var amount = parseFloat(amountStr);
+    // Normalizar notacion argentina: 1.234,56 → 1234.56
+    var normalized = amountStr.replace(/\./g, '').replace(',', '.');
+    var amount = parseFloat(normalized);
     if (!amountStr || isNaN(amount) || amount <= 0) {
       console.warn('[Finanzas] Monto invalido');
       if (amountInput) amountInput.focus();
