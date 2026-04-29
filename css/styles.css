@@ -200,7 +200,7 @@ body::after {
 .section-quick-access .snap-section-inner {
   max-width: 900px;
   justify-content: flex-start;
-  gap: 24px;
+  gap: 36px;
 }
 
 /* Footer dentro del scroll (no es snap section, se desplaza con el contenido) */
@@ -1043,7 +1043,7 @@ body::after {
    ============================================ */
 .widget-quick-access {
   width: 100%;
-  padding: 12px 24px;
+  padding: 16px 24px;
 }
 
 /* Sin hover transform en esta card */
@@ -1092,7 +1092,7 @@ body::after {
 .quick-links-grid {
   display: grid;
   grid-template-columns: repeat(6, 145px);
-  gap: 5px;
+  gap: 10px 5px;
   justify-content: center;
   justify-items: center;
 }
@@ -1129,15 +1129,15 @@ body::after {
 }
 
 .quick-link-icon-wrap {
-  width: 80px;
-  height: 80px;
+  width: 125px;
+  height: 100px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 2.5rem;
   color: var(--text-primary);
   transition: var(--transition);
   overflow: hidden;
@@ -1149,14 +1149,15 @@ body::after {
 }
 
 .quick-link-img {
-  width: 44px;
-  height: 44px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   border-radius: 6px;
 }
 
 .quick-link-label {
-  font-size: 0.8rem;
+  font-size: 15px;
+  font-weight: 700;
   color: var(--text-secondary);
   text-align: center;
   max-width: 145px;
@@ -1290,7 +1291,7 @@ body::after {
 
   .quick-links-grid {
     grid-template-columns: repeat(4, 100px);
-    gap: 4px;
+    gap: 8px 4px;
   }
 
   .quick-link-item {
@@ -1298,19 +1299,20 @@ body::after {
   }
 
   .quick-link-icon-wrap {
-    width: 60px;
-    height: 60px;
+    width: 85px;
+    height: 65px;
     font-size: 1.5rem;
     border-radius: 16px;
   }
 
   .quick-link-img {
-    width: 34px;
-    height: 34px;
+    width: 50px;
+    height: 50px;
   }
 
   .quick-link-label {
-    font-size: 0.72rem;
+    font-size: 12px;
+    font-weight: 700;
     max-width: 100px;
   }
 
@@ -1326,7 +1328,7 @@ body::after {
 
   .quick-links-grid {
     grid-template-columns: repeat(3, 90px);
-    gap: 4px;
+    gap: 6px 4px;
   }
 
   .quick-link-item {
@@ -1334,19 +1336,20 @@ body::after {
   }
 
   .quick-link-icon-wrap {
-    width: 52px;
-    height: 52px;
+    width: 75px;
+    height: 55px;
     font-size: 1.3rem;
     border-radius: 14px;
   }
 
   .quick-link-img {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
   }
 
   .quick-link-label {
-    font-size: 0.68rem;
+    font-size: 11px;
+    font-weight: 700;
     max-width: 90px;
   }
 
