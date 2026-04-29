@@ -1209,13 +1209,21 @@ body::after {
   background: #33dfff;
 }
 
+.finances-sticky-header .card-header {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 /* Summary row */
 .fin-summary-row {
   display: flex;
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 0;
   padding-top: 14px;
-  border-top: 1px solid var(--border-glass);
+  padding-bottom: 14px;
+  border-top: none;
+  border-bottom: 1px solid var(--border-glass);
 }
 
 .fin-summary-box {
@@ -2124,6 +2132,23 @@ body::after {
   gap: 2px;
   flex: 1;
   overflow-y: auto;
+}
+
+.settings-quicklinks-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.settings-quicklinks-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.settings-quicklinks-list::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.settings-quicklinks-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .settings-quicklink-item {
