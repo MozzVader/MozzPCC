@@ -806,6 +806,25 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.read-later-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.read-later-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.read-later-list::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.read-later-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .read-later-item {
