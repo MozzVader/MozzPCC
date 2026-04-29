@@ -710,6 +710,7 @@ body::after {
   border-radius: var(--radius-xs);
   transition: var(--transition-fast);
   animation: taskSlideIn 0.3s ease forwards;
+  position: relative;
 }
 
 .read-later-item:hover {
@@ -717,8 +718,70 @@ body::after {
   border-color: rgba(255, 255, 255, 0.08);
 }
 
-.read-later-item:hover .rl-delete {
+.read-later-item:hover .rl-delete,
+.read-later-item:hover .rl-grip {
   opacity: 1;
+}
+
+/* Drag grip handle */
+.rl-grip {
+  opacity: 0;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  touch-action: none;
+  line-height: 1;
+}
+
+.rl-grip:hover {
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.rl-grip:active {
+  cursor: grabbing;
+}
+
+/* Dragging states */
+.read-later-item.dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+.read-later-item.drag-over {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Drop indicator line */
+.read-later-item.drop-before::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.read-later-item.drop-after::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent-glow);
 }
 
 .read-later-link {
