@@ -32,12 +32,16 @@
     return window.supabaseClient || null;
   }
 
-  function getUserId() {
+  async function getUserId() {
     var client = getSupabase();
     if (!client) return null;
-    var session = client.auth.getSession();
-    if (session && session.data && session.data.session) {
-      return session.data.session.user.id;
+    try {
+      var result = await client.auth.getSession();
+      if (result && result.data && result.data.session) {
+        return result.data.session.user.id;
+      }
+    } catch (e) {
+      console.warn('MozzPCC: Error obteniendo sesión:', e);
     }
     return null;
   }
@@ -48,7 +52,7 @@
 
   async function exportBackup() {
     var client = getSupabase();
-    var userId = getUserId();
+    var userId = await getUserId();
     if (!client || !userId) {
       setStatus(exportStatus, 'Error: no hay sesion activa', 'error');
       return;
@@ -186,7 +190,7 @@
     if (!confirm('Estas seguro? Esta accion no se puede deshacer.')) return;
 
     var client = getSupabase();
-    var userId = getUserId();
+    var userId = await getUserId();
     if (!client || !userId) {
       setStatus(importStatus, 'Error: no hay sesion activa', 'error');
       return;
