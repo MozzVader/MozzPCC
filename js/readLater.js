@@ -20,6 +20,7 @@
   var userId = null;
   var selectedTagColor = null; // null = sin tag
   var activeFilter = null;    // null = todos
+  var initialized = false;
 
   var TAG_COLORS = ['yellow', 'green', 'pink', 'blue', 'purple'];
 
@@ -38,6 +39,9 @@
   // =============================================
 
   function buildTagPicker() {
+    // Limpiar dots existentes (excepto el label)
+    tagPicker.querySelectorAll('.rl-tag-dot').forEach(function (d) { d.remove(); });
+
     // "None" dot
     var noneDot = createTagDot('none', null);
     tagPicker.appendChild(noneDot);
@@ -520,6 +524,7 @@
     userId = null;
     selectedTagColor = null;
     activeFilter = null;
+    initialized = false;
     list.innerHTML = '';
     filtersContainer.innerHTML = '';
     titleInput.value = '';
@@ -546,7 +551,10 @@
 
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
-    buildTagPicker();
+    if (!initialized) {
+      initialized = true;
+      buildTagPicker();
+    }
     loadItems();
   });
 
