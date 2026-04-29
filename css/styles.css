@@ -2004,6 +2004,118 @@ body::after {
 }
 
 /* ============================================
+   BACKUP
+   ============================================ */
+.backup-panel {
+  padding: 8px 0;
+}
+
+.backup-section {
+  margin-bottom: 24px;
+}
+
+.backup-section h3 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.backup-hint {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.backup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xs);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.backup-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-glass-hover);
+}
+
+.backup-btn.export:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.backup-btn.import:hover {
+  border-color: var(--note-green);
+  color: var(--note-green);
+}
+
+.backup-btn.restore {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.backup-btn.restore:hover {
+  background: #33dfff;
+}
+
+.backup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.backup-import-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.backup-filename {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.backup-status {
+  font-size: 0.75rem;
+  margin-top: 8px;
+  min-height: 1.2em;
+}
+
+.backup-status.success {
+  color: var(--note-green);
+}
+
+.backup-status.error {
+  color: #ef4444;
+}
+
+.backup-status.info {
+  color: var(--accent);
+}
+
+.backup-divider {
+  height: 1px;
+  background: var(--border-glass);
+  margin: 20px 0;
+}
+
+/* ============================================
    AUTENTICACIÓN — Auth Screen
    ============================================ */
 

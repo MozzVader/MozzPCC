@@ -409,6 +409,9 @@
           <button class="settings-tab" data-tab="appearance">
             <i class="fa-solid fa-palette"></i> Apariencia
           </button>
+          <button class="settings-tab" data-tab="backup">
+            <i class="fa-solid fa-cloud-arrow-down"></i> Backup
+          </button>
         </div>
         <button id="settings-close" class="settings-close" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
@@ -487,6 +490,45 @@
             </div>
             <p id="steam-id-status" class="weather-city-status"></p>
             <p class="appearance-hint" style="margin-top:4px;">Encontralo en steamcommunity.com/profiles/<strong>TU_ID</strong></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Backup -->
+      <div class="settings-tab-content" id="tab-backup">
+        <div class="backup-panel">
+          <div class="backup-section">
+            <h3><i class="fa-solid fa-cloud-arrow-down" style="color:var(--accent);margin-right:6px;"></i> Exportar datos</h3>
+            <p class="backup-hint">Descarga una copia de seguridad de todos tus datos (tareas, notas, dock, accesos rapidos, read later y configuraciones).</p>
+            <button id="backup-export-btn" class="backup-btn export">
+              <i class="fa-solid fa-download"></i> Descargar backup
+            </button>
+            <p id="backup-export-status" class="backup-status"></p>
+          </div>
+
+          <div class="backup-divider"></div>
+
+          <div class="backup-section">
+            <h3><i class="fa-solid fa-cloud-arrow-up" style="color:var(--note-green);margin-right:6px;"></i> Restaurar datos</h3>
+            <p class="backup-hint">Importa un archivo de backup previo. <strong>Esto reemplazara todos tus datos actuales.</strong></p>
+            <div class="backup-import-row">
+              <label for="backup-import-file" class="backup-btn import">
+                <i class="fa-solid fa-upload"></i> Seleccionar archivo
+              </label>
+              <input type="file" id="backup-import-file" accept=".json" style="display:none;">
+              <span id="backup-import-filename" class="backup-filename"></span>
+            </div>
+            <button id="backup-import-btn" class="backup-btn restore" style="display:none;">
+              <i class="fa-solid fa-rotate-left"></i> Restaurar backup
+            </button>
+            <p id="backup-import-status" class="backup-status"></p>
+          </div>
+
+          <div class="backup-divider"></div>
+
+          <div class="backup-section">
+            <h3><i class="fa-solid fa-circle-info" style="color:var(--text-muted);margin-right:6px;"></i> Info</h3>
+            <p class="backup-hint">El backup incluye todas las tablas de tu cuenta. Los datos se guardan como un archivo JSON. No se incluye informacion sensible como tu Steam ID API key.</p>
           </div>
         </div>
       </div>
@@ -586,6 +628,7 @@
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
   <script src="/MozzPCC/js/readLater.js"></script>
+  <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
 
