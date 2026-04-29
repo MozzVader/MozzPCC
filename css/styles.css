@@ -785,9 +785,8 @@ body::after {
   opacity: 0.5;
 }
 
-.widget-read-later {
+.section-read-later .widget-read-later {
   width: 100%;
-  max-width: 900px;
 }
 
 /* ============================================

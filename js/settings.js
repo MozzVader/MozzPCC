@@ -73,7 +73,7 @@
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
         { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
         { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 4 },
-        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 5 }
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 5 }
       ]
     },
     {
@@ -928,7 +928,7 @@
     // Links que deberían estar en el grupo Secciones
     var requiredLinks = [
       { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-regular fa-bookmark', order: 5 }
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 5 }
     ];
 
     for (var i = 0; i < requiredLinks.length; i++) {

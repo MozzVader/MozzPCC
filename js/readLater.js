@@ -53,7 +53,7 @@
     if (items.length === 0) {
       var empty = document.createElement('div');
       empty.className = 'read-later-empty';
-      empty.innerHTML = '<i class="fa-regular fa-bookmark"></i>No hay links guardados';
+      empty.innerHTML = '<i class="fa-solid fa-bookmark"></i>No hay links guardados';
       list.appendChild(empty);
     } else {
       items.forEach(function (item) {
