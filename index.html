@@ -259,28 +259,30 @@
     <section class="snap-section section-read-later" id="section-read-later" aria-label="Ver mas tarde">
       <div class="snap-section-inner">
         <div class="card widget-read-later">
-          <div class="card-header">
-            <i class="fa-solid fa-bookmark"></i>
-            <h2>Ver Mas Tarde</h2>
-          </div>
+          <div class="read-later-sticky-header">
+            <div class="card-header">
+              <i class="fa-solid fa-bookmark"></i>
+              <h2>Ver Mas Tarde</h2>
+            </div>
 
-          <div class="read-later-input-row">
-            <input type="text" id="rl-title-input" placeholder="Descripcion..." aria-label="Descripcion" maxlength="120">
-            <input type="url" id="rl-url-input" placeholder="https://..." aria-label="URL" maxlength="500">
-            <button class="btn-add" id="rl-add-btn" aria-label="Agregar link">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
+            <div class="read-later-input-row">
+              <input type="text" id="rl-title-input" placeholder="Descripcion..." aria-label="Descripcion" maxlength="120">
+              <input type="url" id="rl-url-input" placeholder="https://..." aria-label="URL" maxlength="500">
+              <button class="btn-add" id="rl-add-btn" aria-label="Agregar link">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
 
-          <div class="read-later-tag-picker" id="rl-tag-picker">
-            <span class="read-later-tag-picker-label">Tag</span>
-          </div>
+            <div class="read-later-tag-picker" id="rl-tag-picker">
+              <span class="read-later-tag-picker-label">Tag</span>
+            </div>
 
-          <div class="read-later-counter-row">
-            <p class="read-later-counter" id="rl-counter">
-              <span>0</span> links guardados
-            </p>
-            <div class="read-later-filters" id="rl-filters"></div>
+            <div class="read-later-counter-row">
+              <p class="read-later-counter" id="rl-counter">
+                <span>0</span> links guardados
+              </p>
+              <div class="read-later-filters" id="rl-filters"></div>
+            </div>
           </div>
 
           <ul class="read-later-list" id="rl-list"></ul>

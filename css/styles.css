@@ -1002,23 +1002,38 @@ body::after {
 .section-read-later .widget-read-later {
   width: 100%;
   max-height: 600px;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.widget-read-later::-webkit-scrollbar {
+.read-later-sticky-header {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.read-later-list {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.read-later-list::-webkit-scrollbar {
   width: 4px;
 }
 
-.widget-read-later::-webkit-scrollbar-track {
+.read-later-list::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.widget-read-later::-webkit-scrollbar-thumb {
+.read-later-list::-webkit-scrollbar-thumb {
   background: var(--border-glass);
   border-radius: 4px;
 }
 
-.widget-read-later::-webkit-scrollbar-thumb:hover {
+.read-later-list::-webkit-scrollbar-thumb:hover {
   background: var(--text-muted);
 }
 
