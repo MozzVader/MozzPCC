@@ -1062,6 +1062,10 @@ body::after {
   color: #fff;
 }
 
+.btn-add.fin-form-toggle {
+  color: #fff;
+}
+
 /* Form panel (colapsable) */
 .fin-form-panel {
   max-height: 0;
@@ -1305,11 +1309,11 @@ body::after {
   visibility: visible;
 }
 
-/* Icon column — left, vertically centered */
+/* Icon column — left, spans full height */
 .fin-item-icon {
   flex-shrink: 0;
   width: 36px;
-  height: 36px;
+  align-self: stretch;
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1317,16 +1321,26 @@ body::after {
   font-size: 0.9rem;
 }
 
-/* Info column — center, takes remaining space */
-.fin-item-info {
+/* Info + Amount wrapper — center, spans full height */
+.fin-item-info-wrap {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 2px;
+  justify-content: center;
+}
+
+/* Info row — desc left, date right */
+.fin-item-info {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 8px;
 }
 
 .fin-item-desc {
+  flex: 1;
   font-size: 0.82rem;
   color: var(--text-primary);
   white-space: nowrap;
@@ -1335,16 +1349,15 @@ body::after {
 }
 
 .fin-item-date {
+  flex-shrink: 0;
   font-size: 0.7rem;
   color: var(--text-muted);
-  text-align: right;
 }
 
-/* Amount column — right */
+/* Amount — below info row */
 .fin-item-amount {
   font-size: 0.85rem;
   font-weight: 600;
-  flex-shrink: 0;
   white-space: nowrap;
 }
 
@@ -1359,6 +1372,7 @@ body::after {
 /* Delete button — right side, visible on hover */
 .fin-item-delete {
   flex-shrink: 0;
+  align-self: center;
   background: none;
   border: none;
   color: #ef4444;

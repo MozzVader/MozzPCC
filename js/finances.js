@@ -370,7 +370,10 @@
       iconWrap.style.background = colorDot + '22';
       iconWrap.innerHTML = '<i class="' + escapeHtml(catIcon) + '" style="color:' + colorDot + ';"></i>';
 
-      // Info (columna central)
+      // Info + Amount wrapper (columna central)
+      var infoWrap = document.createElement('div');
+      infoWrap.className = 'fin-item-info-wrap';
+
       var info = document.createElement('div');
       info.className = 'fin-item-info';
 
@@ -385,7 +388,7 @@
       info.appendChild(desc);
       info.appendChild(date);
 
-      // Monto (columna derecha)
+      // Monto
       var amount = document.createElement('span');
       amount.className = 'fin-item-amount';
       if (t.type === 'ingreso') {
@@ -396,6 +399,9 @@
         amount.textContent = '-' + formatAmount(t.amount);
       }
 
+      infoWrap.appendChild(info);
+      infoWrap.appendChild(amount);
+
       // Boton eliminar
       var delBtn = document.createElement('button');
       delBtn.className = 'fin-item-delete';
@@ -404,8 +410,7 @@
       delBtn.dataset.id = t.id;
 
       item.appendChild(iconWrap);
-      item.appendChild(info);
-      item.appendChild(amount);
+      item.appendChild(infoWrap);
       item.appendChild(delBtn);
       list.appendChild(item);
     }
@@ -439,8 +444,25 @@
       return;
     }
 
-    // Normalizar notacion argentina: 1.234,56 → 1234.56
-    var normalized = amountStr.replace(/\./g, '').replace(',', '.');
+    // Normalizar notacion numerica argentina e internacional:
+    // "1.234,56" → 1234.56  |  "1234,56" → 1234.56  |  "1234.56" → 1234.56  |  "1234" → 1234
+    // Estrategia: si tiene coma Y punto, el punto es miles y la coma es decimal.
+    // Si solo tiene coma, la coma es decimal. Si solo tiene punto, el punto es decimal.
+    var raw = amountStr.replace(/\s/g, '');
+    var normalized;
+    if (raw.indexOf(',') !== -1 && raw.lastIndexOf('.') > raw.indexOf(',')) {
+      // Caso raro: "1,234.56" (formato US con punto decimal) — punto como decimal
+      normalized = raw.replace(/,/g, '');
+    } else if (raw.indexOf(',') !== -1 && raw.indexOf('.') !== -1) {
+      // "1.234,56" — punto=miles, coma=decimal
+      normalized = raw.replace(/\./g, '').replace(',', '.');
+    } else if (raw.indexOf(',') !== -1) {
+      // "1234,56" — coma=decimal
+      normalized = raw.replace(',', '.');
+    } else {
+      // "1234" o "1234.56" — sin coma, punto es decimal (o entero)
+      normalized = raw;
+    }
     var amount = parseFloat(normalized);
     if (!amountStr || isNaN(amount) || amount <= 0) {
       console.warn('[Finanzas] Monto invalido');
@@ -874,6 +896,8 @@
       currentType = 'ingreso';
       if (btn) {
         btn.innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i> Ingreso';
+        btn.classList.remove('fin-type-gasto');
+        btn.classList.add('fin-type-ingreso');
       }
       if (formPanel) {
         formPanel.classList.remove('fin-type-gasto');
@@ -883,6 +907,8 @@
       currentType = 'gasto';
       if (btn) {
         btn.innerHTML = '<i class="fa-solid fa-arrow-trend-down"></i> Gasto';
+        btn.classList.remove('fin-type-ingreso');
+        btn.classList.add('fin-type-gasto');
       }
       if (formPanel) {
         formPanel.classList.remove('fin-type-ingreso');
