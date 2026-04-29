@@ -1,7 +1,8 @@
 /**
  * readLater.js — Ver Mas Tarde
  * CRUD de links guardados con persistencia en Supabase
- * Drag & Drop para reordenar items (pointer events, funciona en mouse y touch)
+ * Tags de colores opcionales + filtros
+ * Drag & Drop para reordenar items (pointer events)
  */
 
 (function () {
@@ -12,22 +13,116 @@
   var addBtn = document.getElementById('rl-add-btn');
   var list = document.getElementById('rl-list');
   var counter = document.getElementById('rl-counter');
+  var tagPicker = document.getElementById('rl-tag-picker');
+  var filtersContainer = document.getElementById('rl-filters');
 
   var items = [];
   var userId = null;
+  var selectedTagColor = null; // null = sin tag
+  var activeFilter = null;    // null = todos
+
+  var TAG_COLORS = ['yellow', 'green', 'pink', 'blue', 'purple'];
 
   // --- Drag & Drop state ---
   var dragItem = null;
   var dragElement = null;
   var placeholder = null;
-  var startY = 0;
   var dragging = false;
 
   function getSupabase() {
     return window.supabaseClient || null;
   }
 
-  // --- Cargar items (ordenados por order_index) ---
+  // =============================================
+  // TAG PICKER (color dots below inputs)
+  // =============================================
+
+  function buildTagPicker() {
+    // "None" dot
+    var noneDot = createTagDot('none', null);
+    tagPicker.appendChild(noneDot);
+
+    // Color dots
+    TAG_COLORS.forEach(function (color) {
+      var dot = createTagDot(color, color);
+      tagPicker.appendChild(dot);
+    });
+  }
+
+  function createTagDot(colorName, colorValue) {
+    var dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'rl-tag-dot';
+    dot.dataset.color = colorName;
+    dot.setAttribute('aria-label', 'Tag ' + colorName);
+
+    if (selectedTagColor === colorValue) {
+      dot.classList.add('active');
+    }
+
+    dot.addEventListener('click', function () {
+      selectedTagColor = (selectedTagColor === colorValue) ? null : colorValue;
+      tagPicker.querySelectorAll('.rl-tag-dot').forEach(function (d) {
+        d.classList.toggle('active', d.dataset.color === colorName);
+      });
+    });
+
+    return dot;
+  }
+
+  // =============================================
+  // FILTER CHIPS
+  // =============================================
+
+  function renderFilters() {
+    filtersContainer.innerHTML = '';
+
+    // Contar items por color
+    var colorCounts = {};
+    var hasTagged = false;
+    items.forEach(function (item) {
+      if (item.tag_color) {
+        colorCounts[item.tag_color] = (colorCounts[item.tag_color] || 0) + 1;
+        hasTagged = true;
+      }
+    });
+
+    if (!hasTagged) return;
+
+    // "Todos" chip
+    var allChip = document.createElement('button');
+    allChip.className = 'rl-filter-chip' + (activeFilter === null ? ' active' : '');
+    allChip.textContent = 'Todos';
+    allChip.addEventListener('click', function () {
+      activeFilter = null;
+      render();
+    });
+    filtersContainer.appendChild(allChip);
+
+    // Color chips (solo los colores que tienen items)
+    TAG_COLORS.forEach(function (color) {
+      var count = colorCounts[color];
+      if (!count) return;
+
+      var chip = document.createElement('button');
+      chip.className = 'rl-filter-chip' + (activeFilter === color ? ' active' : '');
+      chip.innerHTML =
+        '<span class="rl-filter-chip-dot" style="background:var(--note-' + color + ')"></span>' +
+        '<span class="rl-filter-chip-count">' + count + '</span>';
+
+      chip.addEventListener('click', function () {
+        activeFilter = (activeFilter === color) ? null : color;
+        render();
+      });
+
+      filtersContainer.appendChild(chip);
+    });
+  }
+
+  // =============================================
+  // CRUD
+  // =============================================
+
   async function loadItems() {
     var client = getSupabase();
     if (!client || !userId) return;
@@ -45,7 +140,14 @@
       }
 
       items = (result.data || []).map(function (r) {
-        return { id: r.id, title: r.title, url: r.url, order_index: r.order_index || 0, created_at: r.created_at };
+        return {
+          id: r.id,
+          title: r.title,
+          url: r.url,
+          tag_color: r.tag_color || null,
+          order_index: r.order_index || 0,
+          created_at: r.created_at
+        };
       });
 
       render();
@@ -54,22 +156,32 @@
     }
   }
 
-  // --- Render ---
   function render() {
     list.innerHTML = '';
 
-    if (items.length === 0) {
+    // Filtrar items
+    var filteredItems = items;
+    if (activeFilter) {
+      filteredItems = items.filter(function (i) { return i.tag_color === activeFilter; });
+    }
+
+    if (filteredItems.length === 0) {
       var empty = document.createElement('div');
       empty.className = 'read-later-empty';
-      empty.innerHTML = '<i class="fa-solid fa-bookmark"></i>No hay links guardados';
+      if (items.length > 0 && activeFilter) {
+        empty.innerHTML = '<i class="fa-solid fa-filter"></i>No hay links con este tag';
+      } else {
+        empty.innerHTML = '<i class="fa-solid fa-bookmark"></i>No hay links guardados';
+      }
       list.appendChild(empty);
     } else {
-      items.forEach(function (item, index) {
+      filteredItems.forEach(function (item, index) {
         list.appendChild(createItem(item, index));
       });
     }
 
-    updateCounter();
+    renderFilters();
+    updateCounter(filteredItems.length, items.length);
   }
 
   function createItem(item, index) {
@@ -77,6 +189,23 @@
     li.className = 'read-later-item';
     li.dataset.id = item.id;
     li.dataset.index = index;
+    if (item.tag_color) {
+      li.dataset.tag = item.tag_color;
+    }
+
+    // Tag color button (cycle colors on click)
+    var tagBtn = document.createElement('button');
+    tagBtn.className = 'rl-item-tag';
+    tagBtn.setAttribute('aria-label', 'Cambiar tag');
+    var tagDot = document.createElement('span');
+    tagDot.className = 'rl-item-tag-dot';
+    tagDot.dataset.color = item.tag_color || 'none';
+    tagBtn.appendChild(tagDot);
+    tagBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      cycleTagColor(item);
+    });
 
     // Grip handle
     var grip = document.createElement('button');
@@ -115,11 +244,43 @@
       deleteItem(item.id);
     });
 
+    li.appendChild(tagBtn);
     li.appendChild(grip);
     li.appendChild(link);
     li.appendChild(deleteBtn);
 
     return li;
+  }
+
+  // --- Cycle tag color: none → yellow → green → pink → blue → purple → none ---
+  async function cycleTagColor(item) {
+    var current = item.tag_color;
+    var nextIndex = current
+      ? TAG_COLORS.indexOf(current)
+      : -1;
+
+    var nextColor = TAG_COLORS[(nextIndex + 1) % TAG_COLORS.length];
+    // Si ya era purple (último), volver a null
+    if (nextIndex === TAG_COLORS.length - 1) {
+      nextColor = null;
+    }
+
+    item.tag_color = nextColor;
+
+    // Actualizar en Supabase
+    var client = getSupabase();
+    if (client) {
+      try {
+        await client
+          .from('read_later_items')
+          .update({ tag_color: nextColor })
+          .eq('id', item.id);
+      } catch (e) {
+        console.warn('MozzPCC: Error actualizando tag:', e);
+      }
+    }
+
+    render();
   }
 
   function extractDomain(url) {
@@ -130,9 +291,15 @@
     }
   }
 
-  function updateCounter() {
+  function updateCounter(filtered, total) {
     var span = counter.querySelector('span');
-    if (span) span.textContent = items.length;
+    if (span) span.textContent = filtered;
+    // Si hay filtro activo, mostrar filtered/total
+    if (activeFilter && filtered !== total) {
+      counter.innerHTML = '<span>' + filtered + '</span> / ' + total + ' links';
+    } else {
+      counter.innerHTML = '<span>' + total + '</span> links guardados';
+    }
   }
 
   // --- Agregar ---
@@ -163,7 +330,8 @@
           user_id: userId,
           title: title,
           url: url,
-          order_index: 0
+          order_index: 0,
+          tag_color: selectedTagColor
         })
         .select()
         .single();
@@ -173,11 +341,11 @@
         return;
       }
 
-      // Insertar al principio y recalcular order_index
       items.unshift({
         id: result.data.id,
         title: result.data.title,
         url: result.data.url,
+        tag_color: selectedTagColor,
         order_index: 0,
         created_at: result.data.created_at
       });
@@ -226,20 +394,12 @@
     var client = getSupabase();
     if (!client || !userId) return;
 
-    var updates = items.map(function (item, index) {
-      return {
-        id: item.id,
-        order_index: index
-      };
-    });
-
     try {
-      // Actualizar cada item con su nuevo order_index
-      for (var i = 0; i < updates.length; i++) {
+      for (var i = 0; i < items.length; i++) {
         await client
           .from('read_later_items')
-          .update({ order_index: updates[i].order_index })
-          .eq('id', updates[i].id);
+          .update({ order_index: i })
+          .eq('id', items[i].id);
       }
     } catch (e) {
       console.warn('MozzPCC: Error guardando orden read later:', e);
@@ -256,22 +416,16 @@
 
     dragItem = item;
     dragElement = element;
-    startY = e.clientY;
 
-    // Crear placeholder invisible del mismo tamaño
+    element.classList.add('dragging');
+
     placeholder = document.createElement('li');
     placeholder.className = 'read-later-item';
     placeholder.style.visibility = 'hidden';
     placeholder.style.height = element.offsetHeight + 'px';
     placeholder.style.padding = '0';
 
-    // Marcar el elemento original como dragging
-    element.classList.add('dragging');
-
-    // Insertar placeholder justo después del elemento
     element.parentNode.insertBefore(placeholder, element.nextSibling);
-
-    // Capturar pointer para eventos fuera del elemento
     element.setPointerCapture(e.pointerId);
 
     element.addEventListener('pointermove', onDragMove);
@@ -299,7 +453,6 @@
       }
     }
 
-    // Limpiar clases previas
     clearDropIndicators();
 
     if (closestItem) {
@@ -321,7 +474,6 @@
   function onDragEnd(e) {
     if (!dragging || !dragElement) return;
 
-    // Limpiar eventos
     dragElement.removeEventListener('pointermove', onDragMove);
     dragElement.removeEventListener('pointerup', onDragEnd);
     dragElement.removeEventListener('pointercancel', onDragEnd);
@@ -329,15 +481,12 @@
     clearDropIndicators();
 
     if (placeholder && placeholder.parentNode) {
-      // Mover el elemento original donde está el placeholder
       placeholder.parentNode.insertBefore(dragElement, placeholder);
       placeholder.parentNode.removeChild(placeholder);
     }
 
-    // Quitar clase dragging
     dragElement.classList.remove('dragging');
 
-    // Calcular nuevo orden a partir del DOM
     var newOrder = [];
     var listElements = list.querySelectorAll('.read-later-item[data-id]');
     listElements.forEach(function (el) {
@@ -351,7 +500,6 @@
       saveOrder();
     }
 
-    // Reset state
     dragItem = null;
     dragElement = null;
     placeholder = null;
@@ -370,9 +518,16 @@
   function cleanup() {
     items = [];
     userId = null;
+    selectedTagColor = null;
+    activeFilter = null;
     list.innerHTML = '';
+    filtersContainer.innerHTML = '';
     titleInput.value = '';
     urlInput.value = '';
+    // Reset tag picker
+    tagPicker.querySelectorAll('.rl-tag-dot').forEach(function (d) {
+      d.classList.toggle('active', d.dataset.color === 'none');
+    });
   }
 
   // --- Events ---
@@ -391,6 +546,7 @@
 
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
+    buildTagPicker();
     loadItems();
   });
 

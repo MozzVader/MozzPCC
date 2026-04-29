@@ -680,15 +680,123 @@ body::after {
   color: var(--text-muted);
 }
 
+.read-later-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  min-height: 24px;
+}
+
 .read-later-counter {
   font-size: 0.75rem;
   color: var(--text-muted);
-  margin-bottom: 8px;
 }
 
 .read-later-counter span {
   color: var(--accent);
   font-weight: 600;
+}
+
+/* Tag color picker (below inputs) */
+.read-later-tag-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 6px 0 2px;
+}
+
+.read-later-tag-picker-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-right: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rl-tag-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.rl-tag-dot:hover {
+  transform: scale(1.2);
+}
+
+.rl-tag-dot.active {
+  border-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.15);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.15);
+}
+
+.rl-tag-dot[data-color="none"] {
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.rl-tag-dot[data-color="none"]:hover,
+.rl-tag-dot[data-color="none"].active {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+.rl-tag-dot[data-color="yellow"] { background: var(--note-yellow); }
+.rl-tag-dot[data-color="green"] { background: var(--note-green); }
+.rl-tag-dot[data-color="pink"] { background: var(--note-pink); }
+.rl-tag-dot[data-color="blue"] { background: var(--note-blue); }
+.rl-tag-dot[data-color="purple"] { background: var(--note-purple); }
+
+/* Filter chips */
+.read-later-filters {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.rl-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.rl-filter-chip:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.rl-filter-chip.active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.rl-filter-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.rl-filter-chip-count {
+  font-size: 0.6rem;
+  opacity: 0.6;
 }
 
 .read-later-list {
@@ -719,9 +827,51 @@ body::after {
 }
 
 .read-later-item:hover .rl-delete,
-.read-later-item:hover .rl-grip {
+.read-later-item:hover .rl-grip,
+.read-later-item:hover .rl-item-tag {
   opacity: 1;
 }
+
+/* Tag color indicator on item */
+.rl-item-tag {
+  opacity: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.rl-item-tag:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.rl-item-tag-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  transition: var(--transition-fast);
+}
+
+.rl-item-tag-dot[data-color="yellow"] { background: var(--note-yellow); border-color: var(--note-yellow); }
+.rl-item-tag-dot[data-color="green"] { background: var(--note-green); border-color: var(--note-green); }
+.rl-item-tag-dot[data-color="pink"] { background: var(--note-pink); border-color: var(--note-pink); }
+.rl-item-tag-dot[data-color="blue"] { background: var(--note-blue); border-color: var(--note-blue); }
+.rl-item-tag-dot[data-color="purple"] { background: var(--note-purple); border-color: var(--note-purple); }
+
+/* Left colored border for tagged items */
+.read-later-item[data-tag="yellow"] { border-left: 3px solid var(--note-yellow); }
+.read-later-item[data-tag="green"] { border-left: 3px solid var(--note-green); }
+.read-later-item[data-tag="pink"] { border-left: 3px solid var(--note-pink); }
+.read-later-item[data-tag="blue"] { border-left: 3px solid var(--note-blue); }
+.read-later-item[data-tag="purple"] { border-left: 3px solid var(--note-purple); }
 
 /* Drag grip handle */
 .rl-grip {
