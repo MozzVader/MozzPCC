@@ -1211,19 +1211,15 @@ body::after {
 
 .finances-sticky-header .card-header {
   margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
 }
 
 /* Summary row */
 .fin-summary-row {
   display: flex;
   gap: 12px;
-  margin-top: 0;
+  margin-top: 14px;
   padding-top: 14px;
-  padding-bottom: 14px;
-  border-top: none;
-  border-bottom: 1px solid var(--border-glass);
+  border-top: 1px solid var(--border-glass);
 }
 
 .fin-summary-box {
