@@ -974,10 +974,8 @@
       item.innerHTML =
         '<div class="ql-item-pos">' + (index + 1) + '</div>' +
         '<div class="ql-item-icon">' + iconHtml + '</div>' +
-        '<div class="ql-item-info">' +
-          '<div class="ql-item-name">' + escapeHtml(link.name) + '</div>' +
-          '<div class="ql-item-url">' + escapeHtml(link.url) + '</div>' +
-        '</div>' +
+        '<div class="ql-item-name">' + escapeHtml(link.name) + '</div>' +
+        '<div class="ql-item-url">' + escapeHtml(link.url) + '</div>' +
         '<div class="ql-item-actions">' +
           '<button class="ql-action-btn edit" title="Editar"><i class="fa-solid fa-pen"></i></button>' +
           '<button class="ql-action-btn move-up" title="Subir"' + (index === 0 ? ' disabled style="opacity:0.3;pointer-events:none"' : '') + '><i class="fa-solid fa-chevron-up"></i></button>' +

@@ -1171,13 +1171,13 @@ body::after {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  max-height: 500px;
+  flex: 1;
   overflow-y: auto;
 }
 
 .settings-quicklink-item {
   display: grid;
-  grid-template-columns: 28px 40px 1fr 1fr auto;
+  grid-template-columns: 28px 40px 1fr 200px auto;
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
@@ -1217,12 +1217,6 @@ body::after {
   height: 22px;
   object-fit: contain;
   border-radius: 2px;
-}
-
-.ql-item-info {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
 }
 
 .ql-item-name {
@@ -2859,6 +2853,19 @@ body::after {
 
 .settings-tab-content .settings-body {
   width: 100%;
+}
+
+/* Quick Access panel (full-width, same as appearance-panel) */
+.settings-quickaccess-panel {
+  padding: 24px;
+  overflow-y: auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.settings-quickaccess-panel .settings-panel-header {
+  flex-shrink: 0;
 }
 
 /* Appearance panel */
