@@ -123,7 +123,8 @@ body::after {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-snap-type: y mandatory;
-  scroll-padding-bottom: 80px;
+  scroll-padding-top: 0;
+  scroll-padding-bottom: 0;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   /* Ocultar scrollbar */
@@ -138,7 +139,7 @@ body::after {
 .snap-section {
   min-height: 100vh;
   min-height: 100dvh;
-  scroll-snap-align: start;
+  scroll-snap-align: center;
   scroll-snap-stop: always;
   display: flex;
   align-items: center;

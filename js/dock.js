@@ -287,6 +287,48 @@
   }
 
   // =============================================
+  // SCROLL-UP SNAP FIX
+  // Cuando scrolleás para arriba, el CSS scroll-snap a veces no alinea
+  // igual que para abajo. Este listener detecta el fin del momentum
+  // y fuerza un scrollIntoView (igual que hacen los dots).
+  // =============================================
+
+  var lastScrollTop = dashboardScroll.scrollTop;
+  var scrollUpTimer = null;
+  var isSnapping = false;
+
+  dashboardScroll.addEventListener('scroll', function () {
+    if (isSnapping) return;
+
+    var st = dashboardScroll.scrollTop;
+
+    if (st < lastScrollTop - 5) {
+      clearTimeout(scrollUpTimer);
+      scrollUpTimer = setTimeout(function () {
+        // Encontrar la sección cuyo centro está más cerca del centro del viewport
+        var mid = st + dashboardScroll.clientHeight / 2;
+        var closest = 0;
+        var closestDist = Infinity;
+
+        for (var i = 0; i < sections.length; i++) {
+          var sectionMid = sections[i].offsetTop + sections[i].offsetHeight / 2;
+          var dist = Math.abs(mid - sectionMid);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closest = i;
+          }
+        }
+
+        isSnapping = true;
+        sections[closest].scrollIntoView({ behavior: 'smooth' });
+        setTimeout(function () { isSnapping = false; }, 600);
+      }, 150);
+    }
+
+    lastScrollTop = st;
+  }, { passive: true });
+
+  // =============================================
   // ESCUCHAR EVENTOS DE ACTUALIZACIÓN
   // =============================================
 
