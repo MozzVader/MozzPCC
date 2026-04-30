@@ -364,7 +364,6 @@ body::after {
   padding: 40px 24px;
   text-align: center;
   width: 100%;
-  max-width: 800px;
 }
 
 .greeting {

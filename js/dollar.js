@@ -11,7 +11,7 @@
   var CACHE_MS = 60 * 60 * 1000;
   var REFRESH_MS = 30 * 60 * 1000;
   var API_LATEST = 'https://api.bluelytics.com.ar/v2/latest';
-  var API_EVOLUTION = 'https://api.bluelytics.com.ar/v2/evolution';
+  var API_EVOLUTION = 'https://api.bluelytics.com.ar/v2/evolution.json';
 
   var dollarData = null;
   var evolution = [];
@@ -20,15 +20,7 @@
   // --- Historial en localStorage (evolución diaria) ---
   function loadEvolution() {
     try {
-      var raw = localStorage.getItem(HISTORY_KEY);
-      if (raw) {
-        var data = JSON.parse(raw);
-        if (data.ts && (Date.now() - data.ts) < CACHE_MS) {
-          evolution = data.values || [];
-          evolutionLoaded = true;
-          return;
-        }
-      }
+      localStorage.removeItem(HISTORY_KEY);
     } catch (e) {}
   }
 
@@ -46,17 +38,15 @@
       if (!res.ok) throw new Error('HTTP ' + res.status);
       var data = await res.json();
 
-      // Buscar serie "oficial" en la respuesta
+      // Buscar serie "Oficial" en la respuesta
       var oficialSerie = null;
       if (Array.isArray(data)) {
-        oficialSerie = data.find(function (s) { return s.source === 'oficial' || s.source === 'oficial_minorista'; });
-      } else if (data.oficial) {
-        oficialSerie = data.oficial;
+        oficialSerie = data.filter(function (s) { return s.source === 'Oficial'; });
       }
 
-      if (oficialSerie && oficialSerie.values) {
-        evolution = oficialSerie.values.slice(-30).map(function (v) {
-          return { d: v.date, v: v.value_buy || v.value || 0 };
+      if (oficialSerie && oficialSerie.length > 0) {
+        evolution = oficialSerie.slice(-30).map(function (v) {
+          return { d: v.date, v: v.value_buy || 0 };
         });
         saveEvolution();
         evolutionLoaded = true;
