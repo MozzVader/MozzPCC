@@ -17,6 +17,8 @@
   var currentType = 'gasto';
   var donutChart = null;
   var barChart = null;
+  var lineChart = null;
+  var currentTab = 'movimientos';
 
   // Meses en espanol (corto)
   var MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -598,12 +600,22 @@
   // =========================================================================
 
   /**
-   * Renderiza el grafico de dona (gastos por categoria del mes)
-   * y el grafico de barras (ingresos vs gastos ultimos 6 meses)
+   * Renderiza graficos segun el tab activo
    */
   function renderCharts() {
     renderDonutChart();
+    if (currentTab === 'graficos') {
+      renderGraficosTab();
+    }
+  }
+
+  /**
+   * Renderiza todo el tab de graficos: barras, linea, comparacion
+   */
+  function renderGraficosTab() {
     renderBarChart();
+    renderLineChart();
+    updateComparison();
   }
 
   /**
@@ -881,6 +893,214 @@
     });
   }
 
+  /**
+   * Renderiza el grafico de linea (balance acumulado a lo largo del tiempo)
+   */
+  function renderLineChart() {
+    var canvas = document.getElementById('fin-line-canvas');
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    if (lineChart) {
+      lineChart.destroy();
+      lineChart = null;
+    }
+
+    // Calcular balance acumulado por mes (ultimos 6 meses)
+    var labels = [];
+    var balanceData = [];
+    var runningBalance = 0;
+    var now = new Date();
+    var months = [];
+
+    for (var m = 5; m >= 0; m--) {
+      var d = new Date(now.getFullYear(), now.getMonth() - m, 1);
+      var year = d.getFullYear();
+      var month = String(d.getMonth() + 1).padStart(2, '0');
+      var ym = year + '-' + month;
+      months.push({ ym: ym, label: MONTH_NAMES[d.getMonth()] });
+    }
+
+    // Calcular balance acumulado desde el mes 5 hasta el actual
+    for (var i = 0; i < months.length; i++) {
+      var monthIncome = 0;
+      var monthExpense = 0;
+
+      for (var j = 0; j < transactions.length; j++) {
+        var t = transactions[j];
+        var txMonth = t.date ? t.date.substring(0, 7) : '';
+        if (txMonth !== months[i].ym) continue;
+
+        var amount = parseFloat(t.amount) || 0;
+        if (t.type === 'ingreso') {
+          monthIncome += amount;
+        } else {
+          monthExpense += amount;
+        }
+      }
+
+      runningBalance += (monthIncome - monthExpense);
+      labels.push(months[i].label);
+      balanceData.push(parseFloat(runningBalance.toFixed(2)));
+    }
+
+    lineChart = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Balance',
+          data: balanceData,
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          borderWidth: 2,
+          pointRadius: 4,
+          pointBackgroundColor: '#06b6d4',
+          pointBorderColor: '#06b6d4',
+          tension: 0.3,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', font: { size: 11 } }
+          },
+          y: {
+            grid: { color: 'rgba(148, 163, 184, 0.1)' },
+            ticks: {
+              color: '#94a3b8',
+              font: { size: 10 },
+              callback: function (value) {
+                if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
+                if (value >= 1000) return (value / 1000).toFixed(0) + 'K';
+                return value;
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                var value = context.parsed.y || 0;
+                var prefix = value >= 0 ? '' : '-';
+                return 'Balance: ' + prefix + getCurrency() + Math.abs(value).toLocaleString('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                });
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Actualiza las cards de comparacion (mes actual vs anterior)
+   */
+  function updateComparison() {
+    var now = new Date();
+    var currentMonth = getCurrentMonth();
+    var prevMonth;
+    if (now.getMonth() === 0) {
+      prevMonth = (now.getFullYear() - 1) + '-12';
+    } else {
+      prevMonth = now.getFullYear() + '-' + String(now.getMonth()).padStart(2, '0');
+    }
+
+    var currentIncome = 0, currentExpense = 0;
+    var prevIncome = 0, prevExpense = 0;
+
+    for (var i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+      var amount = parseFloat(t.amount) || 0;
+      var txMonth = t.date ? t.date.substring(0, 7) : '';
+
+      if (txMonth === currentMonth) {
+        if (t.type === 'ingreso') currentIncome += amount;
+        else currentExpense += amount;
+      } else if (txMonth === prevMonth) {
+        if (t.type === 'ingreso') prevIncome += amount;
+        else prevExpense += amount;
+      }
+    }
+
+    // Income comparison
+    setComparisonCard('income', currentIncome, prevIncome);
+    // Expense comparison
+    setComparisonCard('expense', currentExpense, prevExpense);
+  }
+
+  /**
+   * Setea una card de comparacion individual
+   * @param {string} type - 'income' o 'expense'
+   * @param {number} current - monto del mes actual
+   * @param {number} prev - monto del mes anterior
+   */
+  function setComparisonCard(type, current, prev) {
+    var currentEl = document.getElementById('fin-cmp-' + type + '-current');
+    var changeEl = document.getElementById('fin-cmp-' + type + '-change');
+    var arrowEl = document.getElementById('fin-cmp-' + type + '-arrow');
+
+    if (!currentEl || !changeEl || !arrowEl) return;
+
+    currentEl.textContent = formatAmount(current);
+
+    // Para gastos, subir es malo. Para ingresos, subir es bueno.
+    if (prev === 0 && current === 0) {
+      changeEl.textContent = '0%';
+      changeEl.className = 'fin-cmp-change neutral';
+      arrowEl.className = 'fin-cmp-arrow neutral';
+      arrowEl.innerHTML = '<i class="fa-solid fa-minus"></i>';
+    } else if (prev === 0) {
+      changeEl.textContent = '+100%';
+      changeEl.className = 'fin-cmp-change positive';
+      arrowEl.className = 'fin-cmp-arrow positive';
+      arrowEl.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+    } else {
+      var pctChange = ((current - prev) / prev) * 100;
+      var sign = pctChange >= 0 ? '+' : '';
+      changeEl.textContent = sign + pctChange.toFixed(1) + '%';
+
+      if (type === 'expense') {
+        // Gastos: subir es malo, bajar es bueno
+        if (pctChange > 0) {
+          changeEl.className = 'fin-cmp-change negative';
+          arrowEl.className = 'fin-cmp-arrow negative';
+          arrowEl.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+        } else if (pctChange < 0) {
+          changeEl.className = 'fin-cmp-change positive';
+          arrowEl.className = 'fin-cmp-arrow positive';
+          arrowEl.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+        } else {
+          changeEl.className = 'fin-cmp-change neutral';
+          arrowEl.className = 'fin-cmp-arrow neutral';
+          arrowEl.innerHTML = '<i class="fa-solid fa-minus"></i>';
+        }
+      } else {
+        // Ingresos: subir es bueno, bajar es malo
+        if (pctChange > 0) {
+          changeEl.className = 'fin-cmp-change positive';
+          arrowEl.className = 'fin-cmp-arrow positive';
+          arrowEl.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+        } else if (pctChange < 0) {
+          changeEl.className = 'fin-cmp-change negative';
+          arrowEl.className = 'fin-cmp-arrow negative';
+          arrowEl.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+        } else {
+          changeEl.className = 'fin-cmp-change neutral';
+          arrowEl.className = 'fin-cmp-arrow neutral';
+          arrowEl.innerHTML = '<i class="fa-solid fa-minus"></i>';
+        }
+      }
+    }
+  }
+
   // =========================================================================
   //  FORMULARIO
   // =========================================================================
@@ -974,6 +1194,7 @@
     currentType = 'gasto';
     donutChart = null;
     barChart = null;
+    lineChart = null;
     initialized = false;
 
     var list = document.getElementById('fin-list');
@@ -1103,6 +1324,40 @@
   if (categoryFilter) {
     categoryFilter.addEventListener('change', function () {
       filterTransactions();
+    });
+  }
+
+  // Tab switching
+  var finTabs = document.querySelectorAll('.fin-tab');
+  for (var ti = 0; ti < finTabs.length; ti++) {
+    finTabs[ti].addEventListener('click', function () {
+      var tabName = this.dataset.tab;
+      if (!tabName) return;
+
+      // Update tab buttons
+      for (var j = 0; j < finTabs.length; j++) {
+        finTabs[j].classList.remove('active');
+      }
+      this.classList.add('active');
+
+      // Update tab content
+      var contents = document.querySelectorAll('.fin-tab-content');
+      for (var k = 0; k < contents.length; k++) {
+        contents[k].classList.remove('active');
+      }
+      var targetContent = document.getElementById('fin-tab-' + tabName);
+      if (targetContent) targetContent.classList.add('active');
+
+      currentTab = tabName;
+
+      // Render charts for the new tab (needed because Chart.js requires visible canvas)
+      setTimeout(function () {
+        if (tabName === 'graficos') {
+          renderGraficosTab();
+        } else {
+          renderDonutChart();
+        }
+      }, 50);
     });
   }
 

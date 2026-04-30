@@ -297,30 +297,79 @@
 
           <!-- Scrollable content -->
           <div class="finances-content">
-            <!-- Filters -->
-            <div class="fin-filters-row">
-              <select id="fin-month-filter" class="fin-select fin-filter" aria-label="Filtrar por mes">
-                <option value="all">Todos los meses</option>
-              </select>
-              <select id="fin-category-filter" class="fin-select fin-filter" aria-label="Filtrar por categoria">
-                <option value="all">Todas las categorias</option>
-              </select>
-              <p class="fin-counter" id="fin-counter">0 transacciones</p>
+            <!-- Tab bar -->
+            <div class="fin-tabs">
+              <button class="fin-tab active" data-tab="movimientos">
+                <i class="fa-solid fa-arrow-right-arrow-left"></i> Movimientos
+              </button>
+              <button class="fin-tab" data-tab="graficos">
+                <i class="fa-solid fa-chart-pie"></i> Graficos
+              </button>
             </div>
 
-            <!-- Charts + Transactions grid -->
-            <div class="fin-grid">
-              <!-- Transactions list -->
-              <div class="fin-transactions-col">
-                <ul class="fin-list" id="fin-list"></ul>
+            <!-- Tab: Movimientos -->
+            <div class="fin-tab-content fin-tab-movimientos active" id="fin-tab-movimientos">
+              <!-- Filters -->
+              <div class="fin-filters-row">
+                <select id="fin-month-filter" class="fin-select fin-filter" aria-label="Filtrar por mes">
+                  <option value="all">Todos los meses</option>
+                </select>
+                <select id="fin-category-filter" class="fin-select fin-filter" aria-label="Filtrar por categoria">
+                  <option value="all">Todas las categorias</option>
+                </select>
+                <p class="fin-counter" id="fin-counter">0 transacciones</p>
               </div>
-              <!-- Charts column -->
-              <div class="fin-charts-col">
-                <div class="fin-chart-box">
-                  <canvas id="fin-donut-canvas"></canvas>
+
+              <!-- Transactions + donut grid -->
+              <div class="fin-grid">
+                <!-- Transactions list -->
+                <div class="fin-transactions-col">
+                  <ul class="fin-list" id="fin-list"></ul>
                 </div>
-                <div class="fin-chart-box">
-                  <canvas id="fin-bar-canvas"></canvas>
+                <!-- Donut chart only -->
+                <div class="fin-charts-col">
+                  <div class="fin-chart-box">
+                    <canvas id="fin-donut-canvas"></canvas>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab: Graficos -->
+            <div class="fin-tab-content fin-tab-graficos" id="fin-tab-graficos">
+              <!-- Comparison cards + charts grid -->
+              <div class="fin-graphs-grid">
+                <!-- Comparison cards -->
+                <div class="fin-comparison-col">
+                  <div class="fin-comparison-card" id="fin-cmp-income">
+                    <div class="fin-cmp-label">Ingresos</div>
+                    <div class="fin-cmp-values">
+                      <span class="fin-cmp-current" id="fin-cmp-income-current">$0</span>
+                      <span class="fin-cmp-change" id="fin-cmp-income-change">0%</span>
+                    </div>
+                    <div class="fin-cmp-arrow" id="fin-cmp-income-arrow">
+                      <i class="fa-solid fa-minus"></i>
+                    </div>
+                  </div>
+                  <div class="fin-comparison-card" id="fin-cmp-expense">
+                    <div class="fin-cmp-label">Gastos</div>
+                    <div class="fin-cmp-values">
+                      <span class="fin-cmp-current" id="fin-cmp-expense-current">$0</span>
+                      <span class="fin-cmp-change" id="fin-cmp-expense-change">0%</span>
+                    </div>
+                    <div class="fin-cmp-arrow" id="fin-cmp-expense-arrow">
+                      <i class="fa-solid fa-minus"></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- Charts -->
+                <div class="fin-graphs-charts">
+                  <div class="fin-chart-box">
+                    <canvas id="fin-bar-canvas"></canvas>
+                  </div>
+                  <div class="fin-chart-box">
+                    <canvas id="fin-line-canvas"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
