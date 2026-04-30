@@ -1263,6 +1263,9 @@ body::after {
   overflow-y: auto;
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .finances-content::-webkit-scrollbar {
