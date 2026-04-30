@@ -141,6 +141,23 @@
     btnEliminar.innerHTML = '<i class="fa-solid fa-xmark"></i>';
     btnEliminar.addEventListener('click', () => eliminarNota(nota.id));
 
+    const btnCopiar = document.createElement('button');
+    btnCopiar.className = 'note-btn copy';
+    btnCopiar.setAttribute('aria-label', 'Copiar nota');
+    btnCopiar.innerHTML = '<i class="fa-regular fa-clipboard"></i>';
+    btnCopiar.addEventListener('click', () => {
+      const text = (nota.titulo ? nota.titulo + '\n' : '') + (nota.contenido || '');
+      navigator.clipboard.writeText(text).then(() => {
+        btnCopiar.innerHTML = '<i class="fa-solid fa-check"></i>';
+        btnCopiar.style.color = '#22c55e';
+        setTimeout(() => {
+          btnCopiar.innerHTML = '<i class="fa-regular fa-clipboard"></i>';
+          btnCopiar.style.color = '';
+        }, 1500);
+      }).catch(() => {});
+    });
+
+    acciones.appendChild(btnCopiar);
     acciones.appendChild(btnEliminar);
     header.appendChild(titulo);
     header.appendChild(acciones);
