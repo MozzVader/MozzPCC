@@ -4916,11 +4916,12 @@ body::after {
   border: 1px solid var(--border-glass);
   cursor: pointer;
   transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-card);
 }
 
 .wc-item:hover {
   border-color: var(--border-glass-hover);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
 }
 
 .wc-info {
