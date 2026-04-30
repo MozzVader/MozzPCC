@@ -4804,7 +4804,7 @@ body::after {
   flex-wrap: wrap;
 }
 
-.dollar-buy {
+.dollar-sell {
   font-size: 1.2rem;
   font-weight: 700;
   color: var(--accent);
@@ -4815,7 +4815,7 @@ body::after {
   color: var(--text-muted);
 }
 
-.dollar-sell {
+.dollar-buy {
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-secondary);

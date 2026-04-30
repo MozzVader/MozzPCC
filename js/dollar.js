@@ -45,7 +45,7 @@
       }
 
       if (oficialSerie && oficialSerie.length > 0) {
-        evolution = oficialSerie.slice(-30).map(function (v) {
+        evolution = oficialSerie.slice(0, 30).reverse().map(function (v) {
           return { d: v.date, v: v.value_buy || 0 };
         });
         saveEvolution();
