@@ -184,7 +184,7 @@ body::after {
 
 /* Sección del reloj: la card llena el centro */
 .section-clock .snap-section-inner {
-  max-width: 800px;
+  max-width: 900px;
 }
 
 /* Sección de notas: misma anchura que productividad (1200px) */
@@ -4886,16 +4886,28 @@ body::after {
   font-size: 0.85rem;
 }
 
-/* --- Reloj Mundial --- */
+/* --- Reloj Mundial (sin card) --- */
 .widget-world-clock {
   flex: 1;
-  padding: 16px 20px;
+  padding: 0;
   position: relative;
 }
 
-.widget-world-clock .card-header {
-  margin-bottom: 12px;
-  padding-bottom: 10px;
+.wc-title {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.wc-title i {
+  color: var(--accent);
+  margin-right: 5px;
+  font-size: 0.75rem;
 }
 
 .world-clock-list {

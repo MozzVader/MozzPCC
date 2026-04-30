@@ -14,6 +14,7 @@
     { name: 'Santiago', tz: 'America/Santiago', flag: '\u{1F1E8}\u{1F1F1}' },
     { name: 'São Paulo', tz: 'America/Sao_Paulo', flag: '\u{1F1E7}\u{1F1F7}' },
     { name: 'Ciudad de México', tz: 'America/Mexico_City', flag: '\u{1F1F2}\u{1F1FD}' },
+    { name: 'Guadalajara', tz: 'America/Mexico_City', flag: '\u{1F1F2}\u{1F1FD}' },
     { name: 'Bogotá', tz: 'America/Bogota', flag: '\u{1F1E8}\u{1F1F4}' },
     { name: 'Lima', tz: 'America/Lima', flag: '\u{1F1F5}\u{1F1EA}' },
     { name: 'New York', tz: 'America/New_York', flag: '\u{1F1FA}\u{1F1F8}' },

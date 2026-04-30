@@ -41,7 +41,7 @@
       var res = await fetch(API_URL);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       dollarData = await res.json();
-      if (dollarData.blue) addPoint(dollarData.blue.value_buy);
+      if (dollarData.oficial) addPoint(dollarData.oficial.value_buy);
       render();
     } catch (e) {
       console.warn('[Dólar] Error:', e.message);
@@ -104,15 +104,15 @@
 
     var h = '';
 
-    // Rate principal: Blue
-    if (blue) {
+    // Rate principal: Oficial
+    if (oficial) {
       h += '<div class="dollar-main">';
       h += '<div class="dollar-rate-main">';
-      h += '<span class="dollar-type">Blue</span>';
+      h += '<span class="dollar-type">Oficial</span>';
       h += '<div class="dollar-prices">';
-      h += '<span class="dollar-buy">Compra ' + fmt(blue.value_buy) + '</span>';
+      h += '<span class="dollar-buy">' + fmt(oficial.value_buy) + '</span>';
       h += '<span class="dollar-sep">/</span>';
-      h += '<span class="dollar-sell">Venta ' + fmt(blue.value_sell) + '</span>';
+      h += '<span class="dollar-sell">' + fmt(oficial.value_sell) + '</span>';
       h += '</div></div>';
       h += '<div class="dollar-trend" style="color:' + tColor + '">';
       h += '<i class="fa-solid ' + tIcon + '"></i>';
@@ -126,7 +126,7 @@
 
     // Otras cotizaciones
     h += '<div class="dollar-others">';
-    if (oficial) h += rateRow('Oficial', oficial.value_buy, oficial.value_sell);
+    if (blue) h += rateRow('Blue', blue.value_buy, blue.value_sell);
     if (mep) h += rateRow('MEP', mep.value_buy, mep.value_sell);
     if (ccl) h += rateRow('CCL', ccl.value_buy, ccl.value_sell);
     h += '</div>';
