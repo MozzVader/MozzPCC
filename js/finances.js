@@ -19,7 +19,7 @@
   var barChart = null;
   var lineChart = null;
   var currentTab = 'movimientos';
-  var finSummaryHidden = false;
+  var finSummaryHidden = localStorage.getItem('mozzpcc-fin-summary-hidden') === 'true';
 
   // Meses en espanol (corto)
   var MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -1211,6 +1211,7 @@
     lineChart = null;
     initialized = false;
     finSummaryHidden = false;
+    localStorage.removeItem('mozzpcc-fin-summary-hidden');
 
     var summaryRow = document.querySelector('.fin-summary-row');
     if (summaryRow) summaryRow.classList.remove('fin-privacy-on');
@@ -1415,7 +1416,18 @@
         }
       }
       summaryRow.classList.toggle('fin-privacy-on', finSummaryHidden);
+      localStorage.setItem('mozzpcc-fin-summary-hidden', finSummaryHidden ? 'true' : 'false');
     });
+
+    // Restaurar estado guardado al cargar
+    if (finSummaryHidden) {
+      var vals = document.querySelectorAll('.fin-summary-value');
+      for (var j = 0; j < vals.length; j++) {
+        vals[j].dataset.realValue = vals[j].textContent;
+        vals[j].textContent = '●●●●●●●';
+      }
+      summaryRow.classList.add('fin-privacy-on');
+    }
   }
 
   // Enter en campo de descripcion para saltar a monto

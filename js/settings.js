@@ -269,6 +269,7 @@
     if (!theme) return;
 
     currentTheme = themeId;
+    localStorage.setItem('mozzpcc-theme', themeId);
     var root = document.documentElement;
     Object.keys(theme.vars).forEach(function (key) {
       root.style.setProperty(key, theme.vars[key]);
@@ -322,6 +323,8 @@
 
       if (!error && data) {
         if (data.theme) applyTheme(data.theme);
+        // Sincronizar localStorage con lo que vino de Supabase
+        localStorage.setItem('mozzpcc-theme', data.theme || localStorage.getItem('mozzpcc-theme') || 'cyber');
         if (data.city) {
           var cityInput = document.getElementById('weather-city-input');
           if (cityInput) cityInput.value = data.city;
@@ -1327,6 +1330,12 @@
     }
   });
 
+  // --- Aplicar tema guardado en localStorage antes del auth (evitar flash) ---
+  var savedTheme = localStorage.getItem('mozzpcc-theme');
+  if (savedTheme && savedTheme !== 'cyber') {
+    applyTheme(savedTheme);
+  }
+
   // --- Auth events ---
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
@@ -1341,6 +1350,7 @@
     selectedGroupId = null;
     userId = null;
     currentTheme = 'cyber';
+    localStorage.removeItem('mozzpcc-theme');
     applyTheme('cyber');
     closeSettings();
   });
