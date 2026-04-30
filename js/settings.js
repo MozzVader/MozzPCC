@@ -937,104 +937,10 @@
         seenNames[lk.name] = true;
       }
     }
-    // Limpiar del estado local
     defaultGroup._links = existingLinks.filter(function (l) { return seenNames[l.name]; });
-    existingLinks = defaultGroup._links;
 
-    // Links que deberían estar en el grupo Secciones
-    var requiredLinks = [
-      { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-      { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
-      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
-    ];
-
-    // Reconstruir mapas de existentes para detección confiable
-    var existingByName = {};
-    var existingByUrl = {};
-    for (var e = 0; e < existingLinks.length; e++) {
-      existingByName[existingLinks[e].name] = true;
-      existingByUrl[existingLinks[e].url] = true;
-    }
-
-    for (var i = 0; i < requiredLinks.length; i++) {
-      var rl = requiredLinks[i];
-      // Para Steam, checkear por nombre ya que comparte URL con Productividad
-      var exists = (rl.name === 'Steam')
-        ? existingByName['Steam']
-        : existingByUrl[rl.url];
-
-      if (!exists) {
-        try {
-          var { data: linkData, error: lError } = await client
-            .from('user_dock_links')
-            .insert({
-              user_id: userId,
-              group_id: defaultGroup.id,
-              name: rl.name,
-              url: rl.url,
-              icon: rl.icon,
-              order: rl.order
-            })
-            .select()
-            .single();
-
-          if (!lError && linkData) {
-            if (!defaultGroup._links) defaultGroup._links = [];
-            defaultGroup._links.push(linkData);
-            needsUpdate = true;
-            existingByName[rl.name] = true;
-            existingByUrl[rl.url] = true;
-          }
-        } catch (e) {
-          console.warn('Error al migrar link default:', e);
-        }
-      }
-    }
-
-    // Reordenar todos los links del grupo según el orden esperado
-    if (needsUpdate) {
-      var expectedOrder = [
-        '#section-clock',
-        '#section-quick-access',
-        '#section-productivity',
-        '#section-finances',
-        '#section-notes',
-        '#section-read-later'
-      ];
-
-      var allLinks = defaultGroup._links || [];
-      var steamLinks = allLinks.filter(function (l) { return l.name === 'Steam'; });
-      var otherLinks = allLinks.filter(function (l) { return l.name !== 'Steam'; });
-
-      var ordered = [];
-      var steamInserted = false;
-
-      for (var j = 0; j < expectedOrder.length; j++) {
-        var url = expectedOrder[j];
-        if (url === '#section-productivity' && steamLinks.length > 0 && !steamInserted) {
-          var prodNonSteam = otherLinks.filter(function (l) { return l.url === url; });
-          prodNonSteam.forEach(function (l) { ordered.push(l); });
-          steamLinks.forEach(function (l) { ordered.push(l); });
-          steamInserted = true;
-        } else if (url === '#section-productivity' && steamInserted) {
-          continue;
-        } else {
-          otherLinks.filter(function (l) { return l.url === url; }).forEach(function (l) { ordered.push(l); });
-        }
-      }
-
-      for (var k = 0; k < ordered.length; k++) {
-        try {
-          await client
-            .from('user_dock_links')
-            .update({ order: k })
-            .eq('id', ordered[k].id);
-          ordered[k].order = k;
-        } catch (e) { /* silencioso */ }
-      }
-
-      defaultGroup._links = ordered;
-    }
+    // No forzar la recreacion de links que el usuario borro intencionalmente.
+    // El seed ya se encarga de crear los defaults para usuarios nuevos.
   }
 
   // --- Notificar al dock que los datos cambiaron ---
