@@ -1,47 +1,77 @@
 /**
- * dollar.js — Widget de cotización del dólar en tiempo real
- * Muestra tipos de cambio (Blue, Oficial, MEP, CCL) con sparkline de tendencia
- * API: api.bluelytics.com.ar (gratuita, sin key)
+ * dollar.js — Widget de cotización del dólar (Oficial) con sparkline
+ * API Bluelytics: /v2/latest (cotización actual) + /v2/evolution (historial)
+ * El sparkline muestra los últimos ~30 días de evolución
  */
 
 (function () {
   'use strict';
 
-  var HISTORY_KEY = 'mozzpcc-dollar-history';
-  var MAX_POINTS = 24;
+  var HISTORY_KEY = 'mozzpcc-dollar-evolution';
+  var CACHE_MS = 60 * 60 * 1000;
   var REFRESH_MS = 30 * 60 * 1000;
-  var API_URL = 'https://api.bluelytics.com.ar/v2/latest';
+  var API_LATEST = 'https://api.bluelytics.com.ar/v2/latest';
+  var API_EVOLUTION = 'https://api.bluelytics.com.ar/v2/evolution';
 
   var dollarData = null;
-  var history = [];
+  var evolution = [];
+  var evolutionLoaded = false;
 
-  // --- Historial en localStorage ---
-  function loadHistory() {
+  // --- Historial en localStorage (evolución diaria) ---
+  function loadEvolution() {
     try {
       var raw = localStorage.getItem(HISTORY_KEY);
-      if (raw) history = JSON.parse(raw);
-    } catch (e) { history = []; }
+      if (raw) {
+        var data = JSON.parse(raw);
+        if (data.ts && (Date.now() - data.ts) < CACHE_MS) {
+          evolution = data.values || [];
+          evolutionLoaded = true;
+          return;
+        }
+      }
+    } catch (e) {}
   }
 
-  function saveHistory() {
-    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch (e) {}
-  }
-
-  function addPoint(price) {
-    var now = Date.now();
-    if (history.length > 0 && (now - history[history.length - 1].t) < 15 * 60 * 1000) return;
-    history.push({ t: now, v: price });
-    if (history.length > MAX_POINTS) history.shift();
-    saveHistory();
-  }
-
-  // --- Fetch API ---
-  async function fetchData() {
+  function saveEvolution() {
     try {
-      var res = await fetch(API_URL);
+      localStorage.setItem(HISTORY_KEY, JSON.stringify({ ts: Date.now(), values: evolution }));
+    } catch (e) {}
+  }
+
+  // --- Fetch evolución diaria ---
+  async function fetchEvolution() {
+    if (evolutionLoaded) return;
+    try {
+      var res = await fetch(API_EVOLUTION);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var data = await res.json();
+
+      // Buscar serie "oficial" en la respuesta
+      var oficialSerie = null;
+      if (Array.isArray(data)) {
+        oficialSerie = data.find(function (s) { return s.source === 'oficial' || s.source === 'oficial_minorista'; });
+      } else if (data.oficial) {
+        oficialSerie = data.oficial;
+      }
+
+      if (oficialSerie && oficialSerie.values) {
+        evolution = oficialSerie.values.slice(-30).map(function (v) {
+          return { d: v.date, v: v.value_buy || v.value || 0 };
+        });
+        saveEvolution();
+        evolutionLoaded = true;
+      }
+    } catch (e) {
+      console.warn('[Dólar] Error evolución:', e.message);
+    }
+  }
+
+  // --- Fetch cotización actual ---
+  async function fetchLatest() {
+    try {
+      var res = await fetch(API_LATEST);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       dollarData = await res.json();
-      if (dollarData.oficial) addPoint(dollarData.oficial.value_buy);
       render();
     } catch (e) {
       console.warn('[Dólar] Error:', e.message);
@@ -50,32 +80,35 @@
   }
 
   // --- Sparkline SVG ---
-  function sparkline() {
-    if (history.length < 2) return '';
-    var vals = history.map(function (p) { return p.v; });
+  function sparklineSVG() {
+    if (evolution.length < 2) return '';
+    var vals = evolution.map(function (p) { return p.v; });
     var min = Math.min.apply(null, vals);
     var max = Math.max.apply(null, vals);
     var range = max - min || 1;
-    var W = 120, H = 32;
+    var W = 200, H = 48;
     var pts = vals.map(function (v, i) {
       var x = (i / (vals.length - 1)) * W;
-      var y = H - 2 - ((v - min) / range) * (H - 4);
+      var y = H - 3 - ((v - min) / range) * (H - 6);
       return x.toFixed(1) + ',' + y.toFixed(1);
     }).join(' ');
     var area = '0,' + H + ' ' + pts + ' ' + W + ',' + H;
     var up = vals[vals.length - 1] >= vals[0];
     var col = up ? '#22c55e' : '#ef4444';
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" class="dollar-sparkline">' +
-      '<polygon points="' + area + '" fill="' + col + '" opacity="0.1"/>' +
-      '<polyline points="' + pts + '" fill="none" stroke="' + col + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<polygon points="' + area + '" fill="' + col + '" opacity="0.08"/>' +
+      '<polyline points="' + pts + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
       '</svg>';
   }
 
   // --- Tendencia ---
-  function trend() {
-    if (history.length < 2) return { dir: 'neutral', diff: 0 };
-    var d = history[history.length - 1].v - history[0].v;
-    return { dir: d > 0 ? 'up' : d < 0 ? 'down' : 'neutral', diff: d };
+  function trendInfo() {
+    if (evolution.length < 2) return { dir: 'neutral', diff: 0, pct: 0 };
+    var first = evolution[0].v;
+    var last = evolution[evolution.length - 1].v;
+    var diff = last - first;
+    var pct = first > 0 ? ((diff / first) * 100) : 0;
+    return { dir: diff > 0 ? 'up' : diff < 0 ? 'down' : 'neutral', diff: diff, pct: pct };
   }
 
   // --- Formato ---
@@ -83,55 +116,40 @@
     return '$' + (n || 0).toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
-  function fmtShort(n) {
-    return '$' + (n || 0).toLocaleString('es-AR', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
-  }
-
   // --- Render ---
   function render() {
     var el = document.getElementById('dollar-content');
-    if (!el || !dollarData) { renderLoading(el); return; }
+    if (!el) return;
+    if (!dollarData) { renderLoading(el); return; }
 
-    var t = trend();
+    var oficial = dollarData.oficial;
+    var lastUpdate = dollarData.last_update;
+    var t = trendInfo();
     var tIcon = t.dir === 'up' ? 'fa-arrow-trend-up' : t.dir === 'down' ? 'fa-arrow-trend-down' : 'fa-minus';
     var tColor = t.dir === 'up' ? '#22c55e' : t.dir === 'down' ? '#ef4444' : 'var(--text-muted)';
 
-    var blue = dollarData.blue;
-    var oficial = dollarData.oficial;
-    var mep = dollarData.mep;
-    var ccl = dollarData.ccl;
-    var lastUpdate = dollarData.last_update;
-
     var h = '';
 
-    // Rate principal: Oficial
     if (oficial) {
       h += '<div class="dollar-main">';
       h += '<div class="dollar-rate-main">';
-      h += '<span class="dollar-type">Oficial</span>';
-      h += '<div class="dollar-prices">';
       h += '<span class="dollar-buy">' + fmt(oficial.value_buy) + '</span>';
       h += '<span class="dollar-sep">/</span>';
       h += '<span class="dollar-sell">' + fmt(oficial.value_sell) + '</span>';
-      h += '</div></div>';
+      h += '</div>';
       h += '<div class="dollar-trend" style="color:' + tColor + '">';
       h += '<i class="fa-solid ' + tIcon + '"></i>';
-      if (t.diff !== 0) h += '<span>' + (t.diff > 0 ? '+' : '') + t.diff.toFixed(2) + '</span>';
+      h += '<span>' + (t.diff >= 0 ? '+' : '') + t.pct.toFixed(1) + '%</span>';
       h += '</div></div>';
     }
 
     // Sparkline
-    var sp = sparkline();
-    if (sp) h += '<div class="dollar-sparkline-wrap">' + sp + '</div>';
+    var sp = sparklineSVG();
+    if (sp) {
+      h += '<div class="dollar-sparkline-wrap">' + sp + '</div>';
+    }
 
-    // Otras cotizaciones
-    h += '<div class="dollar-others">';
-    if (blue) h += rateRow('Blue', blue.value_buy, blue.value_sell);
-    if (mep) h += rateRow('MEP', mep.value_buy, mep.value_sell);
-    if (ccl) h += rateRow('CCL', ccl.value_buy, ccl.value_sell);
-    h += '</div>';
-
-    // Última actualización
+    // Actualizado
     if (lastUpdate) {
       var d = new Date(lastUpdate);
       var timeStr = d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
@@ -139,12 +157,6 @@
     }
 
     el.innerHTML = h;
-  }
-
-  function rateRow(name, buy, sell) {
-    return '<div class="dollar-rate-row">' +
-      '<span class="dr-name">' + name + '</span>' +
-      '<span class="dr-vals">' + fmtShort(buy) + ' / ' + fmtShort(sell) + '</span></div>';
   }
 
   function renderLoading(el) {
@@ -158,12 +170,21 @@
     el.innerHTML = '<div class="dollar-error">No se pudo obtener la cotización</div>';
   }
 
-  // --- Init (no requiere auth) ---
-  function init() {
-    loadHistory();
+  // --- Init ---
+  async function init() {
+    loadEvolution();
     renderLoading(document.getElementById('dollar-content'));
-    fetchData();
-    setInterval(fetchData, REFRESH_MS);
+
+    // Cargar evolución (historial) y luego la cotización actual
+    await fetchEvolution();
+    await fetchLatest();
+
+    // Refresh periódico
+    setInterval(function () {
+      evolutionLoaded = false;
+      fetchEvolution();
+      fetchLatest();
+    }, REFRESH_MS);
   }
 
   if (document.readyState === 'loading') {

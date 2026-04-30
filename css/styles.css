@@ -182,9 +182,9 @@ body::after {
   grid-column: auto;
 }
 
-/* Sección del reloj: la card llena el centro */
+/* Sección del reloj: mas ancha para widgets fila */
 .section-clock .snap-section-inner {
-  max-width: 900px;
+  max-width: 920px;
 }
 
 /* Sección de notas: misma anchura que productividad (1200px) */
@@ -417,7 +417,6 @@ body::after {
   justify-content: space-between;
   padding: 16px 24px;
   width: 100%;
-  max-width: 800px;
   margin-top: 12px;
   gap: 16px;
 }
@@ -4770,6 +4769,7 @@ body::after {
   gap: 12px;
   width: 100%;
   margin-top: 12px;
+  align-items: center;
 }
 
 /* --- Dólar --- */
@@ -4832,8 +4832,8 @@ body::after {
 }
 
 .dollar-sparkline-wrap {
-  height: 32px;
-  margin-bottom: 8px;
+  height: 44px;
+  margin: 8px 0;
   overflow: hidden;
   border-radius: var(--radius-xs);
 }
@@ -4886,28 +4886,12 @@ body::after {
   font-size: 0.85rem;
 }
 
-/* --- Reloj Mundial (sin card) --- */
+/* --- Reloj Mundial (sin card, items con estilo card) --- */
 .widget-world-clock {
   flex: 1;
   padding: 0;
   position: relative;
-}
-
-.wc-title {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-glass);
-}
-
-.wc-title i {
-  color: var(--accent);
-  margin-right: 5px;
-  font-size: 0.75rem;
+  width: 100%;
 }
 
 .world-clock-list {
@@ -4920,16 +4904,17 @@ body::after {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 7px 10px;
-  border-radius: var(--radius-xs);
-  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-glass);
   border: 1px solid var(--border-glass);
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .wc-item:hover {
-  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--border-glass-hover);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .wc-info {
