@@ -4443,6 +4443,13 @@ body::after {
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
+/* Select options - fondo oscuro para el dropdown nativo */
+.weather-city-input option {
+  background: #1e1e2e;
+  color: var(--text-primary);
+  padding: 8px 10px;
+}
+
 .weather-city-save {
   padding: 9px 14px;
   background: var(--accent-dim);

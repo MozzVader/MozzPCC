@@ -41,11 +41,11 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) selectedCities = JSON.parse(raw);
     } catch (e) { selectedCities = []; }
-    selectedCities = selectedCities.filter(function (tz) {
-      return CITIES.some(function (c) { return c.tz === tz; });
+    selectedCities = selectedCities.filter(function (name) {
+      return CITIES.some(function (c) { return c.name === name; });
     });
     if (selectedCities.length === 0) {
-      selectedCities = ['America/New_York', 'Europe/London', 'Asia/Tokyo'];
+      selectedCities = ['New York', 'Londres', 'Tokio'];
       save();
     }
   }
@@ -54,7 +54,7 @@
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(selectedCities)); } catch (e) {}
   }
 
-  function info(tz) { return CITIES.find(function (c) { return c.tz === tz; }); }
+  function info(name) { return CITIES.find(function (c) { return c.name === name; }); }
 
   function timeStr(tz) {
     return new Date().toLocaleTimeString('es-AR', { timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
@@ -80,7 +80,7 @@
     for (var i = 0; i < selectedCities.length; i++) {
       var c = info(selectedCities[i]);
       if (!c) continue;
-      h += '<div class="wc-item" data-idx="' + i + '">' +
+      h += '<div class="wc-item" data-idx="' + i + '" data-name="' + c.name + '">' +
         '<div class="wc-info">' +
         '<span class="wc-flag">' + c.flag + '</span>' +
         '<div class="wc-details">' +
@@ -113,8 +113,8 @@
     list.className = 'wc-list';
 
     var available = CITIES.filter(function (c) {
-      if (idx >= 0 && selectedCities[idx] === c.tz) return true;
-      return selectedCities.indexOf(c.tz) === -1;
+      if (idx >= 0 && selectedCities[idx] === c.name) return true;
+      return selectedCities.indexOf(c.name) === -1;
     });
 
     available.forEach(function (city) {
@@ -125,8 +125,8 @@
         '<span class="wc-opt-tz">' + offsetStr(city.tz) + '</span>';
       opt.addEventListener('click', function (e) {
         e.stopPropagation();
-        if (idx >= 0) selectedCities[idx] = city.tz;
-        else selectedCities.push(city.tz);
+        if (idx >= 0) selectedCities[idx] = city.name;
+        else selectedCities.push(city.name);
         save();
         closePicker();
         render();
@@ -168,7 +168,7 @@
     var items = el.querySelectorAll('.wc-item');
     items.forEach(function (item, i) {
       if (i >= selectedCities.length) return;
-      var c = info(selectedCities[i]);
+      var c = info(item.dataset.name);
       if (!c) return;
       var timeEl = item.querySelector('.wc-time');
       var metaEl = item.querySelector('.wc-meta');
