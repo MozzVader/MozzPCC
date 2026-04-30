@@ -385,9 +385,13 @@
   }
 
   // --- Cargar grupos desde Supabase ---
+  var isLoadingGroups = false;
+
   async function loadGroups() {
+    if (isLoadingGroups) return;
+    isLoadingGroups = true;
     var client = getSupabase();
-    if (!client || !userId) return;
+    if (!client || !userId) { isLoadingGroups = false; return; }
 
     try {
       var { data, error } = await client
@@ -419,6 +423,8 @@
       }
     } catch (e) {
       console.warn('Error al cargar grupos:', e);
+    } finally {
+      isLoadingGroups = false;
     }
   }
 
@@ -953,12 +959,22 @@
   // --- Obtener datos de grupos para el dock ---
   function getDockData() {
     return groups.map(function (g) {
+      var links = g._links || [];
+      // Deduplicar links por nombre (red de seguridad)
+      var seen = {};
+      var uniqueLinks = [];
+      for (var i = 0; i < links.length; i++) {
+        if (!seen[links[i].name]) {
+          seen[links[i].name] = true;
+          uniqueLinks.push(links[i]);
+        }
+      }
       return {
         id: g.id,
         name: g.name,
         icon: g.icon,
         is_default: g.is_default,
-        links: (g._links || []).map(function (l) {
+        links: uniqueLinks.map(function (l) {
           return { id: l.id, name: l.name, url: l.url, icon: l.icon };
         })
       };
