@@ -1231,6 +1231,16 @@ body::after {
   border-radius: var(--radius-xs);
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.fin-summary-box:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.fin-summary-row.fin-privacy-on .fin-summary-value {
+  user-select: none;
 }
 
 .fin-summary-label {

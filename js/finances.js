@@ -19,6 +19,7 @@
   var barChart = null;
   var lineChart = null;
   var currentTab = 'movimientos';
+  var finSummaryHidden = false;
 
   // Meses en espanol (corto)
   var MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -590,9 +591,22 @@
 
     var balance = allIncome - allExpense;
 
-    if (balanceEl) balanceEl.textContent = formatAmount(balance);
-    if (incomeEl) incomeEl.textContent = '+' + formatAmount(totalIncome);
-    if (expenseEl) expenseEl.textContent = '-' + formatAmount(totalExpense);
+    var balText = formatAmount(balance);
+    var incText = '+' + formatAmount(totalIncome);
+    var expText = '-' + formatAmount(totalExpense);
+
+    if (balanceEl) {
+      balanceEl.dataset.realValue = balText;
+      balanceEl.textContent = finSummaryHidden ? '●●●●●●●' : balText;
+    }
+    if (incomeEl) {
+      incomeEl.dataset.realValue = incText;
+      incomeEl.textContent = finSummaryHidden ? '●●●●●●●' : incText;
+    }
+    if (expenseEl) {
+      expenseEl.dataset.realValue = expText;
+      expenseEl.textContent = finSummaryHidden ? '●●●●●●●' : expText;
+    }
   }
 
   // =========================================================================
@@ -1196,6 +1210,10 @@
     barChart = null;
     lineChart = null;
     initialized = false;
+    finSummaryHidden = false;
+
+    var summaryRow = document.querySelector('.fin-summary-row');
+    if (summaryRow) summaryRow.classList.remove('fin-privacy-on');
 
     var list = document.getElementById('fin-list');
     if (list) list.innerHTML = '';
@@ -1379,6 +1397,24 @@
       if (e.key === 'Enter') {
         addTransaction();
       }
+    });
+  }
+
+  // Toggle privacidad del resumen financiero
+  var summaryRow = document.querySelector('.fin-summary-row');
+  if (summaryRow) {
+    summaryRow.addEventListener('click', function () {
+      finSummaryHidden = !finSummaryHidden;
+      var vals = document.querySelectorAll('.fin-summary-value');
+      for (var i = 0; i < vals.length; i++) {
+        if (finSummaryHidden) {
+          vals[i].dataset.realValue = vals[i].textContent;
+          vals[i].textContent = '●●●●●●●';
+        } else {
+          vals[i].textContent = vals[i].dataset.realValue || vals[i].textContent;
+        }
+      }
+      summaryRow.classList.toggle('fin-privacy-on', finSummaryHidden);
     });
   }
 
