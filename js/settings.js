@@ -906,7 +906,6 @@
     if (!defaultGroup) return;
 
     var existingLinks = defaultGroup._links || [];
-    var existingUrls = existingLinks.map(function (l) { return l.url; });
     var needsUpdate = false;
 
     // Remover links obsoletos (Inspiración ya no existe)
@@ -924,7 +923,23 @@
       return obsoleteNames.indexOf(l.name) === -1;
     });
     existingLinks = defaultGroup._links;
-    existingUrls = existingLinks.map(function (l) { return l.url; });
+
+    // Limpiar duplicados en la DB (por nombre)
+    var seenNames = {};
+    for (var d = 0; d < existingLinks.length; d++) {
+      var lk = existingLinks[d];
+      if (seenNames[lk.name]) {
+        try {
+          await client.from('user_dock_links').delete().eq('id', lk.id);
+          needsUpdate = true;
+        } catch (e) { /* silencioso */ }
+      } else {
+        seenNames[lk.name] = true;
+      }
+    }
+    // Limpiar del estado local
+    defaultGroup._links = existingLinks.filter(function (l) { return seenNames[l.name]; });
+    existingLinks = defaultGroup._links;
 
     // Links que deberían estar en el grupo Secciones
     var requiredLinks = [
@@ -933,12 +948,20 @@
       { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
     ];
 
+    // Reconstruir mapas de existentes para detección confiable
+    var existingByName = {};
+    var existingByUrl = {};
+    for (var e = 0; e < existingLinks.length; e++) {
+      existingByName[existingLinks[e].name] = true;
+      existingByUrl[existingLinks[e].url] = true;
+    }
+
     for (var i = 0; i < requiredLinks.length; i++) {
       var rl = requiredLinks[i];
       // Para Steam, checkear por nombre ya que comparte URL con Productividad
       var exists = (rl.name === 'Steam')
-        ? existingLinks.some(function (l) { return l.name === 'Steam'; })
-        : existingUrls.indexOf(rl.url) !== -1;
+        ? existingByName['Steam']
+        : existingByUrl[rl.url];
 
       if (!exists) {
         try {
@@ -959,7 +982,8 @@
             if (!defaultGroup._links) defaultGroup._links = [];
             defaultGroup._links.push(linkData);
             needsUpdate = true;
-            existingUrls.push(rl.url);
+            existingByName[rl.name] = true;
+            existingByUrl[rl.url] = true;
           }
         } catch (e) {
           console.warn('Error al migrar link default:', e);
