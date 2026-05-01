@@ -269,7 +269,6 @@
     if (!theme) return;
 
     currentTheme = themeId;
-    localStorage.setItem('mozzpcc-theme', themeId);
     var root = document.documentElement;
     Object.keys(theme.vars).forEach(function (key) {
       root.style.setProperty(key, theme.vars[key]);
@@ -323,8 +322,6 @@
 
       if (!error && data) {
         if (data.theme) applyTheme(data.theme);
-        // Sincronizar localStorage con lo que vino de Supabase
-        localStorage.setItem('mozzpcc-theme', data.theme || localStorage.getItem('mozzpcc-theme') || 'cyber');
         if (data.city) {
           var cityInput = document.getElementById('weather-city-input');
           if (cityInput) cityInput.value = data.city;
@@ -388,13 +385,9 @@
   }
 
   // --- Cargar grupos desde Supabase ---
-  var isLoadingGroups = false;
-
   async function loadGroups() {
-    if (isLoadingGroups) return;
-    isLoadingGroups = true;
     var client = getSupabase();
-    if (!client || !userId) { isLoadingGroups = false; return; }
+    if (!client || !userId) return;
 
     try {
       var { data, error } = await client
@@ -426,8 +419,6 @@
       }
     } catch (e) {
       console.warn('Error al cargar grupos:', e);
-    } finally {
-      isLoadingGroups = false;
     }
   }
 
@@ -915,6 +906,7 @@
     if (!defaultGroup) return;
 
     var existingLinks = defaultGroup._links || [];
+    var existingUrls = existingLinks.map(function (l) { return l.url; });
     var needsUpdate = false;
 
     // Remover links obsoletos (Inspiración ya no existe)
@@ -932,24 +924,93 @@
       return obsoleteNames.indexOf(l.name) === -1;
     });
     existingLinks = defaultGroup._links;
+    existingUrls = existingLinks.map(function (l) { return l.url; });
 
-    // Limpiar duplicados en la DB (por nombre)
-    var seenNames = {};
-    for (var d = 0; d < existingLinks.length; d++) {
-      var lk = existingLinks[d];
-      if (seenNames[lk.name]) {
+    // Links que deberían estar en el grupo Secciones
+    var requiredLinks = [
+      { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
+      { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
+    ];
+
+    for (var i = 0; i < requiredLinks.length; i++) {
+      var rl = requiredLinks[i];
+      // Para Steam, checkear por nombre ya que comparte URL con Productividad
+      var exists = (rl.name === 'Steam')
+        ? existingLinks.some(function (l) { return l.name === 'Steam'; })
+        : existingUrls.indexOf(rl.url) !== -1;
+
+      if (!exists) {
         try {
-          await client.from('user_dock_links').delete().eq('id', lk.id);
-          needsUpdate = true;
-        } catch (e) { /* silencioso */ }
-      } else {
-        seenNames[lk.name] = true;
+          var { data: linkData, error: lError } = await client
+            .from('user_dock_links')
+            .insert({
+              user_id: userId,
+              group_id: defaultGroup.id,
+              name: rl.name,
+              url: rl.url,
+              icon: rl.icon,
+              order: rl.order
+            })
+            .select()
+            .single();
+
+          if (!lError && linkData) {
+            if (!defaultGroup._links) defaultGroup._links = [];
+            defaultGroup._links.push(linkData);
+            needsUpdate = true;
+            existingUrls.push(rl.url);
+          }
+        } catch (e) {
+          console.warn('Error al migrar link default:', e);
+        }
       }
     }
-    defaultGroup._links = existingLinks.filter(function (l) { return seenNames[l.name]; });
 
-    // No forzar la recreacion de links que el usuario borro intencionalmente.
-    // El seed ya se encarga de crear los defaults para usuarios nuevos.
+    // Reordenar todos los links del grupo según el orden esperado
+    if (needsUpdate) {
+      var expectedOrder = [
+        '#section-clock',
+        '#section-quick-access',
+        '#section-productivity',
+        '#section-finances',
+        '#section-notes',
+        '#section-read-later'
+      ];
+
+      var allLinks = defaultGroup._links || [];
+      var steamLinks = allLinks.filter(function (l) { return l.name === 'Steam'; });
+      var otherLinks = allLinks.filter(function (l) { return l.name !== 'Steam'; });
+
+      var ordered = [];
+      var steamInserted = false;
+
+      for (var j = 0; j < expectedOrder.length; j++) {
+        var url = expectedOrder[j];
+        if (url === '#section-productivity' && steamLinks.length > 0 && !steamInserted) {
+          var prodNonSteam = otherLinks.filter(function (l) { return l.url === url; });
+          prodNonSteam.forEach(function (l) { ordered.push(l); });
+          steamLinks.forEach(function (l) { ordered.push(l); });
+          steamInserted = true;
+        } else if (url === '#section-productivity' && steamInserted) {
+          continue;
+        } else {
+          otherLinks.filter(function (l) { return l.url === url; }).forEach(function (l) { ordered.push(l); });
+        }
+      }
+
+      for (var k = 0; k < ordered.length; k++) {
+        try {
+          await client
+            .from('user_dock_links')
+            .update({ order: k })
+            .eq('id', ordered[k].id);
+          ordered[k].order = k;
+        } catch (e) { /* silencioso */ }
+      }
+
+      defaultGroup._links = ordered;
+    }
   }
 
   // --- Notificar al dock que los datos cambiaron ---
@@ -962,22 +1023,12 @@
   // --- Obtener datos de grupos para el dock ---
   function getDockData() {
     return groups.map(function (g) {
-      var links = g._links || [];
-      // Deduplicar links por nombre (red de seguridad)
-      var seen = {};
-      var uniqueLinks = [];
-      for (var i = 0; i < links.length; i++) {
-        if (!seen[links[i].name]) {
-          seen[links[i].name] = true;
-          uniqueLinks.push(links[i]);
-        }
-      }
       return {
         id: g.id,
         name: g.name,
         icon: g.icon,
         is_default: g.is_default,
-        links: uniqueLinks.map(function (l) {
+        links: (g._links || []).map(function (l) {
           return { id: l.id, name: l.name, url: l.url, icon: l.icon };
         })
       };
@@ -1330,12 +1381,6 @@
     }
   });
 
-  // --- Aplicar tema guardado en localStorage antes del auth (evitar flash) ---
-  var savedTheme = localStorage.getItem('mozzpcc-theme');
-  if (savedTheme && savedTheme !== 'cyber') {
-    applyTheme(savedTheme);
-  }
-
   // --- Auth events ---
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
@@ -1350,7 +1395,6 @@
     selectedGroupId = null;
     userId = null;
     currentTheme = 'cyber';
-    localStorage.removeItem('mozzpcc-theme');
     applyTheme('cyber');
     closeSettings();
   });

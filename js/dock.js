@@ -339,6 +339,16 @@
     }
   });
 
+  // También escuchar auth:ready para renderizar dock con los datos del settings
+  window.addEventListener('auth:ready', function () {
+    // Dar tiempo a que settings.js cargue y haga seed
+    setTimeout(function () {
+      if (typeof window.getDockData === 'function') {
+        renderDock(window.getDockData());
+      }
+    }, 500);
+  });
+
   // Cleanup al logout
   window.addEventListener('auth:logout', function () {
     dockPanel.innerHTML = '';

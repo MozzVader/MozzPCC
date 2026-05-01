@@ -148,20 +148,6 @@
             <span id="weather-hilo" class="weather-hilo"><i class="fa-solid fa-arrow-up"></i>--° <i class="fa-solid fa-arrow-down"></i>--°</span>
           </div>
         </div>
-
-        <!-- Widget: Dólar + Reloj Mundial -->
-        <div class="widgets-row">
-          <div class="card widget-dollar" id="widget-dollar">
-            <div class="card-header">
-              <i class="fa-solid fa-dollar-sign"></i>
-              <h2>Cotización</h2>
-            </div>
-            <div class="dollar-body" id="dollar-content"></div>
-          </div>
-          <div class="widget-world-clock" id="widget-world-clock">
-            <div class="world-clock-list" id="world-clock-list"></div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -392,7 +378,21 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 5: NOTAS ===== -->
+    <!-- ===== SECCIÓN 5: TV SHOWS ===== -->
+    <section class="snap-section section-tv-shows" id="section-tv-shows" aria-label="TV Shows">
+      <div class="snap-section-inner">
+        <div class="card widget-tv-shows" id="widget-tv-shows">
+          <div class="card-header">
+            <i class="fa-solid fa-tv"></i>
+            <h2>Proximos Episodios</h2>
+            <button class="tv-add-btn" id="tv-add-btn" aria-label="Agregar serie"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <div class="tv-upcoming-list" id="tv-upcoming-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECCIÓN 6: NOTAS ===== -->
     <section class="snap-section section-notes" id="section-notes" aria-label="Notas rápidas">
       <div class="snap-section-inner">
         <div class="card widget-notes">
@@ -463,6 +463,7 @@
       <button class="section-dot" data-section="section-quick-access" data-tooltip="Acceso Rapido" aria-label="Acceso Rapido"></button>
       <button class="section-dot" data-section="section-productivity" data-tooltip="Productividad" aria-label="Productividad"></button>
       <button class="section-dot" data-section="section-finances" data-tooltip="Finanzas" aria-label="Finanzas"></button>
+      <button class="section-dot" data-section="section-tv-shows" data-tooltip="TV Shows" aria-label="TV Shows"></button>
       <button class="section-dot" data-section="section-notes" data-tooltip="Notas" aria-label="Notas"></button>
       <button class="section-dot" data-section="section-read-later" data-tooltip="Ver Mas Tarde" aria-label="Ver Mas Tarde"></button>
     </div>
@@ -535,14 +536,6 @@
           <div class="tip-item">
             <span class="tip-label">Notas</span>
             <span class="tip-desc">Hacé clic en el color de una nota para cambiarlo</span>
-          </div>
-          <div class="tip-item">
-            <span class="tip-label">Copiar nota</span>
-            <span class="tip-desc">Hacé clic en el icono del portapapeles para copiar el contenido de una nota</span>
-          </div>
-          <div class="tip-item">
-            <span class="tip-label">Reloj Mundial</span>
-            <span class="tip-desc">Hacé clic en un reloj para cambiar la ciudad</span>
           </div>
         </div>
       </div>
@@ -808,12 +801,11 @@
   <script src="/MozzPCC/js/steamStats.js"></script>
   <script src="/MozzPCC/js/app.js"></script>
   <script src="/MozzPCC/js/weather.js"></script>
-  <script src="/MozzPCC/js/dollar.js"></script>
-  <script src="/MozzPCC/js/worldClock.js"></script>
   <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
   <script src="/MozzPCC/js/readLater.js"></script>
+  <script src="/MozzPCC/js/tvShows.js"></script>
   <script src="/MozzPCC/js/finances.js"></script>
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
