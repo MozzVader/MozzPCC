@@ -73,8 +73,9 @@
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
         { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
         { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
-        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 5 },
-        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
+        { name: 'TV Shows', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 5 },
+        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 6 },
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 7 }
       ]
     },
     {
@@ -930,7 +931,8 @@
     var requiredLinks = [
       { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
       { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
-      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
+      { name: 'TV Shows', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 5 },
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 7 }
     ];
 
     for (var i = 0; i < requiredLinks.length; i++) {
@@ -974,6 +976,7 @@
         '#section-quick-access',
         '#section-productivity',
         '#section-finances',
+        '#section-tv-shows',
         '#section-notes',
         '#section-read-later'
       ];

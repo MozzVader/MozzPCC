@@ -73,7 +73,13 @@
       if (raw) {
         var d = JSON.parse(raw);
         if (d.ts && (Date.now() - d.ts) < CACHE_MS) {
-          upcomingEpisodes = d.episodes || [];
+          // Re-parse airDate strings back to Date objects (JSON.stringify converts Dates to strings)
+          upcomingEpisodes = (d.episodes || []).map(function (ep) {
+            if (ep.airDate && typeof ep.airDate === 'string') {
+              ep.airDate = new Date(ep.airDate);
+            }
+            return ep;
+          });
           return true;
         }
       }
