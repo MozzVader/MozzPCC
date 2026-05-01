@@ -182,9 +182,9 @@ body::after {
   grid-column: auto;
 }
 
-/* Sección del reloj: la card llena el centro */
+/* Sección del reloj: mas ancha para widgets fila */
 .section-clock .snap-section-inner {
-  max-width: 800px;
+  max-width: 920px;
 }
 
 /* Sección de notas: misma anchura que productividad (1200px) */
@@ -364,7 +364,6 @@ body::after {
   padding: 40px 24px;
   text-align: center;
   width: 100%;
-  max-width: 800px;
 }
 
 .greeting {
@@ -1220,6 +1219,17 @@ body::after {
   gap: 12px;
   margin-top: 14px;
   padding-top: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s;
+}
+
+.fin-summary-row:hover {
+  opacity: 0.7;
+}
+
+.fin-summary-row.fin-privacy-on {
+  opacity: 1;
 }
 
 .fin-summary-box {
@@ -4435,6 +4445,13 @@ body::after {
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
+/* Select options - fondo oscuro para el dropdown nativo */
+.weather-city-input option {
+  background: #1e1e2e;
+  color: var(--text-primary);
+  padding: 8px 10px;
+}
+
 .weather-city-save {
   padding: 9px 14px;
   background: var(--accent-dim);
@@ -5102,5 +5119,321 @@ body::after {
   .tv-ep-poster {
     width: 42px;
     height: 60px;
+  }
+}
+
+/* ==========================================================================
+   WIDGETS ROW — Dólar + Reloj Mundial
+   ========================================================================== */
+
+.widgets-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+  align-items: center;
+}
+
+/* --- Dólar --- */
+.widget-dollar {
+  flex: 1.2;
+  padding: 16px 20px;
+}
+
+.widget-dollar .card-header {
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+}
+
+.dollar-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.dollar-type {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+
+.dollar-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.dollar-sell {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.dollar-sep {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.dollar-buy {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.dollar-trend {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dollar-sparkline-wrap {
+  height: 44px;
+  margin: 8px 0;
+  overflow: hidden;
+  border-radius: var(--radius-xs);
+}
+
+.dollar-sparkline {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dollar-others {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dollar-rate-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+  font-size: 0.76rem;
+}
+
+.dr-name {
+  color: var(--text-muted);
+}
+
+.dr-vals {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.dollar-updated {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+  text-align: right;
+  opacity: 0.7;
+}
+
+.dollar-loading,
+.dollar-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* --- Reloj Mundial (sin card, items con estilo card) --- */
+.widget-world-clock {
+  flex: 1;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.world-clock-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wc-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-card);
+}
+
+.wc-item:hover {
+  border-color: var(--border-glass-hover);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+.wc-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wc-flag {
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.wc-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wc-city {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wc-meta {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+}
+
+.wc-time {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.wc-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px;
+  border-radius: var(--radius-xs);
+  border: 1px dashed var(--border-glass);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.wc-add:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* City picker dropdown */
+.wc-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  max-height: 240px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wc-search {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xs);
+  padding: 7px 12px;
+  color: var(--text-primary);
+  font-size: 0.82rem;
+  outline: none;
+  margin-bottom: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wc-search::placeholder {
+  color: var(--text-muted);
+}
+
+.wc-search:focus {
+  border-color: var(--accent);
+}
+
+.wc-list {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wc-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.wc-opt:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wc-opt-flag {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.wc-opt-name {
+  flex: 1;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
+.wc-opt-tz {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* Note copy button */
+.note-btn.copy {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  transition: color 0.2s ease;
+}
+
+.note-btn.copy:hover {
+  color: var(--accent);
+}
+
+/* Responsive - Widgets */
+@media (max-width: 640px) {
+  .widgets-row {
+    flex-direction: column;
   }
 }
