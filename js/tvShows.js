@@ -190,9 +190,37 @@
   // --- Render ---
   function render() {
     var container = document.getElementById('tv-upcoming-list');
+    var chipsContainer = document.getElementById('tv-shows-chips');
     if (!container) return;
 
     var h = '';
+
+    // --- Chips de series seguidas ---
+    if (chipsContainer) {
+      chipsContainer.innerHTML = '';
+      if (shows.length > 0) {
+        chipsContainer.style.display = '';
+        shows.forEach(function (show) {
+          var chip = document.createElement('div');
+          chip.className = 'tv-show-chip';
+          chip.title = 'Clic para eliminar ' + show.title;
+          chip.innerHTML = '<span class="tv-chip-name">' + escapeHtml(show.title) + '</span>' +
+            '<button class="tv-chip-remove" aria-label="Eliminar ' + escapeHtml(show.title) + '"><i class="fa-solid fa-xmark"></i></button>';
+          chip.querySelector('.tv-chip-remove').addEventListener('click', function (e) {
+            e.stopPropagation();
+            removeShow(show.id);
+            localStorage.removeItem(CACHE_KEY);
+          });
+          chip.addEventListener('click', function () {
+            removeShow(show.id);
+            localStorage.removeItem(CACHE_KEY);
+          });
+          chipsContainer.appendChild(chip);
+        });
+      } else {
+        chipsContainer.style.display = 'none';
+      }
+    }
 
     if (shows.length === 0) {
       h = '<div class="tv-empty">' +
@@ -285,11 +313,24 @@
               opt.addEventListener('click', function () {
                 addShow(item.id, item.name, item.image, item.status);
                 opt.classList.add('tv-already-added');
+                opt.classList.remove('tv-removable');
                 var statusEl = opt.querySelector('.tv-result-status');
                 if (statusEl) statusEl.innerHTML = '<i class="fa-solid fa-check"></i> Agregada';
-                // Clear cache so upcoming episodes reload
                 localStorage.removeItem(CACHE_KEY);
                 loadUpcoming();
+              });
+            } else {
+              // Serie ya agregada: click para eliminar
+              opt.classList.add('tv-removable');
+              opt.addEventListener('click', function () {
+                var dbShow = shows.find(function (s) { return s.tvmaze_id === item.id; });
+                if (dbShow) {
+                  removeShow(dbShow.id);
+                  localStorage.removeItem(CACHE_KEY);
+                  opt.classList.remove('tv-already-added', 'tv-removable');
+                  var statusEl = opt.querySelector('.tv-result-status');
+                  if (statusEl) statusEl.innerHTML = item.status;
+                }
               });
             }
             results.appendChild(opt);
@@ -351,6 +392,12 @@
     loadShows();
   }
 
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
   function cleanup() {
     shows = [];
     upcomingEpisodes = [];
@@ -360,6 +407,8 @@
 
     var container = document.getElementById('tv-upcoming-list');
     if (container) container.innerHTML = '';
+    var chips = document.getElementById('tv-shows-chips');
+    if (chips) { chips.innerHTML = ''; chips.style.display = 'none'; }
   }
 
   // --- Events ---

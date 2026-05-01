@@ -4974,6 +4974,79 @@ body::after {
   cursor: default;
 }
 
+.tv-result-item.tv-removable {
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.tv-result-item.tv-removable:hover {
+  opacity: 1;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.tv-result-item.tv-removable .tv-result-status {
+  color: #ef4444;
+}
+
+/* Chips de series seguidas */
+.tv-shows-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 20px 4px;
+}
+
+.tv-show-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px 4px 10px;
+  border-radius: 20px;
+  background: var(--accent-dim);
+  border: 1px solid var(--border-accent);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: 0.75rem;
+}
+
+.tv-show-chip:hover {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.tv-chip-name {
+  color: var(--text-secondary);
+  max-width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tv-show-chip:hover .tv-chip-name {
+  color: #fca5a5;
+}
+
+.tv-chip-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 0.65rem;
+  transition: all 0.15s;
+}
+
+.tv-chip-remove:hover {
+  background: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
 .tv-result-poster {
   width: 45px;
   height: 65px;
