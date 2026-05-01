@@ -416,7 +416,6 @@ body::after {
   justify-content: space-between;
   padding: 16px 24px;
   width: 100%;
-  max-width: 800px;
   margin-top: 12px;
   gap: 16px;
 }
@@ -5131,18 +5130,27 @@ body::after {
   gap: 12px;
   width: 100%;
   margin-top: 12px;
-  align-items: center;
+  align-items: stretch;
 }
 
 /* --- Dólar --- */
 .widget-dollar {
   flex: 1.2;
   padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .widget-dollar .card-header {
   margin-bottom: 12px;
   padding-bottom: 10px;
+}
+
+.widget-dollar .dollar-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .dollar-main {
@@ -5248,36 +5256,28 @@ body::after {
   font-size: 0.85rem;
 }
 
-/* --- Reloj Mundial (sin card, items con estilo card) --- */
-.widget-world-clock {
+/* --- Reloj Mundial (cards individuales) --- */
+.world-clocks-col {
   flex: 1;
-  padding: 0;
-  position: relative;
-  width: 100%;
-}
-
-.world-clock-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  position: relative;
 }
 
-.wc-item {
+.wc-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-glass);
-  border: 1px solid var(--border-glass);
   cursor: pointer;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  box-shadow: var(--shadow-card);
+  flex: 1;
 }
 
-.wc-item:hover {
+.wc-card:hover {
   border-color: var(--border-glass-hover);
   box-shadow: var(--shadow-card), var(--shadow-glow);
+  transform: translateY(-1px);
 }
 
 .wc-info {
@@ -5327,7 +5327,6 @@ body::after {
   justify-content: center;
   gap: 6px;
   padding: 7px;
-  border-radius: var(--radius-xs);
   border: 1px dashed var(--border-glass);
   color: var(--text-muted);
   font-size: 0.75rem;
@@ -5341,10 +5340,10 @@ body::after {
   color: var(--accent);
 }
 
-/* City picker dropdown */
+/* City picker dropdown — se posiciona al fondo de la columna */
 .wc-dropdown {
   position: absolute;
-  top: calc(100% + 4px);
+  bottom: calc(100% + 4px);
   left: 0;
   right: 0;
   background: rgba(30, 30, 30, 0.95);

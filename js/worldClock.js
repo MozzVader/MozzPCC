@@ -74,13 +74,13 @@
 
   // --- Render ---
   function render() {
-    var el = document.getElementById('world-clock-list');
+    var el = document.getElementById('world-clocks-container');
     if (!el) return;
     var h = '';
     for (var i = 0; i < selectedCities.length; i++) {
       var c = info(selectedCities[i]);
       if (!c) continue;
-      h += '<div class="wc-item" data-idx="' + i + '" data-name="' + c.name + '">' +
+      h += '<div class="card wc-card" data-idx="' + i + '" data-name="' + c.name + '">' +
         '<div class="wc-info">' +
         '<span class="wc-flag">' + c.flag + '</span>' +
         '<div class="wc-details">' +
@@ -90,14 +90,14 @@
         '<span class="wc-time">' + timeStr(c.tz) + '</span></div>';
     }
     if (selectedCities.length < MAX_CLOCKS) {
-      h += '<div class="wc-add" id="wc-add"><i class="fa-solid fa-plus"></i> Agregar reloj</div>';
+      h += '<div class="card wc-add" id="wc-add"><i class="fa-solid fa-plus"></i> Agregar reloj</div>';
     }
     el.innerHTML = h;
 
     // Events
     var addBtn = document.getElementById('wc-add');
     if (addBtn) addBtn.addEventListener('click', function (e) { e.stopPropagation(); openPicker(-1); });
-    el.querySelectorAll('.wc-item').forEach(function (item) {
+    el.querySelectorAll('.wc-card').forEach(function (item) {
       item.addEventListener('click', function (e) { e.stopPropagation(); openPicker(parseInt(item.dataset.idx)); });
     });
   }
@@ -135,7 +135,7 @@
     });
 
     dd.appendChild(list);
-    var widget = document.getElementById('widget-world-clock');
+    var widget = document.getElementById('world-clocks-container');
     if (widget) widget.appendChild(dd);
 
     var search = dd.querySelector('.wc-search');
@@ -163,9 +163,9 @@
 
   // --- Tick each second ---
   function tick() {
-    var el = document.getElementById('world-clock-list');
+    var el = document.getElementById('world-clocks-container');
     if (!el) return;
-    var items = el.querySelectorAll('.wc-item');
+    var items = el.querySelectorAll('.wc-card');
     items.forEach(function (item, i) {
       if (i >= selectedCities.length) return;
       var c = info(item.dataset.name);
