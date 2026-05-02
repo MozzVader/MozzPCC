@@ -1341,6 +1341,11 @@ body::after {
   min-height: 0;
 }
 
+/* Center content vertically in movimientos tab */
+.fin-tab-movimientos.active {
+  justify-content: center;
+}
+
 /* Center content vertically in charts tab */
 .fin-tab-graficos.active {
   justify-content: center;
