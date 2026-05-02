@@ -1378,6 +1378,25 @@ body::after {
 .fin-transactions-col {
   overflow-y: auto;
   min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-glass) transparent;
+}
+
+.fin-transactions-col::-webkit-scrollbar {
+  width: 4px;
+}
+
+.fin-transactions-col::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.fin-transactions-col::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.fin-transactions-col::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 /* Transactions list */
@@ -1514,8 +1533,6 @@ body::after {
   flex-direction: column;
   gap: 16px;
   overflow: hidden;
-  align-items: center;
-  justify-content: center;
 }
 
 .fin-chart-box {
@@ -4818,6 +4835,25 @@ body::after {
   flex-direction: column;
   gap: 8px;
   padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-glass) transparent;
+}
+
+.tv-upcoming-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.tv-upcoming-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.tv-upcoming-list::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.tv-upcoming-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 .tv-empty {
