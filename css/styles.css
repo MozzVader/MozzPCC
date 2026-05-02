@@ -1335,7 +1335,10 @@ body::after {
 }
 
 .fin-tab-content.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 /* Filters row */
@@ -1344,6 +1347,7 @@ body::after {
   align-items: center;
   gap: 8px;
   padding: 10px 0;
+  flex-shrink: 0;
 }
 
 .fin-filter {
@@ -1366,7 +1370,14 @@ body::after {
   display: grid;
   grid-template-columns: 3fr 2fr;
   gap: 16px;
-  align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Transactions column — own scroll */
+.fin-transactions-col {
+  overflow-y: auto;
+  min-height: 0;
 }
 
 /* Transactions list */
@@ -1497,11 +1508,14 @@ body::after {
   font-size: 0.82rem;
 }
 
-/* Charts column */
+/* Charts column — static, no scroll */
 .fin-charts-col {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
 }
 
 .fin-chart-box {
