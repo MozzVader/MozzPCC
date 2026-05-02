@@ -1341,9 +1341,9 @@ body::after {
   min-height: 0;
 }
 
-/* Center content vertically in movimientos tab */
-.fin-tab-movimientos.active {
-  justify-content: center;
+/* Align grid items vertically (stretch both columns to same height) */
+.fin-grid {
+  align-items: stretch;
 }
 
 /* Center content vertically in charts tab */
@@ -1551,6 +1551,10 @@ body::after {
   border-radius: var(--radius-xs);
   padding: 12px;
   position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .fin-chart-box canvas {
