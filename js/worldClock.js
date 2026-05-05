@@ -93,6 +93,13 @@
       h += '<div class="card wc-add" id="wc-add"><i class="fa-solid fa-plus"></i> Agregar reloj</div>';
     }
     el.innerHTML = h;
+    // Parse flags into Twemoji images
+    if (window.twemoji) {
+      twemoji.parse(el, {
+        base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/',
+        folder: 'svg', ext: '.svg', size: 'svg'
+      });
+    }
 
     // Events
     var addBtn = document.getElementById('wc-add');

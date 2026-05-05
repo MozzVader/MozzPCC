@@ -5354,6 +5354,13 @@ body::after {
 .wc-flag {
   font-size: 1.05rem;
   flex-shrink: 0;
+  line-height: 1;
+}
+
+.wc-flag img {
+  height: 1.2em;
+  width: auto;
+  vertical-align: middle;
 }
 
 .wc-details {

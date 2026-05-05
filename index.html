@@ -827,6 +827,31 @@
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/twemoji@latest/dist/twemoji.min.js"></script>
+  <script>
+    // Parse all emoji flags into Twemoji images on load
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.twemoji) {
+        twemoji.parse(document.body, {
+          base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/',
+          folder: 'svg',
+          ext: '.svg',
+          size: 'svg'
+        });
+      }
+    });
+    // Re-parse after dynamic content renders
+    window.addEventListener('twemoji:update', function() {
+      if (window.twemoji) {
+        twemoji.parse(document.body, {
+          base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/',
+          folder: 'svg',
+          ext: '.svg',
+          size: 'svg'
+        });
+      }
+    });
+  </script>
 
 </body>
 </html>
