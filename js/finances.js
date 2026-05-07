@@ -1295,7 +1295,7 @@
         'Tipo': tx.type === 'ingreso' ? 'Ingreso' : 'Gasto',
         'Categoria': cat ? cat.name : 'Sin categoria',
         'Descripcion': description,
-        'Monto (' + currency + ')': parseFloat(sign + amount)
+        ['Monto (' + currency + ')']: parseFloat(sign + amount)
       });
     }
 
@@ -1313,21 +1313,21 @@
       'Tipo': '',
       'Categoria': 'Total Ingresos',
       'Descripcion': '',
-      'Monto (' + currency + ')': parseFloat('+' + totalIncome)
+      ['Monto (' + currency + ')']: parseFloat('+' + totalIncome)
     });
     rows.push({
       'Fecha': '',
       'Tipo': '',
       'Categoria': 'Total Gastos',
       'Descripcion': '',
-      'Monto (' + currency + ')': parseFloat('-' + totalExpense)
+      ['Monto (' + currency + ')']: parseFloat('-' + totalExpense)
     });
     rows.push({
       'Fecha': '',
       'Tipo': '',
       'Categoria': 'Balance',
       'Descripcion': '',
-      'Monto (' + currency + ')': parseFloat(totalIncome - totalExpense)
+      ['Monto (' + currency + ')']: parseFloat(totalIncome - totalExpense)
     });
 
     // Crear workbook
