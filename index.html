@@ -51,6 +51,9 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 
+  <!-- SheetJS CDN (XLSX export) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="/MozzPCC/assets/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/MozzPCC/assets/favicon-16x16.png">
@@ -363,6 +366,9 @@
                   <option value="all">Todas las categorias</option>
                 </select>
                 <p class="fin-counter" id="fin-counter">0 transacciones</p>
+                <button class="fin-export-btn" id="fin-export-btn" title="Exportar a XLSX">
+                  <i class="fa-solid fa-file-excel"></i>
+                </button>
               </div>
 
               <!-- Transactions + donut grid -->

@@ -1233,6 +1233,123 @@
   }
 
   // =========================================================================
+  //  EXPORTAR A XLSX
+  // =========================================================================
+
+  /**
+   * Exporta las transacciones filtradas actualmente a un archivo XLSX
+   */
+  function exportToXlsx() {
+    if (typeof XLSX === 'undefined') {
+      console.warn('[Finanzas] XLSX library no disponible');
+      return;
+    }
+
+    // Obtener filtros actuales
+    var monthFilter = document.getElementById('fin-month-filter');
+    var categoryFilter = document.getElementById('fin-category-filter');
+    var monthVal = monthFilter ? monthFilter.value : 'all';
+    var catVal = categoryFilter ? categoryFilter.value : 'all';
+
+    // Filtrar transacciones (misma lógica que filterTransactions)
+    var filtered = [];
+    for (var i = 0; i < transactions.length; i++) {
+      var t = transactions[i];
+      if (monthVal !== 'all') {
+        var txMonth = t.date ? t.date.substring(0, 7) : '';
+        if (txMonth !== monthVal) continue;
+      }
+      if (catVal !== 'all') {
+        if (t.category_id !== catVal) continue;
+      }
+      filtered.push(t);
+    }
+
+    if (filtered.length === 0) {
+      console.warn('[Finanzas] No hay transacciones para exportar');
+      return;
+    }
+
+    // Ordenar por fecha ascendente para el archivo
+    filtered.sort(function (a, b) {
+      return (a.date || '').localeCompare(b.date || '');
+    });
+
+    // Generar nombre de archivo
+    var monthLabel = monthVal === 'all' ? 'todos' : monthVal.replace('-', '_');
+    var fileName = 'MozzPCC_Finanzas_' + monthLabel + '.xlsx';
+
+    // Construir filas de datos
+    var rows = [];
+    var currency = getCurrency();
+
+    for (var j = 0; j < filtered.length; j++) {
+      var tx = filtered[j];
+      var cat = getCategoryById(tx.category_id);
+      var amount = parseFloat(tx.amount) || 0;
+      var sign = tx.type === 'ingreso' ? '+' : '-';
+      var description = tx.description || (cat ? cat.name : 'Sin descripcion');
+
+      rows.push({
+        'Fecha': tx.date ? formatDate(tx.date) : '',
+        'Tipo': tx.type === 'ingreso' ? 'Ingreso' : 'Gasto',
+        'Categoria': cat ? cat.name : 'Sin categoria',
+        'Descripcion': description,
+        'Monto (' + currency + ')': parseFloat(sign + amount)
+      });
+    }
+
+    // Calcular totales
+    var totalIncome = 0;
+    var totalExpense = 0;
+    for (var k = 0; k < filtered.length; k++) {
+      var amt = parseFloat(filtered[k].amount) || 0;
+      if (filtered[k].type === 'ingreso') totalIncome += amt;
+      else totalExpense += amt;
+    }
+    rows.push({});
+    rows.push({
+      'Fecha': '',
+      'Tipo': '',
+      'Categoria': 'Total Ingresos',
+      'Descripcion': '',
+      'Monto (' + currency + ')': parseFloat('+' + totalIncome)
+    });
+    rows.push({
+      'Fecha': '',
+      'Tipo': '',
+      'Categoria': 'Total Gastos',
+      'Descripcion': '',
+      'Monto (' + currency + ')': parseFloat('-' + totalExpense)
+    });
+    rows.push({
+      'Fecha': '',
+      'Tipo': '',
+      'Categoria': 'Balance',
+      'Descripcion': '',
+      'Monto (' + currency + ')': parseFloat(totalIncome - totalExpense)
+    });
+
+    // Crear workbook
+    var ws = XLSX.utils.json_to_sheet(rows);
+
+    // Ajustar anchos de columna
+    ws['!cols'] = [
+      { wch: 12 },  // Fecha
+      { wch: 10 },  // Tipo
+      { wch: 18 },  // Categoria
+      { wch: 30 },  // Descripcion
+      { wch: 16 }   // Monto
+    ];
+
+    var wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Transacciones');
+    XLSX.writeFile(wb, fileName);
+
+    console.log('[Finanzas] Exportadas ' + filtered.length + ' transacciones a ' + fileName);
+  }
+
+  // =========================================================================
   //  INICIALIZACION
   // =========================================================================
 
@@ -1343,6 +1460,14 @@
   if (categoryFilter) {
     categoryFilter.addEventListener('change', function () {
       filterTransactions();
+    });
+  }
+
+  // Exportar a XLSX
+  var exportBtn = document.getElementById('fin-export-btn');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', function () {
+      exportToXlsx();
     });
   }
 
