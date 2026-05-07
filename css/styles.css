@@ -1381,9 +1381,9 @@ body::after {
 .fin-export-btn::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
   background: rgb(37 37 37 / 90%);
   backdrop-filter: blur(8px);
   color: #e2e8f0;
@@ -1397,6 +1397,7 @@ body::after {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 10;
 }
 
 .fin-export-btn:hover::after {
