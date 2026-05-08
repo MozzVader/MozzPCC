@@ -162,16 +162,17 @@ body::after {
 .snap-section-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr;
   gap: 24px;
   align-items: stretch;
   max-height: calc(100dvh - 200px);
-  overflow: hidden;
 }
 
 .snap-section-grid .card {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
 }
 
 /* Tareas ocupa todo el espacio disponible */
@@ -2144,7 +2145,6 @@ body::after {
    ============================================ */
 .widget-steam {
   padding: 20px 24px;
-  overflow: hidden;
 }
 
 .steam-loading,
