@@ -158,10 +158,10 @@ body::after {
   justify-content: center;
 }
 
-/* Grid interno para la sección de productividad (tareas + steam) */
+/* Grid interno para secciones con dos columnas (TV Shows + Steam) */
 .snap-section-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 24px;
   align-items: stretch;
   max-height: calc(100dvh - 200px);
@@ -171,6 +171,17 @@ body::after {
   display: flex;
   flex-direction: column;
   min-height: 0;
+}
+
+/* Tareas ocupa todo el espacio disponible */
+.section-productivity .snap-section-inner {
+  max-height: calc(100dvh - 200px);
+  justify-content: flex-start;
+}
+
+.section-productivity .widget-tasks {
+  max-height: 100%;
+  overflow: hidden;
 }
 
 /* Las cards internas ya no ocupan columna completa */
@@ -646,7 +657,8 @@ body::after {
 /* Lista de tareas */
 .task-list {
   list-style: none;
-  max-height: 300px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -2689,7 +2701,7 @@ body::after {
     padding: 70px 16px 90px 16px;
   }
 
-  /* Grid de productividad: una columna en mobile */
+  /* Grid (TV Shows + Steam): una columna en mobile */
   .snap-section-grid {
     grid-template-columns: 1fr;
     gap: 16px;
@@ -2699,6 +2711,16 @@ body::after {
 
   .snap-section-grid .card {
     flex: none;
+  }
+
+  /* Productividad: tareas sin límite en mobile */
+  .section-productivity .snap-section-inner {
+    max-height: none;
+  }
+
+  .section-productivity .widget-tasks {
+    max-height: none;
+    overflow: visible;
   }
 
   /* Finances: stack grid on mobile */

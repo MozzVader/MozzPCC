@@ -226,9 +226,9 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 3: TAREAS + STEAM STATS ===== -->
+    <!-- ===== SECCIÓN 3: TAREAS ===== -->
     <section class="snap-section section-productivity" id="section-productivity" aria-label="Productividad">
-      <div class="snap-section-inner snap-section-grid">
+      <div class="snap-section-inner">
         <div class="card widget-tasks">
           <div class="card-header">
             <i class="fa-solid fa-list-check"></i>
@@ -247,47 +247,6 @@
           </p>
 
           <ul class="task-list" id="task-list"></ul>
-        </div>
-
-        <div class="card widget-steam">
-          <div class="card-header">
-            <i class="fa-brands fa-steam"></i>
-            <h2>Steam</h2>
-          </div>
-          <div id="steam-content">
-            <div id="steam-loading" class="steam-loading">
-              <i class="fa-solid fa-spinner fa-spin"></i>
-              <p>Cargando perfil...</p>
-            </div>
-            <div id="steam-empty" class="steam-empty" style="display:none;">
-              <i class="fa-brands fa-steam"></i>
-              <p>Configura tu Steam ID en <strong>Ajustes</strong></p>
-            </div>
-            <div id="steam-profile" class="steam-profile" style="display:none;">
-              <div class="steam-profile-header">
-                <img id="steam-avatar" class="steam-avatar" src="" alt="">
-                <div class="steam-profile-info">
-                  <span class="steam-name" id="steam-name"></span>
-                  <span class="steam-status" id="steam-status"></span>
-                  <span class="steam-game" id="steam-game" style="display:none;"></span>
-                </div>
-              </div>
-              <div class="steam-stats-row">
-                <div class="steam-stat-box">
-                  <div class="steam-stat-value" id="steam-total-games">0</div>
-                  <div class="steam-stat-label">Juegos</div>
-                </div>
-                <div class="steam-stat-box">
-                  <div class="steam-stat-value" id="steam-total-hours">0h</div>
-                  <div class="steam-stat-label">Horas</div>
-                </div>
-              </div>
-              <div class="steam-recent-section" id="steam-recent-section" style="display:none;">
-                <div class="steam-recent-title">Jugado recientemente</div>
-                <div id="steam-recent-games" class="steam-recent-games"></div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -435,9 +394,9 @@
       </div>
     </section>
 
-    <!-- ===== SECCIÓN 5: TV SHOWS ===== -->
+    <!-- ===== SECCIÓN 5: TV SHOWS + STEAM ===== -->
     <section class="snap-section section-tv-shows" id="section-tv-shows" aria-label="TV Shows">
-      <div class="snap-section-inner">
+      <div class="snap-section-inner snap-section-grid">
         <div class="card widget-tv-shows" id="widget-tv-shows">
           <div class="card-header">
             <i class="fa-solid fa-tv"></i>
@@ -446,6 +405,47 @@
           </div>
           <div class="tv-shows-chips" id="tv-shows-chips" style="display:none;"></div>
           <div class="tv-upcoming-list" id="tv-upcoming-list"></div>
+        </div>
+
+        <div class="card widget-steam">
+          <div class="card-header">
+            <i class="fa-brands fa-steam"></i>
+            <h2>Steam</h2>
+          </div>
+          <div id="steam-content">
+            <div id="steam-loading" class="steam-loading">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <p>Cargando perfil...</p>
+            </div>
+            <div id="steam-empty" class="steam-empty" style="display:none;">
+              <i class="fa-brands fa-steam"></i>
+              <p>Configura tu Steam ID en <strong>Ajustes</strong></p>
+            </div>
+            <div id="steam-profile" class="steam-profile" style="display:none;">
+              <div class="steam-profile-header">
+                <img id="steam-avatar" class="steam-avatar" src="" alt="">
+                <div class="steam-profile-info">
+                  <span class="steam-name" id="steam-name"></span>
+                  <span class="steam-status" id="steam-status"></span>
+                  <span class="steam-game" id="steam-game" style="display:none;"></span>
+                </div>
+              </div>
+              <div class="steam-stats-row">
+                <div class="steam-stat-box">
+                  <div class="steam-stat-value" id="steam-total-games">0</div>
+                  <div class="steam-stat-label">Juegos</div>
+                </div>
+                <div class="steam-stat-box">
+                  <div class="steam-stat-value" id="steam-total-hours">0h</div>
+                  <div class="steam-stat-label">Horas</div>
+                </div>
+              </div>
+              <div class="steam-recent-section" id="steam-recent-section" style="display:none;">
+                <div class="steam-recent-title">Jugado recientemente</div>
+                <div id="steam-recent-games" class="steam-recent-games"></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
