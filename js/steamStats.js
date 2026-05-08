@@ -160,6 +160,9 @@
       });
       profileEl.appendChild(btn);
     }
+
+    // Ajustar altura de TV Shows a la de Steam
+    if (window.matchCardsHeight) window.matchCardsHeight();
   }
 
   // --- Load ---
@@ -205,6 +208,20 @@
     showView('empty');
     emptyEl.querySelector('p').innerHTML = 'Configura tu Steam ID en <strong>Ajustes</strong>';
   });
+
+  // --- Altura de cards: TV Shows se ajusta a Steam ---
+  window.matchCardsHeight = function () {
+    var steam = document.querySelector('.widget-steam');
+    var tv = document.querySelector('.widget-tv-shows');
+    if (!steam || !tv) return;
+    var sh = steam.offsetHeight;
+    var th = tv.offsetHeight;
+    if (sh > 0 && th > sh) {
+      tv.style.maxHeight = sh + 'px';
+    } else {
+      tv.style.maxHeight = '';
+    }
+  };
 
   // --- API pública ---
   window.SteamStats = {

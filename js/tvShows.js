@@ -278,6 +278,7 @@
   function render() {
     renderAgenda();
     renderSeries();
+    if (window.matchCardsHeight) window.matchCardsHeight();
   }
 
   // --- Tab switching ---
