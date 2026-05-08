@@ -50,6 +50,7 @@
   var elLocation = document.getElementById('weather-location');
   var elFeels = document.getElementById('weather-feels');
   var elHilo = document.getElementById('weather-hilo');
+  var elForecast = document.getElementById('weather-forecast');
 
   // Settings: campo de ciudad
   var cityInput = document.getElementById('weather-city-input');
@@ -93,8 +94,8 @@
         '?latitude=' + coords.lat +
         '&longitude=' + coords.lon +
         '&current=temperature_2m,apparent_temperature,weather_code' +
-        '&daily=temperature_2m_max,temperature_2m_min' +
-        '&timezone=auto&forecast_days=1';
+        '&daily=temperature_2m_max,temperature_2m_min,weather_code' +
+        '&timezone=auto&forecast_days=7';
 
       var res = await fetch(url);
       var data = await res.json();
@@ -118,9 +119,46 @@
         '<i class="fa-solid fa-arrow-down"></i>' +
         Math.round(daily.temperature_2m_min[0]) + '°';
 
+      // Renderizar pronóstico extendido (saltar hoy = índice 0)
+      renderForecast(daily);
+
     } catch (e) {
       setEmpty();
     }
+  }
+
+  // --- Renderizar pronóstico 7 días ---
+  function renderForecast(daily) {
+    if (!elForecast || !daily || !daily.time) {
+      return;
+    }
+
+    var DIAS = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+    var html = '';
+
+    for (var i = 1; i < daily.time.length; i++) {
+      var date = new Date(daily.time[i] + 'T12:00:00');
+      var dayName = DIAS[date.getDay()];
+      var icon = (WMO[daily.weather_code[i]] || WMO[0]).icon;
+      var max = Math.round(daily.temperature_2m_max[i]);
+      var min = Math.round(daily.temperature_2m_min[i]);
+
+      html += '<div class="forecast-day">' +
+        '<span class="forecast-day-name">' + dayName + '</span>' +
+        '<i class="' + icon + ' forecast-day-icon"></i>' +
+        '<span class="forecast-day-temps">' +
+          '<span class="forecast-max">' + max + '°</span>' +
+          '<span class="forecast-sep">/</span>' +
+          '<span class="forecast-min">' + min + '°</span>' +
+        '</span>' +
+      '</div>';
+    }
+
+    elForecast.innerHTML = html;
+  }
+
+  function clearForecast() {
+    if (elForecast) elForecast.innerHTML = '';
   }
 
   function setEmpty() {
@@ -130,6 +168,7 @@
     elLocation.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + (city || '--');
     elFeels.textContent = 'Sensacion --°';
     elHilo.innerHTML = '<i class="fa-solid fa-arrow-up"></i>--° <i class="fa-solid fa-arrow-down"></i>--°';
+    clearForecast();
   }
 
   // --- Guardar ciudad en Supabase ---
