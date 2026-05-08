@@ -162,10 +162,8 @@ body::after {
 .snap-section-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr;
   gap: 24px;
   align-items: stretch;
-  max-height: calc(100dvh - 200px);
 }
 
 .snap-section-grid .card {
