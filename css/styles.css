@@ -5024,8 +5024,6 @@ body::after {
   display: flex;
   gap: 4px;
   padding: 10px 0 4px;
-  border-top: 1px solid var(--border-glass);
-  margin-top: 10px;
 }
 
 .tv-tab {

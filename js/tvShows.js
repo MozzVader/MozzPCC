@@ -263,6 +263,13 @@
         localStorage.removeItem(CACHE_KEY);
       });
 
+      item.addEventListener('click', function () {
+        if (show.tvmaze_id) {
+          window.open('https://www.tvmaze.com/shows/' + show.tvmaze_id, '_blank');
+        }
+      });
+      item.style.cursor = 'pointer';
+
       container.appendChild(item);
     });
   }
