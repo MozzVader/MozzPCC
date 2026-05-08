@@ -5023,7 +5023,7 @@ body::after {
 .tv-tabs {
   display: flex;
   gap: 4px;
-  padding: 10px 0 4px;
+  padding: 4px 0 10px;
 }
 
 .tv-tab {
