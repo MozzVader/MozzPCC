@@ -165,6 +165,7 @@ body::after {
   gap: 24px;
   align-items: stretch;
   max-height: calc(100dvh - 200px);
+  overflow: hidden;
 }
 
 .snap-section-grid .card {
@@ -2143,6 +2144,7 @@ body::after {
    ============================================ */
 .widget-steam {
   padding: 20px 24px;
+  overflow: hidden;
 }
 
 .steam-loading,
