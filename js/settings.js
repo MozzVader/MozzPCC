@@ -71,11 +71,10 @@
         { name: 'Reloj', url: '#section-clock', icon: 'fa-regular fa-clock', order: 0 },
         { name: 'Acceso Rapido', url: '#section-quick-access', icon: 'fa-solid fa-rocket', order: 1 },
         { name: 'Productividad', url: '#section-productivity', icon: 'fa-solid fa-bolt', order: 2 },
-        { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-        { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
-        { name: 'TV Shows', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 5 },
-        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 6 },
-        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 7 }
+        { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 3 },
+        { name: 'Entretenimiento', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 4 },
+        { name: 'Notas', url: '#section-notes', icon: 'fa-solid fa-note-sticky', order: 5 },
+        { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
       ]
     },
     {
@@ -954,18 +953,14 @@
 
     // Links que deberían estar en el grupo Secciones
     var requiredLinks = [
-      { name: 'Steam', url: '#section-productivity', icon: 'fa-brands fa-steam', order: 3 },
-      { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 4 },
-      { name: 'TV Shows', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 5 },
-      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 7 }
+      { name: 'Finanzas', url: '#section-finances', icon: 'fa-solid fa-wallet', order: 3 },
+      { name: 'Entretenimiento', url: '#section-tv-shows', icon: 'fa-solid fa-tv', order: 4 },
+      { name: 'Ver Mas Tarde', url: '#section-read-later', icon: 'fa-solid fa-bookmark', order: 6 }
     ];
 
     for (var i = 0; i < requiredLinks.length; i++) {
       var rl = requiredLinks[i];
-      // Para Steam, checkear por nombre ya que comparte URL con Productividad
-      var exists = (rl.name === 'Steam')
-        ? existingLinks.some(function (l) { return l.name === 'Steam'; })
-        : existingUrls.indexOf(rl.url) !== -1;
+      var exists = existingUrls.indexOf(rl.url) !== -1;
 
       if (!exists) {
         try {
@@ -1007,24 +1002,11 @@
       ];
 
       var allLinks = defaultGroup._links || [];
-      var steamLinks = allLinks.filter(function (l) { return l.name === 'Steam'; });
-      var otherLinks = allLinks.filter(function (l) { return l.name !== 'Steam'; });
 
       var ordered = [];
-      var steamInserted = false;
-
       for (var j = 0; j < expectedOrder.length; j++) {
         var url = expectedOrder[j];
-        if (url === '#section-productivity' && steamLinks.length > 0 && !steamInserted) {
-          var prodNonSteam = otherLinks.filter(function (l) { return l.url === url; });
-          prodNonSteam.forEach(function (l) { ordered.push(l); });
-          steamLinks.forEach(function (l) { ordered.push(l); });
-          steamInserted = true;
-        } else if (url === '#section-productivity' && steamInserted) {
-          continue;
-        } else {
-          otherLinks.filter(function (l) { return l.url === url; }).forEach(function (l) { ordered.push(l); });
-        }
+        allLinks.filter(function (l) { return l.url === url; }).forEach(function (l) { ordered.push(l); });
       }
 
       for (var k = 0; k < ordered.length; k++) {
@@ -1419,9 +1401,47 @@
     }
   });
 
+  // --- Migración: eliminar link Steam del dock (corre una sola vez) ---
+  async function migrateRemoveSteamFromDock() {
+    if (localStorage.getItem('mozzpcc_migrated_steam_dock')) return;
+    var client = window.supabaseClient;
+    if (!client || !userId) return;
+
+    try {
+      // Buscar links con nombre 'Steam' del usuario
+      var { data: steamLinks, error } = await client
+        .from('user_dock_links')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('name', 'Steam');
+
+      if (error || !steamLinks || steamLinks.length === 0) {
+        localStorage.setItem('mozzpcc_migrated_steam_dock', '1');
+        return;
+      }
+
+      // Borrar todos los links Steam encontrados
+      var ids = steamLinks.map(function (l) { return l.id; });
+      var { error: delError } = await client
+        .from('user_dock_links')
+        .delete()
+        .in('id', ids);
+
+      if (!delError) {
+        console.log('[Migración] Eliminados ' + ids.length + ' link(s) Steam del dock');
+      }
+
+      localStorage.setItem('mozzpcc_migrated_steam_dock', '1');
+    } catch (e) {
+      console.warn('[Migración] Error eliminando Steam del dock:', e);
+      localStorage.setItem('mozzpcc_migrated_steam_dock', '1');
+    }
+  }
+
   // --- Auth events ---
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
+    migrateRemoveSteamFromDock();
     loadGroups();
     loadTheme();
     loadSteamId();

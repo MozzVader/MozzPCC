@@ -26,8 +26,9 @@
     return [
       { id: 'sec-clock',    group: 'Secciones', icon: 'fa-regular fa-clock',      label: 'Reloj',         hint: 'Ir al reloj',            action: function () { scrollTo('section-clock'); } },
       { id: 'sec-quick',    group: 'Secciones', icon: 'fa-solid fa-rocket',        label: 'Acceso Rapido', hint: 'Accesos directos',      action: function () { scrollTo('section-quick-access'); } },
-      { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Tareas y Steam',      action: function () { scrollTo('section-productivity'); } },
+      { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Lista de tareas',         action: function () { scrollTo('section-productivity'); } },
       { id: 'sec-finances', group: 'Secciones', icon: 'fa-solid fa-wallet',        label: 'Finanzas',      hint: 'Finanzas personales',    action: function () { scrollTo('section-finances'); } },
+      { id: 'sec-tv',       group: 'Secciones', icon: 'fa-solid fa-tv',            label: 'Entretenimiento', hint: 'TV Shows y Steam',      action: function () { scrollTo('section-tv-shows'); } },
       { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } },
       { id: 'sec-rl',       group: 'Secciones', icon: 'fa-solid fa-bookmark',    label: 'Ver Mas Tarde', hint: 'Links guardados',        action: function () { scrollTo('section-read-later'); } }
     ];
