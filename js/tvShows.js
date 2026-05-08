@@ -187,57 +187,26 @@
     return 'T' + ep.season + 'E' + ep.number;
   }
 
-  // --- Render ---
-  function render() {
+  // --- Render Agenda (próximos episodios) ---
+  function renderAgenda() {
     var container = document.getElementById('tv-upcoming-list');
-    var chipsContainer = document.getElementById('tv-shows-chips');
     if (!container) return;
 
-    var h = '';
-
-    // --- Chips de series seguidas ---
-    if (chipsContainer) {
-      chipsContainer.innerHTML = '';
-      if (shows.length > 0) {
-        chipsContainer.style.display = '';
-        shows.forEach(function (show) {
-          var chip = document.createElement('div');
-          chip.className = 'tv-show-chip';
-          chip.title = 'Clic para eliminar ' + show.title;
-          chip.innerHTML = '<span class="tv-chip-name">' + escapeHtml(show.title) + '</span>' +
-            '<button class="tv-chip-remove" aria-label="Eliminar ' + escapeHtml(show.title) + '"><i class="fa-solid fa-xmark"></i></button>';
-          chip.querySelector('.tv-chip-remove').addEventListener('click', function (e) {
-            e.stopPropagation();
-            removeShow(show.id);
-            localStorage.removeItem(CACHE_KEY);
-          });
-          chip.addEventListener('click', function () {
-            removeShow(show.id);
-            localStorage.removeItem(CACHE_KEY);
-          });
-          chipsContainer.appendChild(chip);
-        });
-      } else {
-        chipsContainer.style.display = 'none';
-      }
-    }
-
     if (shows.length === 0) {
-      h = '<div class="tv-empty">' +
+      container.innerHTML = '<div class="tv-empty">' +
         '<i class="fa-solid fa-tv"></i>' +
         '<span>Agregá series para ver los próximos estrenos</span></div>';
-      container.innerHTML = h;
       return;
     }
 
     if (upcomingEpisodes.length === 0) {
-      h = '<div class="tv-empty">' +
+      container.innerHTML = '<div class="tv-empty">' +
         '<i class="fa-solid fa-clock"></i>' +
         '<span>No hay episodios próximos por estrenar</span></div>';
-      container.innerHTML = h;
       return;
     }
 
+    var h = '';
     upcomingEpisodes.forEach(function (ep) {
       var poster = ep.poster ? '<img class="tv-poster" src="' + ep.poster + '" alt="" onerror="this.style.display=\'none\'">' : '';
       h += '<div class="tv-ep-item">' +
@@ -250,6 +219,83 @@
     });
 
     container.innerHTML = h;
+  }
+
+  // --- Render Series (lista de series seguidas) ---
+  function renderSeries() {
+    var container = document.getElementById('tv-series-list');
+    if (!container) return;
+
+    if (shows.length === 0) {
+      container.innerHTML = '<div class="tv-series-empty">' +
+        '<i class="fa-solid fa-film"></i>' +
+        '<span>Agregá series con el botón +</span></div>';
+      return;
+    }
+
+    container.innerHTML = '';
+    shows.forEach(function (show) {
+      var item = document.createElement('div');
+      item.className = 'tv-series-item';
+
+      var posterHtml;
+      if (show.poster_url) {
+        posterHtml = '<img src="' + show.poster_url + '" alt="" onerror="this.outerHTML=\'<div class=tv-no-poster><i class=fa-solid fa-film></i></div>\'">';
+      } else {
+        posterHtml = '<div class="tv-no-poster"><i class="fa-solid fa-film"></i></div>';
+      }
+
+      var statusLabel = show.status === 'Running' ? 'En emisión' :
+                        show.status === 'Ended' ? 'Finalizada' :
+                        show.status || '';
+
+      item.innerHTML =
+        '<div class="tv-series-poster">' + posterHtml + '</div>' +
+        '<div class="tv-series-info">' +
+          '<div class="tv-series-name">' + escapeHtml(show.title) + '</div>' +
+          '<div class="tv-series-status">' + escapeHtml(statusLabel) + '</div>' +
+        '</div>' +
+        '<button class="tv-series-remove" aria-label="Eliminar ' + escapeHtml(show.title) + '"><i class="fa-solid fa-trash-can"></i></button>';
+
+      item.querySelector('.tv-series-remove').addEventListener('click', function (e) {
+        e.stopPropagation();
+        removeShow(show.id);
+        localStorage.removeItem(CACHE_KEY);
+      });
+
+      container.appendChild(item);
+    });
+  }
+
+  // --- Render principal ---
+  function render() {
+    renderAgenda();
+    renderSeries();
+  }
+
+  // --- Tab switching ---
+  function initTabs() {
+    var tvTabs = document.querySelectorAll('.tv-tab');
+    for (var i = 0; i < tvTabs.length; i++) {
+      tvTabs[i].addEventListener('click', function () {
+        var tabName = this.dataset.tab;
+        if (!tabName) return;
+
+        // Update tab buttons
+        for (var j = 0; j < tvTabs.length; j++) {
+          tvTabs[j].classList.remove('active');
+        }
+        this.classList.add('active');
+
+        // Update tab content
+        var contents = document.querySelectorAll('.tv-tab-content');
+        for (var k = 0; k < contents.length; k++) {
+          contents[k].classList.remove('active');
+        }
+        var target = document.getElementById('tv-tab-' + tabName);
+        if (target) target.classList.add('active');
+      });
+    }
   }
 
   // --- Search UI ---
@@ -389,6 +435,9 @@
       openSearch();
     });
 
+    // Tab switching
+    initTabs();
+
     loadShows();
   }
 
@@ -407,8 +456,8 @@
 
     var container = document.getElementById('tv-upcoming-list');
     if (container) container.innerHTML = '';
-    var chips = document.getElementById('tv-shows-chips');
-    if (chips) { chips.innerHTML = ''; chips.style.display = 'none'; }
+    var seriesList = document.getElementById('tv-series-list');
+    if (seriesList) seriesList.innerHTML = '';
   }
 
   // --- Events ---

@@ -398,13 +398,29 @@
     <section class="snap-section section-tv-shows" id="section-tv-shows" aria-label="Entretenimiento">
       <div class="snap-section-inner snap-section-grid">
         <div class="card widget-tv-shows" id="widget-tv-shows">
-          <div class="card-header">
-            <i class="fa-solid fa-tv"></i>
-            <h2>Proximos Episodios</h2>
-            <button class="tv-add-btn" id="tv-add-btn" aria-label="Agregar serie"><i class="fa-solid fa-plus"></i></button>
+          <div class="tv-header">
+            <div class="card-header">
+              <i class="fa-solid fa-tv"></i>
+              <h2>Proximos Episodios</h2>
+              <button class="tv-add-btn" id="tv-add-btn" aria-label="Agregar serie"><i class="fa-solid fa-plus"></i></button>
+            </div>
+            <div class="tv-tabs">
+              <button class="tv-tab active" data-tab="agenda">
+                <i class="fa-solid fa-calendar"></i> Agenda
+              </button>
+              <button class="tv-tab" data-tab="series">
+                <i class="fa-solid fa-film"></i> Series
+              </button>
+            </div>
           </div>
-          <div class="tv-shows-chips" id="tv-shows-chips" style="display:none;"></div>
-          <div class="tv-upcoming-list" id="tv-upcoming-list"></div>
+          <div class="tv-content">
+            <div class="tv-tab-content tv-tab-agenda active" id="tv-tab-agenda">
+              <div class="tv-upcoming-list" id="tv-upcoming-list"></div>
+            </div>
+            <div class="tv-tab-content tv-tab-series" id="tv-tab-series">
+              <div class="tv-series-list" id="tv-series-list"></div>
+            </div>
+          </div>
         </div>
 
         <div class="card widget-steam">
