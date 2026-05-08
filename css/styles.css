@@ -5562,3 +5562,62 @@ body::after {
     flex-direction: column;
   }
 }
+
+/* ===== CLEAN MODE ===== */
+body.clean-mode .section-indicators,
+body.clean-mode .dock,
+body.clean-mode .dashboard footer,
+body.clean-mode .user-bar {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+  pointer-events: none;
+}
+
+body.clean-mode .snap-section:not(.section-clock) {
+  opacity: 0;
+  visibility: hidden;
+  max-height: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease, max-height 0.5s ease, min-height 0.5s ease, padding 0.5s ease;
+  pointer-events: none;
+}
+
+body.clean-mode .section-clock {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body.clean-mode .dashboard {
+  scroll-snap-type: none;
+  overflow: hidden;
+}
+
+/* Clean mode hint */
+body.clean-mode .clean-mode-hint {
+  opacity: 1;
+  visibility: visible;
+}
+
+.clean-mode-hint {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(37 37 37 / 70%);
+  backdrop-filter: blur(8px);
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.5s ease 0.6s, visibility 0.5s ease 0.6s;
+  letter-spacing: 0.02em;
+}

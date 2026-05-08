@@ -65,6 +65,9 @@
 </head>
 <body>
 
+  <!-- ===== CLEAN MODE HINT ===== -->
+  <div class="clean-mode-hint">Hace clic o pulsá Esc para volver</div>
+
   <!-- ===== LOADING (mientras Supabase verifica sesión) ===== -->
   <div id="app-loading" class="app-loading">
     <div class="app-loading-spinner"></div>
@@ -559,6 +562,10 @@
             <span class="tip-label">Dock</span>
             <span class="tip-desc">Hacé hover sobre los iconos para ver el efecto de magnificacion</span>
           </div>
+          <div class="tip-item">
+            <span class="tip-label">Clean Mode</span>
+            <span class="tip-desc">Pulsá <kbd class="tip-kbd">Esc</kbd> para un modo limpio solo con el reloj. Clic para volver.</span>
+          </div>
         </div>
         <div class="tip-group">
           <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Funcionalidades</h3>
@@ -864,6 +871,7 @@
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
+  <script src="/MozzPCC/js/cleanMode.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/twemoji@latest/dist/twemoji.min.js"></script>
   <script>
     // Parse all emoji flags into Twemoji images on load
