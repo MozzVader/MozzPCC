@@ -62,6 +62,18 @@ async function getPlayerSummary(steamId: string) {
   };
 }
 
+/** Nivel de Steam — tolera perfil privado */
+async function getSteamLevel(steamId: string) {
+  try {
+    const data = await steamFetch(STEAM_PLAYER,
+      `/GetSteamLevel/v1/?steamid=${steamId}&format=json`
+    );
+    return data?.response?.player_level ?? 0;
+  } catch {
+    return 0;
+  }
+}
+
 /** Últimos juegos jugados (2 semanas) — tolera perfil privado (401/403) */
 async function getRecentGames(steamId: string) {
   try {
@@ -132,14 +144,16 @@ Deno.serve(async (req: Request) => {
       return json({ error: "Se requiere steam_id o vanity" }, 400);
     }
 
-    const [profile, recent, owned] = await Promise.all([
+    const [profile, level, recent, owned] = await Promise.all([
       getPlayerSummary(steamId),
+      getSteamLevel(steamId),
       getRecentGames(steamId),
       getOwnedGames(steamId),
     ]);
 
     return json({
       profile,
+      steamLevel: level,
       recentGames: recent.games,
       totalGames: owned.totalGames,
       totalHours: owned.totalHours,

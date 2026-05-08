@@ -18,6 +18,7 @@
   var totalHoursEl = document.getElementById('steam-total-hours');
   var recentSection = document.getElementById('steam-recent-section');
   var recentGamesEl = document.getElementById('steam-recent-games');
+  var steamLevelEl = document.getElementById('steam-level');
 
   var SUPABASE_URL = 'https://diaezbthqjvroexesbrr.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpYWV6YnRocWp2cm9leGVzYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzczMjExMDgsImV4cCI6MjA5Mjg5NzEwOH0.G2VeKwY5to87N0_FoHm_5SdnwQFWY636TeFPU4dmz84';
@@ -104,6 +105,7 @@
 
     totalGamesEl.textContent = data.totalGames.toLocaleString();
     totalHoursEl.textContent = data.totalHours.toLocaleString() + 'h';
+    steamLevelEl.textContent = data.steamLevel || 0;
 
     // Recent games
     if (data.recentGames && data.recentGames.length > 0) {
