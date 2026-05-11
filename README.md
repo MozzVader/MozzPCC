@@ -31,18 +31,24 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 |---------|-------------|
 | Autenticacion | Login/registro con email, Google OAuth, GitHub OAuth y Magic Link |
 | Reloj y Saludo | Reloj digital en tiempo real con fecha en espanol y saludo personalizado |
+| Relojes Mundiales | Multiples relojes de ciudades del mundo configurables |
+| Cotizacion del Dolar | Cotizacion actualizada del dolar blue, oficial y mas (API dolarapi) |
 | Lista de Tareas | CRUD completo con persistencia en Supabase (sincronizado entre dispositivos) |
-| Notas Rapidas | Notas adhesivas editables con 5 colores y persistencia en Supabase |
-| Finanzas Personales | Transacciones de ingresos/gastos con categorias, graficos (donut + barras) y resumen mensual |
+| Notas Rapidas | Notas adhesivas editables con 5 colores, copiar al portapapeles y persistencia en Supabase |
+| Finanzas Personales | Transacciones de ingresos/gastos con categorias, graficos (donut + barras + linea), comparacion mensual y resumen |
 | Ver Mas Tarde | Links guardados con tags de color, filtros y drag & drop |
-| Backup/Restore | Exportar e importar todos tus datos en JSON |
-| Steam Stats | Perfil, estado online, juegos recientes, total de juegos y horas (via Steam API) |
+| TV Shows | Series con agenda de proximos episodios y lista personalizada via TVmaze API |
+| Steam Stats | Perfil, estado online, nivel, juegos recientes, total de juegos y horas (via Steam API) |
 | Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
+| Clean Mode | Vista limpia con solo reloj pulsando Esc (clic para volver) |
+| Indicador de Sync | Puntito verde que se enciende al guardar datos en Supabase |
+| Undo Global | Toast de deshacer con barra de progreso al eliminar tareas, notas, transacciones, etc. (5s) |
 | Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, finanzas, acciones) |
 | Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
 | Snap Scroll | Navegacion vertical con snap sections e indicadores con tooltips |
 | Moneda Configurable | Simbolo de moneda personalizable (ARS, USD, EUR, etc.) |
+| Backup/Restore | Exportar e importar todos tus datos en JSON |
 
 ## Diseno
 
@@ -79,15 +85,20 @@ MozzPCC/
 ├── js/
 │   ├── supabase.js         # Cliente Supabase
 │   ├── auth.js             # Sistema de autenticacion
-│   ├── app.js              # Reloj, fecha y saludo
+│   ├── app.js              # Reloj, fecha, saludo e indicador de sync
 │   ├── weather.js           # Widget de clima (Open-Meteo)
+│   ├── dollar.js            # Cotizacion del dolar (dolarapi)
+│   ├── worldClock.js        # Relojes mundiales
 │   ├── quickAccess.js       # Accesos rapidos
-│   ├── tasks.js            # Lista de tareas
-│   ├── notes.js            # Notas adhesivas
-│   ├── finances.js         # Finanzas personales (transacciones + graficos)
+│   ├── tasks.js            # Lista de tareas (con undo)
+│   ├── notes.js            # Notas adhesivas (copiar + undo)
+│   ├── finances.js         # Finanzas personales (transacciones + graficos + undo)
+│   ├── tvShows.js          # TV Shows con TVmaze API
 │   ├── readLater.js        # Links guardados para leer mas tarde
+│   ├── undoToast.js        # Toast global de deshacer con barra de progreso
+│   ├── cleanMode.js        # Clean Mode (Esc para vista limpia)
 │   ├── backup.js           # Backup/restore de datos
-│   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
+│   ├── steamStats.js       # Widget de Steam Stats (perfil + nivel + juegos)
 │   ├── tips.js             # Tips de uso
 │   ├── dock.js             # Dock estilo macOS con magnificacion
 │   ├── settings.js         # Configuracion (dock + temas + moneda)
