@@ -3413,6 +3413,23 @@ body::after {
   white-space: nowrap;
 }
 
+/* Sync indicator dot */
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease, background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.sync-dot.active {
+  opacity: 1;
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+}
+
 .btn-logout {
   display: flex;
   align-items: center;

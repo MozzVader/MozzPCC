@@ -101,6 +101,19 @@
     setInterval(actualizarReloj, 1000);
   }
 
+  // --- Sync dot indicator ---
+  var syncDot = document.getElementById('sync-dot');
+  var syncTimer = null;
+
+  window.addEventListener('sync:success', function () {
+    if (!syncDot) return;
+    clearTimeout(syncTimer);
+    syncDot.classList.add('active');
+    syncTimer = setTimeout(function () {
+      syncDot.classList.remove('active');
+    }, 2500);
+  });
+
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);

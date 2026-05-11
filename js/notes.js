@@ -94,6 +94,8 @@
 
         if (error) {
           console.warn('Error al guardar nota:', error);
+        } else {
+          window.dispatchEvent(new CustomEvent('sync:success'));
         }
       } catch (e) {
         console.warn('Error al guardar nota:', e);

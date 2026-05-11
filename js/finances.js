@@ -502,6 +502,8 @@
         return;
       }
 
+      window.dispatchEvent(new CustomEvent('sync:success'));
+
       // Limpiar formulario
       if (categorySelect) categorySelect.value = '';
       if (descriptionInput) descriptionInput.value = '';
@@ -544,6 +546,7 @@
         // Recargar para restaurar estado correcto
         await loadTransactions();
       } else {
+        window.dispatchEvent(new CustomEvent('sync:success'));
         updateSummary();
         renderCharts();
       }

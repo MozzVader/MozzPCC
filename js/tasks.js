@@ -166,6 +166,8 @@
         return;
       }
 
+      window.dispatchEvent(new CustomEvent('sync:success'));
+
       // Agregar al inicio de la lista local
       tareas.unshift({
         id: data.id,
@@ -214,6 +216,8 @@
           tarea.completada = !newStatus;
           renderizarTareas();
         }
+      } else {
+        window.dispatchEvent(new CustomEvent('sync:success'));
       }
     } catch (e) {
       console.warn('Error al actualizar tarea:', e);
@@ -242,6 +246,8 @@
         console.warn('Error al eliminar tarea:', error);
         // Recargar tareas para restaurar el estado correcto
         cargarTareas();
+      } else {
+        window.dispatchEvent(new CustomEvent('sync:success'));
       }
     } catch (e) {
       console.warn('Error al eliminar tarea:', e);
