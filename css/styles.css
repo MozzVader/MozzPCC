@@ -3443,10 +3443,11 @@ body::after {
 }
 
 .undo-toast {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 18px;
+  padding: 12px 18px 14px;
   background: rgba(30, 30, 40, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -3457,6 +3458,22 @@ body::after {
   transform: translateY(20px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: auto;
+  overflow: hidden;
+}
+
+.undo-toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--accent);
+  border-radius: 0 0 0 12px;
+  animation: undo-progress 5s linear forwards;
+}
+
+@keyframes undo-progress {
+  from { width: 100%; }
+  to { width: 0%; }
 }
 
 .undo-toast.visible {
@@ -3467,6 +3484,10 @@ body::after {
 .undo-toast.hiding {
   opacity: 0;
   transform: translateY(20px);
+}
+
+.undo-toast.hiding .undo-toast-progress {
+  animation-play-state: paused;
 }
 
 .undo-toast-message {

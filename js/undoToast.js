@@ -34,8 +34,12 @@
       cancel(true);
     });
 
+    var progress = document.createElement('div');
+    progress.className = 'undo-toast-progress';
+
     toastEl.appendChild(msg);
     toastEl.appendChild(undoBtn);
+    toastEl.appendChild(progress);
     container.appendChild(toastEl);
 
     // Trigger animation
