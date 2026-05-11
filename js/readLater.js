@@ -373,23 +373,56 @@
     var client = getSupabase();
     if (!client || !userId) return;
 
+    // Guardar item para posible undo
+    var itemEliminado = items.find(function (i) { return i.id === id; });
+    var originalIndex = items.findIndex(function (i) { return i.id === id; });
+
+    // Optimistic update
     items = items.filter(function (i) { return i.id !== id; });
     await saveOrder();
     render();
 
-    try {
-      var result = await client
-        .from('read_later_items')
-        .delete()
-        .eq('id', id);
+    // Mostrar toast con undo
+    if (window.UndoToast) {
+      window.UndoToast.show({
+        message: 'Articulo eliminado',
+        onUndo: function () {
+          if (itemEliminado) {
+            // Restaurar en posición original
+            items.splice(Math.min(originalIndex, items.length), 0, itemEliminado);
+            saveOrder();
+            render();
+          }
+        },
+        onConfirm: function () {
+          client.from('read_later_items').delete().eq('id', id)
+            .then(function (result) {
+              if (result.error) {
+                console.warn('MozzPCC: Error eliminando read later:', result.error);
+                loadItems();
+              }
+            })
+            .catch(function (e) {
+              console.warn('MozzPCC: Error eliminando read later:', e);
+              loadItems();
+            });
+        }
+      });
+    } else {
+      try {
+        var result = await client
+          .from('read_later_items')
+          .delete()
+          .eq('id', id);
 
-      if (result.error) {
-        console.warn('MozzPCC: Error eliminando read later:', result.error);
+        if (result.error) {
+          console.warn('MozzPCC: Error eliminando read later:', result.error);
+          loadItems();
+        }
+      } catch (e) {
+        console.warn('MozzPCC: Error eliminando read later:', e);
         loadItems();
       }
-    } catch (e) {
-      console.warn('MozzPCC: Error eliminando read later:', e);
-      loadItems();
     }
   }
 

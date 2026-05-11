@@ -531,28 +531,60 @@
   async function deleteTransaction(id) {
     if (!client || !userId) return;
 
+    // Guardar transacción para posible undo
+    var txEliminada = transactions.find(function (t) { return t.id === id; });
+
     // Optimistic update: quitar del array local y re-renderizar
     transactions = transactions.filter(function (t) { return t.id !== id; });
     filterTransactions();
 
-    try {
-      var { error } = await client
-        .from('finance_transactions')
-        .delete()
-        .eq('id', id);
+    // Mostrar toast con undo
+    if (window.UndoToast) {
+      window.UndoToast.show({
+        message: 'Transaccion eliminada',
+        onUndo: function () {
+          if (txEliminada) {
+            transactions.push(txEliminada);
+            filterTransactions();
+          }
+        },
+        onConfirm: function () {
+          client.from('finance_transactions').delete().eq('id', id)
+            .then(function (result) {
+              if (result.error) {
+                console.warn('[Finanzas] Error al eliminar transaccion:', result.error);
+                loadTransactions();
+              } else {
+                window.dispatchEvent(new CustomEvent('sync:success'));
+                updateSummary();
+                renderCharts();
+              }
+            })
+            .catch(function (e) {
+              console.warn('[Finanzas] Error en deleteTransaction:', e);
+              loadTransactions();
+            });
+        }
+      });
+    } else {
+      try {
+        var { error } = await client
+          .from('finance_transactions')
+          .delete()
+          .eq('id', id);
 
-      if (error) {
-        console.warn('[Finanzas] Error al eliminar transaccion:', error);
-        // Recargar para restaurar estado correcto
+        if (error) {
+          console.warn('[Finanzas] Error al eliminar transaccion:', error);
+          await loadTransactions();
+        } else {
+          window.dispatchEvent(new CustomEvent('sync:success'));
+          updateSummary();
+          renderCharts();
+        }
+      } catch (e) {
+        console.warn('[Finanzas] Error en deleteTransaction:', e);
         await loadTransactions();
-      } else {
-        window.dispatchEvent(new CustomEvent('sync:success'));
-        updateSummary();
-        renderCharts();
       }
-    } catch (e) {
-      console.warn('[Finanzas] Error en deleteTransaction:', e);
-      await loadTransactions();
     }
   }
 

@@ -307,23 +307,52 @@
     const client = getSupabase();
     if (!client || !userId) return;
 
+    // Guardar nota para posible undo
+    var notaEliminada = notas.find(n => n.id === id);
+
     // Optimistic update
     notas = notas.filter(n => n.id !== id);
     renderizarNotas();
 
-    try {
-      const { error } = await client
-        .from('notes')
-        .delete()
-        .eq('id', id);
+    // Mostrar toast con undo
+    if (window.UndoToast) {
+      window.UndoToast.show({
+        message: 'Nota eliminada',
+        onUndo: function () {
+          if (notaEliminada) {
+            notas.push(notaEliminada);
+            renderizarNotas();
+          }
+        },
+        onConfirm: function () {
+          client.from('notes').delete().eq('id', id)
+            .then(function (result) {
+              if (result.error) {
+                console.warn('Error al eliminar nota:', result.error);
+                cargarNotas();
+              }
+            })
+            .catch(function (e) {
+              console.warn('Error al eliminar nota:', e);
+              cargarNotas();
+            });
+        }
+      });
+    } else {
+      try {
+        const { error } = await client
+          .from('notes')
+          .delete()
+          .eq('id', id);
 
-      if (error) {
-        console.warn('Error al eliminar nota:', error);
+        if (error) {
+          console.warn('Error al eliminar nota:', error);
+          cargarNotas();
+        }
+      } catch (e) {
+        console.warn('Error al eliminar nota:', e);
         cargarNotas();
       }
-    } catch (e) {
-      console.warn('Error al eliminar nota:', e);
-      cargarNotas();
     }
   }
 

@@ -232,26 +232,57 @@
     const client = getSupabase();
     if (!client || !userId) return;
 
+    // Guardar tarea para posible undo
+    var tareaEliminada = tareas.find(t => t.id === id);
+
     // Optimistic update en la UI
     tareas = tareas.filter(t => t.id !== id);
     renderizarTareas();
 
-    try {
-      const { error } = await client
-        .from('tasks')
-        .delete()
-        .eq('id', id);
+    // Mostrar toast con undo
+    if (window.UndoToast) {
+      window.UndoToast.show({
+        message: 'Tarea eliminada',
+        onUndo: function () {
+          if (tareaEliminada) {
+            tareas.push(tareaEliminada);
+            renderizarTareas();
+          }
+        },
+        onConfirm: function () {
+          client.from('tasks').delete().eq('id', id)
+            .then(function (result) {
+              if (result.error) {
+                console.warn('Error al eliminar tarea:', result.error);
+                cargarTareas();
+              } else {
+                window.dispatchEvent(new CustomEvent('sync:success'));
+              }
+            })
+            .catch(function (e) {
+              console.warn('Error al eliminar tarea:', e);
+              cargarTareas();
+            });
+        }
+      });
+    } else {
+      // Fallback: eliminar inmediatamente si no hay toast
+      try {
+        const { error } = await client
+          .from('tasks')
+          .delete()
+          .eq('id', id);
 
-      if (error) {
-        console.warn('Error al eliminar tarea:', error);
-        // Recargar tareas para restaurar el estado correcto
+        if (error) {
+          console.warn('Error al eliminar tarea:', error);
+          cargarTareas();
+        } else {
+          window.dispatchEvent(new CustomEvent('sync:success'));
+        }
+      } catch (e) {
+        console.warn('Error al eliminar tarea:', e);
         cargarTareas();
-      } else {
-        window.dispatchEvent(new CustomEvent('sync:success'));
       }
-    } catch (e) {
-      console.warn('Error al eliminar tarea:', e);
-      cargarTareas();
     }
   }
 

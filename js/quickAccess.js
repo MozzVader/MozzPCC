@@ -140,16 +140,47 @@
     var client = getSupabase();
     if (!client) return;
 
-    var result = await client
-      .from('user_quick_links')
-      .delete()
-      .eq('id', id);
+    // Guardar link para posible undo
+    var linkEliminado = quickLinks.find(function (l) { return l.id === id; });
 
-    if (!result.error) {
-      quickLinks = quickLinks.filter(function (l) { return l.id !== id; });
-      renderGrid();
+    // Optimistic update
+    quickLinks = quickLinks.filter(function (l) { return l.id !== id; });
+    renderGrid();
+
+    // Mostrar toast con undo
+    if (window.UndoToast) {
+      window.UndoToast.show({
+        message: 'Acceso rapido eliminado',
+        onUndo: function () {
+          if (linkEliminado) {
+            quickLinks.push(linkEliminado);
+            renderGrid();
+          }
+        },
+        onConfirm: function () {
+          client.from('user_quick_links').delete().eq('id', id)
+            .then(function (result) {
+              if (result.error) {
+                console.warn('Error al eliminar acceso rapido:', result.error);
+                loadLinks();
+              }
+            })
+            .catch(function (e) {
+              console.warn('Error al eliminar acceso rapido:', e);
+            });
+        }
+      });
+    } else {
+      var result = await client
+        .from('user_quick_links')
+        .delete()
+        .eq('id', id);
+
+      if (!result.error) {
+        quickLinks = quickLinks.filter(function (l) { return l.id !== id; });
+        renderGrid();
+      }
     }
-    return result;
   }
 
   async function moveQuickLink(id, direction) {
