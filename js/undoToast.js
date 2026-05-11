@@ -10,6 +10,7 @@
   var container = document.getElementById('undo-toast-container');
   var timer = null;
   var pendingAction = null;
+  var pendingUndo = null;
   var toastEl = null;
   var undoBtn = null;
 
@@ -42,8 +43,9 @@
       toastEl.classList.add('visible');
     });
 
-    // Guardar callback de confirmación
+    // Guardar callbacks
     pendingAction = options.onConfirm || null;
+    pendingUndo = options.onUndo || null;
 
     // Timer de 5 segundos
     timer = setTimeout(function () {
@@ -58,11 +60,16 @@
       timer = null;
     }
 
-    // Si se deshizo, NO ejecutar la confirmación
-    if (!undone && pendingAction) {
+    // Si se deshizo, ejecutar onUndo y NO ejecutar onConfirm
+    if (undone) {
+      if (pendingUndo) {
+        try { pendingUndo(); } catch (e) { console.warn('UndoToast: error en onUndo', e); }
+      }
+    } else if (pendingAction) {
       try { pendingAction(); } catch (e) { console.warn('UndoToast: error en onConfirm', e); }
     }
     pendingAction = null;
+    pendingUndo = null;
 
     // Animar salida y remover
     if (toastEl) {
