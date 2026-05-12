@@ -234,23 +234,41 @@
     <section class="snap-section section-productivity" id="section-productivity" aria-label="Productividad">
       <div class="snap-section-inner">
         <div class="card widget-tasks">
-          <div class="card-header">
-            <i class="fa-solid fa-list-check"></i>
-            <h2>Tareas</h2>
+          <div class="task-sticky-header">
+            <div class="card-header">
+              <i class="fa-solid fa-list-check"></i>
+              <h2>Tareas</h2>
+            </div>
+
+            <div class="task-tabs">
+              <button class="task-tab active" data-tab="lista">
+                <i class="fa-solid fa-list"></i> Lista
+              </button>
+              <button class="task-tab" data-tab="kanban">
+                <i class="fa-solid fa-columns"></i> Kanban
+              </button>
+            </div>
+
+            <div class="task-input-container">
+              <input type="text" id="task-input" placeholder="Agrega una nueva tarea..." aria-label="Nueva tarea" maxlength="120">
+              <button class="btn-add" id="task-add-btn" aria-label="Agregar tarea">
+                <i class="fa-solid fa-plus"></i> Agregar
+              </button>
+            </div>
+
+            <p class="task-counter" id="task-counter">
+              <span>0</span> / <span>0</span> completadas
+            </p>
           </div>
 
-          <div class="task-input-container">
-            <input type="text" id="task-input" placeholder="Agrega una nueva tarea..." aria-label="Nueva tarea" maxlength="120">
-            <button class="btn-add" id="task-add-btn" aria-label="Agregar tarea">
-              <i class="fa-solid fa-plus"></i> Agregar
-            </button>
+          <div class="task-content">
+            <div class="task-tab-content task-tab-lista active" id="task-tab-lista">
+              <ul class="task-list" id="task-list"></ul>
+            </div>
+            <div class="task-tab-content task-tab-kanban" id="task-tab-kanban">
+              <div class="task-kanban" id="task-kanban"></div>
+            </div>
           </div>
-
-          <p class="task-counter" id="task-counter">
-            <span>0</span> / <span>0</span> completadas
-          </p>
-
-          <ul class="task-list" id="task-list"></ul>
         </div>
       </div>
     </section>
