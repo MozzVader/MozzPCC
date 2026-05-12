@@ -749,6 +749,10 @@ body::after {
   font-size: 0.9rem;
   color: var(--text-primary);
   transition: var(--transition-fast);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
 }
 
 .task-text.completed {
@@ -1075,6 +1079,11 @@ body::after {
   color: var(--text-primary);
   margin-bottom: 6px;
   word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  cursor: default;
 }
 
 .kanban-card-footer {

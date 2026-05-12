@@ -186,6 +186,7 @@
       var texto = document.createElement('span');
       texto.className = 'task-text' + (tarea.status === 'completada' ? ' completada' : '') + (tarea.status === 'descartada' ? ' descartada' : '');
       texto.textContent = tarea.texto;
+      texto.title = tarea.texto;
 
       // Status badge (clic abre dropdown)
       var badgeWrap = document.createElement('div');
@@ -328,6 +329,7 @@
           var cardText = document.createElement('div');
           cardText.className = 'kanban-card-text' + (tarea.status === 'completada' ? ' completada' : '') + (tarea.status === 'descartada' ? ' descartada' : '');
           cardText.textContent = tarea.texto;
+          cardText.title = tarea.texto;
 
           var footer = document.createElement('div');
           footer.className = 'kanban-card-footer';
