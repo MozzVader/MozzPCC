@@ -9,12 +9,12 @@
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO postgres, anon, authenticated, service_role;
 
 -- Explicit grants for existing tables (Supabase requirement from Oct 2025)
-GRANT ALL ON TABLE tasks TO anon, authenticated, service_role;
-GRANT ALL ON TABLE notes TO anon, authenticated, service_role;
-GRANT ALL ON TABLE user_preferences TO anon, authenticated, service_role;
-GRANT ALL ON TABLE user_quick_links TO anon, authenticated, service_role;
-GRANT ALL ON TABLE finance_categories TO anon, authenticated, service_role;
-GRANT ALL ON TABLE finance_transactions TO anon, authenticated, service_role;
+GRANT ALL ON TABLE tasks TO authenticated, service_role;
+GRANT ALL ON TABLE notes TO authenticated, service_role;
+GRANT ALL ON TABLE user_preferences TO authenticated, service_role;
+GRANT ALL ON TABLE user_quick_links TO authenticated, service_role;
+GRANT ALL ON TABLE finance_categories TO authenticated, service_role;
+GRANT ALL ON TABLE finance_transactions TO authenticated, service_role;
 
 -- =============================================
 -- 2. Create tables
