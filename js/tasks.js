@@ -35,6 +35,7 @@
   var isInitialized = false;
   var currentTab = 'lista';
   var openDropdown = null; // reference to currently open dropdown
+  var STORAGE_KEY = 'mozzpcc_tasks_order';
 
   function getSupabase() {
     return window.supabaseClient || null;
@@ -108,22 +109,8 @@
         };
       });
 
-      // If no sort_order values, assign sequential ones
-      var needsSortUpdate = false;
-      for (var i = 0; i < tareas.length; i++) {
-        if (tareas[i].sort_order === undefined || tareas[i].sort_order === null) {
-          tareas[i].sort_order = i;
-          needsSortUpdate = true;
-        }
-      }
-      if (needsSortUpdate && tareas.length > 0) {
-        // Try to update sort orders in batch (fire and forget)
-        try {
-          for (var j = 0; j < tareas.length; j++) {
-            client.from('tasks').update({ sort_order: j }).eq('id', tareas[j].id);
-          }
-        } catch(e) { /* ignore */ }
-      }
+      // Apply custom order from localStorage
+      applyCustomOrder();
 
       render();
     } catch (e) {
@@ -498,6 +485,7 @@
         created_at: data.created_at
       });
 
+      saveCustomOrder();
       render();
       taskInput.value = '';
       taskInput.focus();
@@ -510,10 +498,66 @@
   }
 
   /**
+   * Obtiene el orden personalizado desde localStorage
+   * @returns {string[]|null} Array de task IDs en orden, o null
+   */
+  function getCustomOrder() {
+    try {
+      var data = localStorage.getItem(STORAGE_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch (e) { return null; }
+  }
+
+  /**
+   * Guarda el orden actual de las tareas en localStorage
+   */
+  function saveCustomOrder() {
+    var ids = [];
+    for (var i = 0; i < tareas.length; i++) {
+      ids.push(tareas[i].id);
+    }
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+    } catch (e) { /* ignore */ }
+  }
+
+  /**
+   * Reordena el array tareas según localStorage.
+   * Tareas que no estén en localStorage se mantienen al final.
+   */
+  function applyCustomOrder() {
+    var order = getCustomOrder();
+    if (!order || !order.length) return;
+
+    // Build a map for fast lookup
+    var taskMap = {};
+    for (var i = 0; i < tareas.length; i++) {
+      taskMap[tareas[i].id] = tareas[i];
+    }
+
+    // Reorder: follow localStorage order, append unknowns at end
+    var reordered = [];
+    var seen = {};
+    for (var j = 0; j < order.length; j++) {
+      if (taskMap[order[j]] && !seen[order[j]]) {
+        reordered.push(taskMap[order[j]]);
+        seen[order[j]] = true;
+      }
+    }
+    // Append tasks not in localStorage (newly created, etc.)
+    for (var k = 0; k < tareas.length; k++) {
+      if (!seen[tareas[k].id]) {
+        reordered.push(tareas[k]);
+      }
+    }
+
+    tareas = reordered;
+  }
+
+  /**
    * Mueve una tarea arriba/abajo (reordenar)
    */
-  async function moveTask(id, direction) {
-    var client = getSupabase();
+  function moveTask(id, direction) {
     var index = -1;
     for (var i = 0; i < tareas.length; i++) {
       if (tareas[i].id === id) { index = i; break; }
@@ -523,27 +567,15 @@
     var newIndex = index + direction;
     if (newIndex < 0 || newIndex >= tareas.length) return;
 
-    // Swap local
+    // Swap in array
     var temp = tareas[index];
     tareas[index] = tareas[newIndex];
     tareas[newIndex] = temp;
 
-    // Swap sort_orders
-    var tempOrder = tareas[index].sort_order;
-    tareas[index].sort_order = tareas[newIndex].sort_order;
-    tareas[newIndex].sort_order = tempOrder;
+    // Persist to localStorage
+    saveCustomOrder();
 
     render();
-
-    // Persist sort_order changes
-    if (client && userId) {
-      try {
-        await client.from('tasks').update({ sort_order: tareas[index].sort_order }).eq('id', tareas[index].id);
-        await client.from('tasks').update({ sort_order: tareas[newIndex].sort_order }).eq('id', tareas[newIndex].id);
-      } catch (e) {
-        console.warn('Error al reordenar tarea:', e);
-      }
-    }
   }
 
   /**
@@ -565,6 +597,7 @@
 
     // Optimistic update
     tareas.splice(tareaIndex, 1);
+    saveCustomOrder();
     render();
 
     if (window.UndoToast) {
@@ -573,6 +606,7 @@
         onUndo: function () {
           if (tareaEliminada) {
             tareas.splice(tareaIndex, 0, tareaEliminada);
+            saveCustomOrder();
             render();
           }
         },
