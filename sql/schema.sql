@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS tasks (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   text TEXT NOT NULL,
-  completed BOOLEAN DEFAULT false,
+  status TEXT NOT NULL DEFAULT 'pending',
+  sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
@@ -31,21 +32,11 @@ CREATE TABLE IF NOT EXISTS notes (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Pomodoro sessions table
-CREATE TABLE IF NOT EXISTS pomodoro_sessions (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  duration INTEGER DEFAULT 25,
-  mode TEXT DEFAULT 'work' CHECK (mode IN ('work', 'break')),
-  completed_at TIMESTAMPTZ DEFAULT now()
-);
-
 -- =============================================
 -- 3. Enable Row Level Security on each table
 -- =============================================
 ALTER TABLE tasks ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
-ALTER TABLE pomodoro_sessions ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
 -- 4. RLS Policies — Tasks
@@ -86,112 +77,14 @@ CREATE POLICY "Users can delete own notes" ON notes
   FOR DELETE USING (auth.uid() = user_id);
 
 -- =============================================
--- 6. RLS Policies — Pomodoro Sessions
--- =============================================
-DROP POLICY IF EXISTS "Users can view own pomodoro_sessions" ON pomodoro_sessions;
-CREATE POLICY "Users can view own pomodoro_sessions" ON pomodoro_sessions
-  FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert own pomodoro_sessions" ON pomodoro_sessions;
-CREATE POLICY "Users can insert own pomodoro_sessions" ON pomodoro_sessions
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update own pomodoro_sessions" ON pomodoro_sessions;
-CREATE POLICY "Users can update own pomodoro_sessions" ON pomodoro_sessions
-  FOR UPDATE USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can delete own pomodoro_sessions" ON pomodoro_sessions;
-CREATE POLICY "Users can delete own pomodoro_sessions" ON pomodoro_sessions
-  FOR DELETE USING (auth.uid() = user_id);
-
--- =============================================
--- 7. Indexes for performance
+-- 6. Indexes for performance
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_tasks_user_id ON tasks(user_id);
 CREATE INDEX IF NOT EXISTS idx_tasks_created_at ON tasks(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_notes_user_id ON notes(user_id);
-CREATE INDEX IF NOT EXISTS idx_pomodoro_sessions_user_id ON pomodoro_sessions(user_id);
 
 -- =============================================
--- 8. Dock Groups table (customizable dock groups)
--- =============================================
-CREATE TABLE IF NOT EXISTS user_dock_groups (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  name TEXT NOT NULL,
-  icon TEXT NOT NULL DEFAULT 'fa-solid fa-folder',
-  "order" INTEGER DEFAULT 0,
-  is_default BOOLEAN DEFAULT false,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- =============================================
--- 9. Dock Links table (links within dock groups)
--- =============================================
-CREATE TABLE IF NOT EXISTS user_dock_links (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  group_id UUID REFERENCES user_dock_groups(id) ON DELETE CASCADE NOT NULL,
-  name TEXT NOT NULL,
-  url TEXT NOT NULL,
-  icon TEXT NOT NULL DEFAULT 'fa-solid fa-link',
-  "order" INTEGER DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- =============================================
--- 10. Enable RLS on dock tables
--- =============================================
-ALTER TABLE user_dock_groups ENABLE ROW LEVEL SECURITY;
-ALTER TABLE user_dock_links ENABLE ROW LEVEL SECURITY;
-
--- =============================================
--- 11. RLS Policies — Dock Groups
--- =============================================
-DROP POLICY IF EXISTS "Users can view own dock_groups" ON user_dock_groups;
-CREATE POLICY "Users can view own dock_groups" ON user_dock_groups
-  FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert own dock_groups" ON user_dock_groups;
-CREATE POLICY "Users can insert own dock_groups" ON user_dock_groups
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update own dock_groups" ON user_dock_groups;
-CREATE POLICY "Users can update own dock_groups" ON user_dock_groups
-  FOR UPDATE USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can delete own dock_groups" ON user_dock_groups;
-CREATE POLICY "Users can delete own dock_groups" ON user_dock_groups
-  FOR DELETE USING (auth.uid() = user_id);
-
--- =============================================
--- 12. RLS Policies — Dock Links
--- =============================================
-DROP POLICY IF EXISTS "Users can view own dock_links" ON user_dock_links;
-CREATE POLICY "Users can view own dock_links" ON user_dock_links
-  FOR SELECT USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can insert own dock_links" ON user_dock_links;
-CREATE POLICY "Users can insert own dock_links" ON user_dock_links
-  FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can update own dock_links" ON user_dock_links;
-CREATE POLICY "Users can update own dock_links" ON user_dock_links
-  FOR UPDATE USING (auth.uid() = user_id);
-
-DROP POLICY IF EXISTS "Users can delete own dock_links" ON user_dock_links;
-CREATE POLICY "Users can delete own dock_links" ON user_dock_links
-  FOR DELETE USING (auth.uid() = user_id);
-
--- =============================================
--- 13. Indexes for dock tables
--- =============================================
-CREATE INDEX IF NOT EXISTS idx_dock_groups_user_id ON user_dock_groups(user_id);
-CREATE INDEX IF NOT EXISTS idx_dock_links_user_id ON user_dock_links(user_id);
-CREATE INDEX IF NOT EXISTS idx_dock_links_group_id ON user_dock_links(group_id);
-
--- =============================================
--- 14. User Preferences table (themes, settings)
+-- 7. User Preferences table (themes, settings)
 -- =============================================
 CREATE TABLE IF NOT EXISTS user_preferences (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -207,12 +100,12 @@ CREATE TABLE IF NOT EXISTS user_preferences (
 ALTER TABLE user_preferences ADD COLUMN IF NOT EXISTS city TEXT DEFAULT '';
 
 -- =============================================
--- 15. Enable RLS on user_preferences
+-- 8. Enable RLS on user_preferences
 -- =============================================
 ALTER TABLE user_preferences ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
--- 16. RLS Policies — User Preferences
+-- 9. RLS Policies — User Preferences
 -- =============================================
 DROP POLICY IF EXISTS "Users manage own preferences" ON user_preferences;
 CREATE POLICY "Users manage own preferences" ON user_preferences
@@ -220,12 +113,12 @@ CREATE POLICY "Users manage own preferences" ON user_preferences
   WITH CHECK (auth.uid() = user_id);
 
 -- =============================================
--- 17. Index for user_preferences
+-- 10. Index for user_preferences
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_user_preferences_user_id ON user_preferences(user_id);
 
 -- =============================================
--- 18. Quick Links table (accesos rápidos del usuario)
+-- 11. Quick Links table (accesos rápidos del usuario)
 -- =============================================
 CREATE TABLE IF NOT EXISTS user_quick_links (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -239,12 +132,12 @@ CREATE TABLE IF NOT EXISTS user_quick_links (
 );
 
 -- =============================================
--- 19. Enable RLS on user_quick_links
+-- 12. Enable RLS on user_quick_links
 -- =============================================
 ALTER TABLE user_quick_links ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
--- 20. RLS Policies — Quick Links
+-- 13. RLS Policies — Quick Links
 -- =============================================
 DROP POLICY IF EXISTS "Users manage own quick links" ON user_quick_links;
 CREATE POLICY "Users manage own quick links" ON user_quick_links
@@ -252,12 +145,12 @@ CREATE POLICY "Users manage own quick links" ON user_quick_links
   WITH CHECK (auth.uid() = user_id);
 
 -- =============================================
--- 21. Index for user_quick_links
+-- 14. Index for user_quick_links
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_quick_links_user_id ON user_quick_links(user_id);
 
 -- =============================================
--- 22. Finance Categories table
+-- 15. Finance Categories table
 -- =============================================
 CREATE TABLE IF NOT EXISTS finance_categories (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -271,7 +164,7 @@ CREATE TABLE IF NOT EXISTS finance_categories (
 );
 
 -- =============================================
--- 23. Finance Transactions table
+-- 16. Finance Transactions table
 -- =============================================
 CREATE TABLE IF NOT EXISTS finance_transactions (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -285,13 +178,13 @@ CREATE TABLE IF NOT EXISTS finance_transactions (
 );
 
 -- =============================================
--- 24. Enable RLS on finance tables
+-- 17. Enable RLS on finance tables
 -- =============================================
 ALTER TABLE finance_categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE finance_transactions ENABLE ROW LEVEL SECURITY;
 
 -- =============================================
--- 25. RLS Policies — Finance Categories
+-- 18. RLS Policies — Finance Categories
 -- =============================================
 DROP POLICY IF EXISTS "Users manage own finance_categories" ON finance_categories;
 CREATE POLICY "Users manage own finance_categories" ON finance_categories
@@ -299,7 +192,7 @@ CREATE POLICY "Users manage own finance_categories" ON finance_categories
   WITH CHECK (auth.uid() = user_id);
 
 -- =============================================
--- 26. RLS Policies — Finance Transactions
+-- 19. RLS Policies — Finance Transactions
 -- =============================================
 DROP POLICY IF EXISTS "Users manage own finance_transactions" ON finance_transactions;
 CREATE POLICY "Users manage own finance_transactions" ON finance_transactions
@@ -307,7 +200,7 @@ CREATE POLICY "Users manage own finance_transactions" ON finance_transactions
   WITH CHECK (auth.uid() = user_id);
 
 -- =============================================
--- 27. Indexes for finance tables
+-- 20. Indexes for finance tables
 -- =============================================
 CREATE INDEX IF NOT EXISTS idx_finance_categories_user_id ON finance_categories(user_id);
 CREATE INDEX IF NOT EXISTS idx_finance_transactions_user_id ON finance_transactions(user_id);

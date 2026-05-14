@@ -568,12 +568,6 @@
       <button class="section-dot" data-section="section-read-later" data-tooltip="Ver Mas Tarde" aria-label="Ver Mas Tarde"></button>
     </div>
 
-    <!-- ===== DOCK estilo macOS ===== -->
-    <nav class="dock" id="dock">
-      <div class="dock-panel" id="dock-panel">
-        <!-- Se renderiza dinámicamente desde settings.js / dock.js -->
-      </div>
-    </nav>
   </main>
 
   <!-- ===== MODAL DE TIPS Y ATAJOS ===== -->
@@ -604,10 +598,6 @@
             <span class="tip-desc">Usa el scroll o los indicadores laterales</span>
           </div>
           <div class="tip-item">
-            <span class="tip-label">Dock</span>
-            <span class="tip-desc">Hacé hover sobre los iconos para ver el efecto de magnificacion</span>
-          </div>
-          <div class="tip-item">
             <span class="tip-label">Clean Mode</span>
             <span class="tip-desc">Pulsá <kbd class="tip-kbd">Esc</kbd> para un modo limpio solo con el reloj. Clic para volver.</span>
           </div>
@@ -633,10 +623,6 @@
         </div>
         <div class="tip-group">
           <h3><i class="fa-solid fa-palette"></i> Personalizacion</h3>
-          <div class="tip-item">
-            <span class="tip-label">Dock</span>
-            <span class="tip-desc">Creá grupos y agregá links desde Configuracion &rarr; Dock</span>
-          </div>
           <div class="tip-item">
             <span class="tip-label">Notas</span>
             <span class="tip-desc">Hacé clic en el color de una nota para cambiarlo</span>
@@ -665,10 +651,7 @@
       <div class="settings-header">
         <h2><i class="fa-solid fa-gear"></i> Configuracion</h2>
         <div class="settings-tabs">
-          <button class="settings-tab active" data-tab="dock">
-            <i class="fa-solid fa-grip"></i> Dock
-          </button>
-          <button class="settings-tab" data-tab="quickaccess">
+          <button class="settings-tab active" data-tab="quickaccess">
             <i class="fa-solid fa-rocket"></i> Rapidos
           </button>
           <button class="settings-tab" data-tab="appearance">
@@ -681,34 +664,6 @@
         <button id="settings-close" class="settings-close" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
         </button>
-      </div>
-
-      <!-- Tab: Dock -->
-      <div class="settings-tab-content active" id="tab-dock">
-      <div class="settings-body">
-        <!-- Panel izquierdo: Grupos -->
-        <div class="settings-panel settings-groups">
-          <div class="settings-panel-header">
-            <h3>Grupos</h3>
-            <button id="settings-add-group" class="settings-btn-add" aria-label="Agregar grupo">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
-          <div id="settings-groups-list" class="settings-groups-list"></div>
-        </div>
-
-        <!-- Panel derecho: Links del grupo seleccionado -->
-        <div class="settings-panel settings-links">
-          <div class="settings-panel-header">
-            <h3 id="settings-links-title">Links</h3>
-            <button id="settings-add-link" class="settings-btn-add" aria-label="Agregar link">
-              <i class="fa-solid fa-plus"></i>
-            </button>
-          </div>
-          <div id="settings-links-list" class="settings-links-list"></div>
-          <p id="settings-no-group" class="settings-empty-msg">Seleccioná un grupo para ver sus links</p>
-        </div>
-      </div>
       </div>
 
       <!-- Tab: Acceso Rapido -->
@@ -780,7 +735,7 @@
         <div class="backup-panel">
           <div class="backup-section">
             <h3><i class="fa-solid fa-cloud-arrow-down" style="color:var(--accent);margin-right:6px;"></i> Exportar datos</h3>
-            <p class="backup-hint">Descarga una copia de seguridad de todos tus datos (tareas, notas, dock, accesos rapidos, read later y configuraciones).</p>
+            <p class="backup-hint">Descarga una copia de seguridad de todos tus datos (tareas, notas, accesos rapidos, read later y configuraciones).</p>
             <button id="backup-export-btn" class="backup-btn export">
               <i class="fa-solid fa-download"></i> Descargar backup
             </button>
@@ -851,50 +806,6 @@
       </div>
     </div>
 
-    <!-- Formularios flotantes -->
-    <!-- Formulario nuevo/editar grupo -->
-    <div id="group-form" class="settings-form-overlay" style="display:none;">
-      <div class="settings-form">
-        <h3 id="group-form-title">Nuevo Grupo</h3>
-        <div class="settings-form-row">
-          <label for="group-name-input">Nombre</label>
-          <input type="text" id="group-name-input" placeholder="Ej: Herramientas" maxlength="20">
-        </div>
-        <div class="settings-form-row">
-          <label>Icono</label>
-          <div id="group-icon-picker" class="icon-picker"></div>
-          <input type="hidden" id="group-icon-input" value="fa-solid fa-folder">
-        </div>
-        <div class="settings-form-actions">
-          <button id="group-form-cancel" class="settings-form-btn cancel">Cancelar</button>
-          <button id="group-form-save" class="settings-form-btn save">Guardar</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Formulario nuevo/editar link -->
-    <div id="link-form" class="settings-form-overlay" style="display:none;">
-      <div class="settings-form">
-        <h3 id="link-form-title">Nuevo Link</h3>
-        <div class="settings-form-row">
-          <label for="link-name-input">Nombre</label>
-          <input type="text" id="link-name-input" placeholder="Ej: Google" maxlength="20">
-        </div>
-        <div class="settings-form-row">
-          <label for="link-url-input">URL</label>
-          <input type="url" id="link-url-input" placeholder="https://...">
-        </div>
-        <div class="settings-form-row">
-          <label>Icono</label>
-          <div id="link-icon-picker" class="icon-picker"></div>
-          <input type="hidden" id="link-icon-input" value="fa-solid fa-link">
-        </div>
-        <div class="settings-form-actions">
-          <button id="link-form-cancel" class="settings-form-btn cancel">Cancelar</button>
-          <button id="link-form-save" class="settings-form-btn save">Guardar</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Scripts — Orden CRÍTICO -->
@@ -907,7 +818,6 @@
   <script src="/MozzPCC/js/weather.js"></script>
   <script src="/MozzPCC/js/dollar.js"></script>
   <script src="/MozzPCC/js/worldClock.js"></script>
-  <script src="/MozzPCC/js/dock.js"></script>
   <script src="/MozzPCC/js/quickAccess.js"></script>
   <script src="/MozzPCC/js/settings.js"></script>
   <script src="/MozzPCC/js/readLater.js"></script>

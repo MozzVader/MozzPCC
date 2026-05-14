@@ -39,7 +39,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Ver Mas Tarde | Links guardados con tags de color, filtros y drag & drop |
 | TV Shows | Series con agenda de proximos episodios y lista personalizada via TVmaze API |
 | Steam Stats | Perfil, estado online, nivel, juegos recientes, total de juegos y horas (via Steam API) |
-| Dock Personalizable | Dock estilo macOS con magnificacion, grupos y links editables |
+| Backup/Restore | Exportar e importar todos tus datos en JSON |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
 | Clean Mode | Vista limpia con solo reloj pulsando Esc (clic para volver) |
 | Indicador de Sync | Puntito verde que se enciende al guardar datos en Supabase |
@@ -48,14 +48,12 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
 | Snap Scroll | Navegacion vertical con snap sections e indicadores con tooltips |
 | Moneda Configurable | Simbolo de moneda personalizable (ARS, USD, EUR, etc.) |
-| Backup/Restore | Exportar e importar todos tus datos en JSON |
 
 ## Diseno
 
 - Tema oscuro con degradado profundo
 - Tarjetas con efecto glassmorphism (vidrio esmerilado)
 - Navegacion vertical con snap scroll e indicadores laterales
-- Dock estilo macOS con magnificacion al hover
 - 6 paletas de colores personalizables:
 
 | Tema | Colores | Vibra |
@@ -100,8 +98,7 @@ MozzPCC/
 │   ├── backup.js           # Backup/restore de datos
 │   ├── steamStats.js       # Widget de Steam Stats (perfil + nivel + juegos)
 │   ├── tips.js             # Tips de uso
-│   ├── dock.js             # Dock estilo macOS con magnificacion
-│   ├── settings.js         # Configuracion (dock + temas + moneda)
+│   ├── settings.js         # Configuracion (temas + moneda + accesos rapidos)
 │   └── commandPalette.js   # Command Palette (Ctrl+K)
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS

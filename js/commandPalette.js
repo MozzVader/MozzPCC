@@ -1,6 +1,6 @@
 /**
  * commandPalette.js — Command Palette (Ctrl+K / Cmd+K)
- * Busca secciones, links del dock, tareas, notas y acciones rápidas
+ * Busca secciones, accesos rapidos, tareas, notas y acciones rápidas
  * Se integra con los datos existentes en memoria
  */
 
@@ -32,25 +32,6 @@
       { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } },
       { id: 'sec-rl',       group: 'Secciones', icon: 'fa-solid fa-bookmark',    label: 'Ver Mas Tarde', hint: 'Links guardados',        action: function () { scrollTo('section-read-later'); } }
     ];
-  }
-
-  /** Links del dock (desde settings.js) */
-  function getDockLinks() {
-    var dockData = (typeof window.getDockData === 'function') ? window.getDockData() : [];
-    var links = [];
-    dockData.forEach(function (group) {
-      (group.links || []).forEach(function (link) {
-        links.push({
-          id: 'link-' + link.id,
-          group: 'Dock — ' + group.name,
-          icon: link.icon,
-          label: link.name,
-          hint: link.url,
-          action: function () { window.open(link.url, '_blank', 'noopener'); }
-        });
-      });
-    });
-    return links;
   }
 
   /** Quick links desde quickAccess.js */
@@ -134,7 +115,6 @@
 
     var allItems = []
       .concat(getSections())
-      .concat(getDockLinks())
       .concat(getQuickLinks())
       .concat(getActions())
       .concat(getTasks())
@@ -358,8 +338,4 @@
     if (e.target === overlay) close();
   });
 
-  // Re-render al abrir el palette (por si cambiaron los datos)
-  window.addEventListener('dock:update', function () {
-    if (isOpen) render(input.value);
-  });
 })();

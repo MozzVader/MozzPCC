@@ -76,8 +76,6 @@ Si todo sale bien, vas a ver un mensaje de exito y se habran creado:
 |-------|---------------|
 | `tasks` | Almacena las tareas de cada usuario |
 | `notes` | Almacena las notas adhesivas |
-| `user_dock_groups` | Grupos del dock |
-| `user_dock_links` | Links dentro de cada grupo del dock |
 | `user_preferences` | Preferencias del usuario (tema, ciudad, etc.) |
 | `user_quick_links` | Accesos rapidos del usuario |
 | `finance_categories` | Categorias de ingresos/gastos |
@@ -463,8 +461,7 @@ MozzPCC/
 │   ├── steamStats.js       # Widget de Steam Stats (perfil + juegos)
 │   ├── tips.js             # Tips de uso
 │   ├── weather.js           # Widget de clima (Open-Meteo)
-│   ├── dock.js             # Dock estilo macOS con magnificacion
-│   ├── settings.js         # Configuracion (dock + temas + moneda)
+│   ├── settings.js         # Configuracion (temas + moneda + accesos rapidos)
 │   ├── commandPalette.js   # Command Palette (Ctrl+K)
 ├── sql/
 │   ├── schema.sql          # Schema de BD + RLS (ejecutar en Supabase)

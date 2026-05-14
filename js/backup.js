@@ -19,8 +19,6 @@
   // Tablas a backupear (orden importa para restore)
   var TABLES = [
     'user_preferences',
-    'user_dock_groups',
-    'user_dock_links',
     'user_quick_links',
     'tasks',
     'notes',
@@ -226,7 +224,7 @@
           Object.keys(row).forEach(function (key) {
             // Skip id y campos de auditoría
             if (key === 'id') return;
-            if (key === 'created_at' && table !== 'tasks' && table !== 'notes' && table !== 'user_dock_groups' && table !== 'user_dock_links' && table !== 'user_quick_links' && table !== 'read_later_items' && table !== 'finance_categories') return;
+            if (key === 'created_at' && table !== 'tasks' && table !== 'notes' && table !== 'user_quick_links' && table !== 'read_later_items' && table !== 'finance_categories') return;
             if (key === 'updated_at') return;
 
             // Forzar el user_id actual

@@ -144,7 +144,7 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 80px 24px 100px 24px; /* top para user-bar, bottom para dock */
+  padding: 80px 24px 60px 24px;
   position: relative;
 }
 
@@ -2176,139 +2176,6 @@ body::after {
 }
 
 /* ============================================
-   POMODORO TIMER
-   ============================================ */
-.widget-pomodoro {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.pomodoro-display {
-  position: relative;
-  width: 200px;
-  height: 200px;
-  margin: 8px 0 20px;
-}
-
-.pomodoro-svg {
-  width: 100%;
-  height: 100%;
-  transform: rotate(-90deg);
-}
-
-.pomodoro-svg .bg-ring {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.05);
-  stroke-width: 6;
-}
-
-.pomodoro-svg .progress-ring {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 6;
-  stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear;
-  filter: drop-shadow(0 0 6px var(--accent-glow));
-}
-
-.pomodoro-svg .progress-ring.break-mode {
-  stroke: var(--note-green);
-  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.4));
-}
-
-.pomodoro-time {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.pomodoro-time .time {
-  font-size: 2.8rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-.pomodoro-time .label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-top: 2px;
-}
-
-.pomodoro-controls {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.btn-pomodoro {
-  padding: 10px 20px;
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-xs);
-  background: var(--bg-glass);
-  color: var(--text-primary);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 0.85rem;
-  font-weight: 500;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-pomodoro:hover {
-  background: var(--bg-glass-hover);
-  border-color: var(--border-glass-hover);
-}
-
-.btn-pomodoro.primary {
-  background: var(--accent);
-  color: var(--bg-primary);
-  border-color: var(--accent);
-  font-weight: 600;
-}
-
-.btn-pomodoro.primary:hover {
-  background: #33dfff;
-}
-
-.btn-pomodoro:active {
-  transform: scale(0.96);
-}
-
-.pomodoro-stats {
-  display: flex;
-  gap: 24px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-glass);
-  width: 100%;
-  justify-content: center;
-}
-
-.stat {
-  text-align: center;
-}
-
-.stat .stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-
-.stat .stat-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 2px;
-}
-
-/* ============================================
    NOTAS RÁPIDAS
    ============================================ */
 .notes-toolbar {
@@ -3149,15 +3016,6 @@ body::after {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
-  .pomodoro-display {
-    width: 170px;
-    height: 170px;
-  }
-
-  .pomodoro-time .time {
-    font-size: 2.2rem;
-  }
-
   /* Indicadores más chicos en mobile */
   .section-indicators {
     right: 10px;
@@ -3190,11 +3048,6 @@ body::after {
 
   .notes-grid {
     grid-template-columns: 1fr;
-  }
-
-  .pomodoro-controls {
-    flex-wrap: wrap;
-    justify-content: center;
   }
 
   /* En pantallas muy chicas, los dots se esconden para no molestar */
@@ -3975,181 +3828,7 @@ body::after {
 }
 
 /* ============================================
-   DOCK — Estilo macOS
-   ============================================ */
-
-/* Contenedor principal del dock */
-.dock {
-  position: fixed;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 800;
-  padding-bottom: env(safe-area-inset-bottom, 0);
-}
-
-/* Panel glass del dock */
-.dock-panel {
-  display: flex;
-  align-items: flex-end;
-  gap: 2px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 6px 8px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
-              0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-/* Grupo de iconos (categoría) */
-.dock-group {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Panel expandido (sub-iconos) */
-.dock-expand {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  display: flex;
-  gap: 2px;
-  padding: 6px 8px;
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-50%) translateY(8px) scale(0.92);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-  white-space: nowrap;
-}
-
-.dock-group:hover .dock-expand,
-.dock-group.active .dock-expand {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(0) scale(1);
-  pointer-events: auto;
-}
-
-/* Separador entre grupos */
-.dock-separator {
-  width: 1px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.08);
-  margin: 0 4px;
-  align-self: center;
-}
-
-/* Icono individual */
-.dock-icon {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: transform 0.15s ease-out,
-              background 0.2s ease;
-  text-decoration: none;
-  transform-origin: bottom center;
-  outline: none;
-}
-
-.dock-icon:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.dock-icon:active {
-  transform: scale(0.9) !important;
-}
-
-/* Trigger (icono principal de categoría) */
-.dock-trigger {
-  font-size: 1.15rem;
-  color: var(--accent);
-}
-
-/* Tooltip */
-.dock-tooltip {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.88);
-  color: #f0f0f5;
-  font-size: 0.72rem;
-  font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-.dock-icon:hover .dock-tooltip {
-  opacity: 1;
-}
-
-/* ============================================
-   DOCK — RESPONSIVE
-   ============================================ */
-@media (max-width: 768px) {
-  .dock-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
-  }
-
-  .dock-expand {
-    gap: 1px;
-    padding: 5px 6px;
-  }
-
-  .dock-expand .dock-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .dock-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
-
-  .dock-expand .dock-icon {
-    width: 40px;
-    height: 40px;
-  }
-
-  .dock-panel {
-    padding: 5px 6px;
-    border-radius: 16px;
-  }
-}
-
-/* ============================================
-   SETTINGS — Modal de configuración del dock
+   SETTINGS — Modal de configuracion
    ============================================ */
 
 /* Settings button in user bar */
@@ -4432,25 +4111,6 @@ body::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* Body: two panels */
-.settings-body {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* Panels */
-.settings-panel {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.settings-groups {
-  border-right: 1px solid var(--border-glass);
-}
-
 .settings-panel-header {
   display: flex;
   align-items: center;
@@ -4491,234 +4151,6 @@ body::after {
 
 .settings-btn-add:active {
   transform: scale(0.95);
-}
-
-/* Groups list */
-.settings-groups-list {
-  overflow-y: auto;
-  padding: 8px;
-  flex: 1;
-}
-
-.settings-groups-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.settings-groups-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.settings-groups-list::-webkit-scrollbar-thumb {
-  background: var(--border-glass);
-  border-radius: 4px;
-}
-
-.settings-groups-list::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* Group item */
-.settings-group-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: var(--radius-xs);
-  cursor: pointer;
-  transition: var(--transition-fast);
-  border: 1px solid transparent;
-}
-
-.settings-group-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.settings-group-item.active {
-  background: var(--accent-dim);
-  border-color: rgba(0, 212, 255, 0.2);
-}
-
-.settings-group-item .group-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-xs);
-  color: var(--accent);
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.settings-group-item .group-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.settings-group-item .group-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.settings-group-item .group-count {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-}
-
-.settings-group-item .group-actions {
-  display: flex;
-  gap: 2px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.settings-group-item:hover .group-actions {
-  opacity: 1;
-}
-
-.settings-group-item.active .group-actions {
-  opacity: 1;
-}
-
-.group-action-btn {
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.7rem;
-  border-radius: 4px;
-  transition: var(--transition-fast);
-  outline: none;
-}
-
-.group-action-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-}
-
-.group-action-btn.delete:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
-}
-
-/* Links list */
-.settings-links-list {
-  overflow-y: auto;
-  padding: 8px 16px;
-  flex: 1;
-}
-
-.settings-links-list::-webkit-scrollbar {
-  width: 4px;
-}
-
-.settings-links-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.settings-links-list::-webkit-scrollbar-thumb {
-  background: var(--border-glass);
-  border-radius: 4px;
-}
-
-.settings-links-list::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* Link item */
-.settings-link-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: var(--radius-xs);
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  margin-bottom: 6px;
-  transition: var(--transition-fast);
-}
-
-.settings-link-item:hover {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--border-glass);
-}
-
-.settings-link-item .link-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: var(--radius-xs);
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  flex-shrink: 0;
-}
-
-.settings-link-item .link-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.settings-link-item .link-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.settings-link-item .link-url {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.settings-link-item .link-actions {
-  display: flex;
-  gap: 2px;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.settings-link-item:hover .link-actions {
-  opacity: 1;
-}
-
-.link-action-btn {
-  width: 26px;
-  height: 26px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.7rem;
-  border-radius: 4px;
-  transition: var(--transition-fast);
-  outline: none;
-}
-
-.link-action-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-primary);
-}
-
-.link-action-btn.delete:hover {
-  color: #ef4444;
-  background: rgba(239, 68, 68, 0.1);
 }
 
 /* Empty message */
@@ -4956,10 +4388,6 @@ body::after {
 
 .settings-tab-content.active {
   display: flex;
-}
-
-.settings-tab-content .settings-body {
-  width: 100%;
 }
 
 /* Quick Access panel (full-width, same as appearance-panel) */
@@ -5378,54 +4806,6 @@ body::after {
     max-width: 100%;
     max-height: 90vh;
     border-radius: var(--radius);
-  }
-
-  .settings-body {
-    grid-template-columns: 1fr;
-  }
-
-  .settings-groups {
-    border-right: none;
-    border-bottom: 1px solid var(--border-glass);
-    max-height: 200px;
-  }
-
-  .settings-groups-list {
-    display: flex;
-    overflow-x: auto;
-    overflow-y: hidden;
-    gap: 6px;
-    padding: 8px;
-  }
-
-  .settings-group-item {
-    flex-direction: column;
-    text-align: center;
-    min-width: 80px;
-    padding: 8px;
-  }
-
-  .settings-group-item .group-info {
-    text-align: center;
-  }
-
-  .settings-group-item .group-name {
-    font-size: 0.75rem;
-  }
-
-  .settings-group-item .group-count {
-    font-size: 0.65rem;
-  }
-
-  .settings-group-item .group-actions {
-    opacity: 1;
-    position: absolute;
-    top: 2px;
-    right: 2px;
-  }
-
-  .settings-group-item {
-    position: relative;
   }
 
   .icon-picker {
@@ -6284,7 +5664,6 @@ body::after {
 
 /* ===== CLEAN MODE ===== */
 body.clean-mode .section-indicators,
-body.clean-mode .dock,
 body.clean-mode .dashboard footer,
 body.clean-mode .user-bar {
   opacity: 0;
