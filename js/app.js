@@ -114,6 +114,48 @@
     }, 2500);
   });
 
+  // --- Section Dots (indicadores de navegación) ---
+  function initSectionDots() {
+    var sections = document.querySelectorAll('.snap-section');
+    var dots = document.querySelectorAll('.section-dot');
+    if (!sections.length || !dots.length) return;
+
+    // IntersectionObserver: detecta qué sección está visible
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          var id = entry.target.id;
+          dots.forEach(function (dot) {
+            dot.classList.toggle('active', dot.getAttribute('data-section') === id);
+          });
+        }
+      });
+    }, {
+      root: document.getElementById('dashboard-scroll'),
+      threshold: 0.6
+    });
+
+    sections.forEach(function (section) {
+      observer.observe(section);
+    });
+
+    // Click en dot → scroll a la sección correspondiente
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        var targetId = dot.getAttribute('data-section');
+        var target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+  }
+
+  // Inicializar dots cuando el dashboard sea visible
+  window.addEventListener('auth:ready', function () {
+    initSectionDots();
+  });
+
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
