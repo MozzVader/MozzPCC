@@ -24,8 +24,7 @@
     'notes',
     'finance_categories',
     'finance_transactions',
-    'read_later_items',
-    'user_steam_settings'
+    'read_later_items'
   ];
 
   function getSupabase() {
@@ -79,7 +78,7 @@
           .eq('user_id', userId);
 
         if (result.error) {
-          // La tabla puede no existir (ej: user_steam_settings si no se corrió la migración)
+          // La tabla puede no existir
           if (result.error.code === '42P01') {
             backup.tables[table] = [];
             continue;

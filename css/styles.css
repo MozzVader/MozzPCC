@@ -158,7 +158,7 @@ body::after {
   justify-content: center;
 }
 
-/* Grid interno para secciones con dos columnas (TV Shows + Steam) */
+/* Grid interno para secciones con dos columnas (TV Shows + GitHub) */
 .snap-section-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2369,209 +2369,373 @@ body::after {
 .color-dot[data-color="purple"] { background: var(--note-purple); }
 
 /* ============================================
-   STEAM STATS
+   GITHUB WIDGET
    ============================================ */
-.widget-steam {
-  padding: 20px 24px;
-}
-
-.steam-loading,
-.steam-empty {
-  text-align: center;
-  padding: 24px;
-  color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-.steam-loading i {
-  display: block;
-  font-size: 1.5rem;
-  margin-bottom: 10px;
-  color: var(--accent);
-}
-
-.steam-empty i {
-  display: block;
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-  opacity: 0.4;
-}
-
-/* Profile */
-.steam-profile-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 16px;
-}
-
-.steam-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-}
-
-.steam-profile-info {
+.widget-github {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.steam-name {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.steam-status {
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.steam-status.online { color: #57cbde; }
-.steam-status.in-game { color: #90ba3c; }
-.steam-status.away { color: #c7d5e0; }
-.steam-status.offline { color: #898989; }
-
-.steam-game {
-  font-size: 0.75rem;
-  color: #90ba3c;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.steam-game i {
-  margin-right: 4px;
-}
-
-/* Stats */
-.steam-stats-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.steam-stat-box {
-  text-align: center;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.steam-stat-value {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.steam-stat-label {
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-/* Recent games */
-.steam-recent-title {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-}
-
-.steam-recent-games {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.steam-recent-game {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 8px;
-  border-radius: var(--radius-xs);
-  background: rgba(255, 255, 255, 0.02);
-  transition: var(--transition-fast);
-  cursor: pointer;
-}
-
-.steam-recent-game:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.steam-game-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  object-fit: cover;
-  flex-shrink: 0;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.steam-game-icon-placeholder {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
+.gh-loading {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  gap: 10px;
+  padding: 40px 20px;
   color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.gh-loading i { font-size: 1.1rem; }
+
+.gh-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 40px 20px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.gh-empty i { font-size: 2rem; opacity: 0.4; }
+
+.gh-external-link {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.gh-external-link:hover { opacity: 1; }
+
+/* Profile header */
+.gh-profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.gh-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  object-fit: cover;
   flex-shrink: 0;
 }
+.gh-profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.gh-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gh-username {
+  font-size: 0.75rem;
+  color: var(--accent);
+}
 
-.steam-game-info {
+/* Stats */
+.gh-stats-row {
+  display: flex;
+  gap: 6px;
+  padding: 10px 16px;
+}
+.gh-stat-box {
+  flex: 1;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  padding: 8px 4px;
+  text-align: center;
+}
+.gh-stat-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: block;
+}
+.gh-stat-label {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  display: block;
+}
+
+/* Tabs */
+.gh-tabs {
+  display: flex;
+  gap: 3px;
+  padding: 0 16px;
+}
+.gh-tab {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.gh-tab:hover {
+  color: var(--text-secondary);
+  background: var(--accent-dim);
+}
+.gh-tab.active {
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Tab content — fixed height, scrollable */
+.gh-tab-content {
+  display: none;
+  max-height: 260px;
+  overflow: hidden;
+  flex-direction: column;
+}
+.gh-tab-content.active {
+  display: flex;
+}
+
+/* Activity list */
+.gh-activity-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 16px 16px;
+}
+.gh-activity-list::-webkit-scrollbar { width: 3px; }
+.gh-activity-list::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 2px;
+}
+
+.gh-activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 8px;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.gh-activity-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.gh-activity-icon.push { background: rgba(74,222,128,0.15); color: #4ade80; }
+.gh-activity-icon.pr { background: rgba(108,99,255,0.15); color: #a78bfa; }
+.gh-activity-icon.issue { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.gh-activity-icon.star { background: rgba(250,204,21,0.15); color: #facc15; }
+.gh-activity-icon.fork { background: rgba(34,211,238,0.15); color: #22d3ee; }
+.gh-activity-icon.release { background: rgba(168,85,247,0.15); color: #a855f7; }
+.gh-activity-icon.delete { background: rgba(248,113,113,0.15); color: #f87171; }
+
+.gh-activity-content {
   flex: 1;
   min-width: 0;
 }
-
-.steam-game-name {
-  font-size: 0.8rem;
-  color: var(--text-primary);
-  font-weight: 500;
-  white-space: nowrap;
+.gh-activity-content strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+.gh-activity-content .gh-act-detail {
+  color: var(--text-secondary);
+  display: block;
+  margin-top: 1px;
+  font-size: 0.68rem;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gh-activity-time {
+  font-size: 0.63rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  margin-top: 2px;
 }
 
-.steam-game-hours {
-  font-size: 0.7rem;
-  color: var(--text-muted);
+/* Repos scroll */
+.gh-repos-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  flex: 1;
+  padding: 8px 16px 16px;
+}
+.gh-repos-scroll::-webkit-scrollbar { height: 3px; }
+.gh-repos-scroll::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 2px;
 }
 
-/* Refresh button */
-.steam-refresh-btn {
-  background: none;
-  border: 1px solid var(--border-glass);
-  color: var(--text-muted);
-  padding: 5px 12px;
-  border-radius: var(--radius-xs);
+.gh-repo-card {
+  flex-shrink: 0;
+  width: 160px;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s, transform 0.2s;
   cursor: pointer;
-  font-family: inherit;
-  font-size: 0.75rem;
-  transition: var(--transition);
-  display: inline-flex;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+}
+.gh-repo-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.gh-repo-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gh-repo-desc {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  flex: 1;
+}
+.gh-repo-meta {
+  display: flex;
   align-items: center;
-  gap: 5px;
-  margin-top: 8px;
+  gap: 8px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.gh-repo-meta span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.gh-repo-lang-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-.steam-refresh-btn:hover {
+/* Trending list */
+.gh-trending-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 16px 16px;
+}
+.gh-trending-list::-webkit-scrollbar { width: 3px; }
+.gh-trending-list::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 2px;
+}
+
+.gh-trending-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--accent-dim);
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.gh-trending-item:hover {
+  background: rgba(255,255,255,0.05);
   border-color: var(--accent);
-  color: var(--accent);
+}
+
+.gh-trending-rank {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.gh-trending-rank.top3 { color: var(--accent); }
+
+.gh-trending-info {
+  flex: 1;
+  min-width: 0;
+}
+.gh-trending-name {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gh-trending-name span {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.gh-trending-desc {
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.gh-trending-stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.gh-trending-stats span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.gh-trending-stars { color: #facc15; }
+.gh-trending-forks { color: #22d3ee; }
+.gh-trending-lang {
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 /* ============================================
@@ -2933,7 +3097,7 @@ body::after {
     padding: 70px 16px 90px 16px;
   }
 
-  /* Grid (TV Shows + Steam): una columna en mobile */
+  /* Grid (TV Shows + GitHub): una columna en mobile */
   .snap-section-grid {
     grid-template-columns: 1fr;
     gap: 16px;
