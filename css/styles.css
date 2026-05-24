@@ -2417,25 +2417,27 @@ body::after {
 }
 .gh-empty i { font-size: 2rem; opacity: 0.4; }
 
-/* MiniDevTools button */
+/* MiniDevTools button — same style as tv-add-btn */
 .gh-minidevtools-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xs);
+  color: var(--accent);
+  width: 30px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  background: var(--accent-dim);
-  color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   text-decoration: none;
   flex-shrink: 0;
-  transition: all 0.2s;
-  margin-left: auto;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 .gh-minidevtools-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: var(--accent);
 }
 
 .gh-external-link {
@@ -2515,7 +2517,8 @@ body::after {
 }
 .gh-stat-box {
   flex: 1;
-  background: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 4px;
   text-align: center;
