@@ -2417,6 +2417,27 @@ body::after {
 }
 .gh-empty i { font-size: 2rem; opacity: 0.4; }
 
+/* MiniDevTools button */
+.gh-minidevtools-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  background: var(--accent-dim);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  margin-left: auto;
+}
+.gh-minidevtools-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+
 .gh-external-link {
   color: var(--text-muted);
   font-size: 0.8rem;
@@ -2458,6 +2479,31 @@ body::after {
 .gh-username {
   font-size: 0.75rem;
   color: var(--accent);
+}
+
+/* Streak */
+.gh-streak {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(74,222,128,0.08);
+  border: 1px solid rgba(74,222,128,0.15);
+  border-radius: 8px;
+  margin: 0 16px 8px;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+.gh-streak i {
+  color: #4ade80;
+  font-size: 0.9rem;
+}
+.gh-streak-value {
+  font-weight: 700;
+  color: #4ade80;
+}
+.gh-streak-label {
+  color: var(--text-secondary);
 }
 
 /* Stats */
@@ -2552,10 +2598,14 @@ body::after {
   align-items: flex-start;
   gap: 8px;
   padding: 6px 8px;
-  background: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   font-size: 0.75rem;
   flex-shrink: 0;
+  transition: background 0.2s;
+}
+.gh-activity-item:hover {
+  background: rgba(255, 255, 255, 0.06);
 }
 .gh-activity-icon {
   width: 24px;
@@ -2619,17 +2669,18 @@ body::after {
 
 .gh-repo-card {
   width: 100%;
-  background: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   padding: 12px;
   border: 1px solid var(--border);
-  transition: border-color 0.2s, transform 0.2s;
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   text-decoration: none;
 }
 .gh-repo-card:hover {
+  background: rgba(255, 255, 255, 0.06);
   border-color: var(--accent);
   transform: translateY(-2px);
 }
@@ -2693,7 +2744,7 @@ body::after {
   align-items: center;
   gap: 8px;
   padding: 8px 10px;
-  background: var(--accent-dim);
+  background: rgba(255, 255, 255, 0.03);
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid transparent;
@@ -2701,7 +2752,7 @@ body::after {
   transition: background 0.2s, border-color 0.2s;
 }
 .gh-trending-item:hover {
-  background: rgba(255,255,255,0.05);
+  background: rgba(255, 255, 255, 0.06);
   border-color: var(--accent);
 }
 

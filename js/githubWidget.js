@@ -269,15 +269,26 @@
     var container = document.getElementById('gh-repos-list');
     if (!container) return;
     try {
-      var res = await fetch(API + '/users/' + encodeURIComponent(username) + '/repos?sort=updated&per_page=10');
+      var res = await fetch(API + '/users/' + encodeURIComponent(username) + '/repos?sort=updated&per_page=30');
       if (!res.ok) return;
       var repos = await res.json();
       container.innerHTML = '';
-      if (repos.length === 0) {
+
+      // --- Update streak: repos updated in the last 30 days ---
+      var streakEl = document.getElementById('gh-streak-value');
+      if (streakEl) {
+        var monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+        var activeRepos = repos.filter(function(r) { return r.updated_at > monthAgo; });
+        streakEl.textContent = activeRepos.length;
+      }
+
+      // Show top 10 repos
+      var displayRepos = repos.slice(0, 10);
+      if (displayRepos.length === 0) {
         container.innerHTML = '<p style="color:var(--text-muted);font-size:0.8rem;padding:20px;">Sin repositorios</p>';
         return;
       }
-      repos.forEach(function(repo) {
+      displayRepos.forEach(function(repo) {
         var card = document.createElement('a');
         card.className = 'gh-repo-card';
         card.href = repo.html_url;
