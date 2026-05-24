@@ -106,7 +106,8 @@
   function showView(view) {
     if (loadingEl) loadingEl.style.display = view === 'loading' ? 'flex' : 'none';
     if (emptyEl) emptyEl.style.display = view === 'empty' ? 'flex' : 'none';
-    if (profileEl) profileEl.style.display = view === 'profile' ? 'block' : 'none';
+    // #gh-profile uses CSS flex display; toggle via class instead of inline style
+    if (profileEl) profileEl.style.display = view === 'profile' ? 'flex' : 'none';
   }
 
   // --- Tab switching ---
