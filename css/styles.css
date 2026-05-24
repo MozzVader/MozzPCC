@@ -2371,7 +2371,7 @@ body::after {
 /* ============================================
    GITHUB WIDGET
    ============================================ */
-.widget-github {
+.snap-section-grid .widget-github {
   display: flex;
   flex-direction: column;
   overflow: visible;
