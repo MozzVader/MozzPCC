@@ -2374,7 +2374,7 @@ body::after {
 .widget-github {
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Content wrapper — fills remaining card space */
