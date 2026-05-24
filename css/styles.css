@@ -2417,6 +2417,36 @@ body::after {
 }
 .gh-empty i { font-size: 2rem; opacity: 0.4; }
 
+/* Tooltip — matches section-dot tooltip style */
+.gh-tooltip {
+  position: relative;
+}
+.gh-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(37 37 37 / 90%);
+  backdrop-filter: blur(8px);
+  color: #e2e8f0;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 100;
+}
+.gh-tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* MiniDevTools button — same style as tv-add-btn */
 .gh-minidevtools-btn {
   margin-left: auto;
