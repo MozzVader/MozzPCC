@@ -3254,7 +3254,7 @@ body::after {
     flex: none;
   }
 
-  /* News/Sports stacked: constrain to viewport on mobile, split 50/50 */
+  /* News/Sports stacked: constrain to viewport on mobile, news 60% / sports 40% */
   .snap-section-inner-stacked {
     height: calc(100dvh - 140px);
     max-height: calc(100dvh - 140px);
@@ -3264,18 +3264,26 @@ body::after {
   .snap-section-inner-stacked .snap-section-grid {
     flex: 1;
     min-height: 0;
-    overflow-y: auto;
-    grid-template-rows: 1fr 1fr;
+    overflow: hidden;
+    grid-template-rows: 3fr 2fr;
   }
 
   .snap-section-inner-stacked .snap-section-grid .widget-news,
   .snap-section-inner-stacked .snap-section-grid .widget-sports {
     min-height: 0;
-    max-height: none;
-    flex: 1 1 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   .snap-section-inner-stacked .widget-news .nw-content,
+  .snap-section-inner-stacked .widget-news .nw-list,
+  .snap-section-inner-stacked .widget-news .nw-featured {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
   .snap-section-inner-stacked .widget-sports .sp-tab-content.active {
     flex: 1;
     min-height: 0;
@@ -6114,6 +6122,7 @@ body.clean-mode .clean-mode-hint {
   padding: 0 0 10px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 8px;
 }
 .nw-feed-icon {
@@ -6154,6 +6163,7 @@ body.clean-mode .clean-mode-hint {
   display: flex;
   gap: 4px;
   padding-bottom: 10px;
+  flex-shrink: 0;
 }
 .nw-tab {
   background: none;
@@ -6405,6 +6415,7 @@ body.clean-mode .clean-mode-hint {
   padding: 0 0 10px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 8px;
 }
 .sp-league-flag {
@@ -6448,6 +6459,7 @@ body.clean-mode .clean-mode-hint {
   display: flex;
   gap: 4px;
   padding-bottom: 10px;
+  flex-shrink: 0;
 }
 .sp-tab {
   background: none;
