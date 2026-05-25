@@ -840,11 +840,46 @@
         <div class="news-settings-panel">
           <div class="news-settings-header">
             <h3><i class="fa-solid fa-newspaper" style="color:var(--accent);margin-right:6px;"></i> Fuentes de noticias</h3>
-            <p class="appearance-hint">Elegi el medio por defecto para cada categoria. El medio activo se usa al cargar las noticias.</p>
+            <p class="appearance-hint">Activá los medios que quieras ver por categoria. Las noticias se agrupan y ordenan por fecha. Las categorias con un <span style="color:var(--accent);">*</span> son personalizadas.</p>
           </div>
           <div id="news-sources-list" class="news-sources-list">
             <!-- Rendered by settings.js -->
           </div>
+
+          <!-- Agregar feed RSS custom -->
+          <div class="ns-add-section">
+            <div class="ns-add-row-title">
+              <i class="fa-solid fa-plus-circle" style="color:var(--accent);margin-right:4px;"></i>
+              <span>Agregar feed RSS a una categoria</span>
+            </div>
+            <div class="ns-add-form" id="ns-add-feed-form">
+              <select id="ns-feed-cat-select" class="ns-form-select" aria-label="Categoria">
+                <option value="">Elegir categoria...</option>
+              </select>
+              <input type="text" id="ns-feed-name-input" class="ns-form-input" placeholder="Nombre del medio" maxlength="50" aria-label="Nombre">
+              <input type="url" id="ns-feed-url-input" class="ns-form-input" placeholder="https://ejemplo.com/rss" maxlength="500" aria-label="URL del feed RSS">
+              <button id="ns-feed-add-btn" class="ns-form-btn" aria-label="Agregar feed">
+                <i class="fa-solid fa-plus"></i> Agregar
+              </button>
+              <p id="ns-feed-status" class="ns-form-status"></p>
+            </div>
+          </div>
+
+          <!-- Crear categoria custom -->
+          <div class="ns-add-section">
+            <div class="ns-add-row-title">
+              <i class="fa-solid fa-folder-plus" style="color:var(--accent);margin-right:4px;"></i>
+              <span>Crear categoria personalizada</span>
+            </div>
+            <div class="ns-add-form" id="ns-add-cat-form">
+              <input type="text" id="ns-cat-name-input" class="ns-form-input" placeholder="Nombre de la categoria" maxlength="40" aria-label="Nombre">
+              <button id="ns-cat-add-btn" class="ns-form-btn" aria-label="Crear categoria">
+                <i class="fa-solid fa-plus"></i> Crear
+              </button>
+              <p id="ns-cat-status" class="ns-form-status"></p>
+            </div>
+          </div>
+
           <div class="news-settings-actions">
             <button id="news-clear-cache" class="backup-btn export" style="margin-top:12px;">
               <i class="fa-solid fa-broom"></i> Limpiar cache de noticias

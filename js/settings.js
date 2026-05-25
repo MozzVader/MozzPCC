@@ -174,43 +174,91 @@
     return window.supabaseClient || null;
   }
 
-  // --- News Sources Settings ---
+  // --- News Sources Settings (v2: toggles multi-select + custom) ---
   function renderNewsSourcesSettings() {
     var container = document.getElementById('news-sources-list');
     if (!container || !window.NewsWidget) return;
 
     var categories = window.NewsWidget.getCategories();
-    var activeSources = window.NewsWidget.getActiveSources();
     var html = '';
 
     categories.forEach(function (cat) {
-      var activeId = activeSources[cat.id] || cat.sources[0].id;
+      var activeIds = window.NewsWidget.getActiveIds(cat.id);
+      var catLabel = escapeHtml(cat.name) + (cat.custom ? ' <span style="color:var(--accent);font-size:0.75rem;">*</span>' : '');
+      var deleteBtn = cat.custom ? '<button class="ns-delete-cat-btn" data-cat="' + cat.id + '" title="Eliminar categoria"><i class="fa-solid fa-trash-can"></i></button>' : '';
+
       html += '<div class="news-source-group">';
-      html += '<div class="news-source-group-title"><i class="' + cat.icon + '"></i> ' + escapeHtml(cat.name) + '</div>';
+      html += '<div class="news-source-group-title"><i class="' + cat.icon + '"></i> ' + catLabel + deleteBtn + '</div>';
       html += '<div class="news-source-options">';
+
       cat.sources.forEach(function (source) {
-        var isActive = source.id === activeId ? ' active' : '';
-        html += '<button class="news-source-chip' + isActive + '" data-cat="' + cat.id + '" data-source="' + source.id + '">' + escapeHtml(source.name) + '</button>';
+        var isOn = activeIds.indexOf(source.id) >= 0;
+        var deleteFeedBtn = source.custom ? '<button class="ns-delete-feed-btn" data-cat="' + cat.id + '" data-source="' + source.id + '" title="Quitar feed"><i class="fa-solid fa-xmark"></i></button>' : '';
+        html += '<label class="news-source-toggle' + (isOn ? ' active' : '') + '" data-cat="' + cat.id + '" data-source="' + source.id + '">' +
+          '<span class="ns-toggle-track"><span class="ns-toggle-thumb"></span></span>' +
+          '<span class="ns-toggle-label">' + escapeHtml(source.name) + '</span>' +
+          deleteFeedBtn +
+          '</label>';
       });
+
+      if (cat.sources.length === 0) {
+        html += '<span class="ns-empty-cat">Sin fuentes. Agregá un feed RSS debajo.</span>';
+      }
+
       html += '</div>';
       html += '</div>';
     });
 
     container.innerHTML = html;
 
-    // Bind click events on chips
-    container.querySelectorAll('.news-source-chip').forEach(function (chip) {
-      chip.addEventListener('click', function () {
-        var catId = chip.dataset.cat;
-        var sourceId = chip.dataset.source;
-        // Update active state within this group
-        chip.closest('.news-source-options').querySelectorAll('.news-source-chip').forEach(function (c) {
-          c.classList.remove('active');
-        });
-        chip.classList.add('active');
-        // Persist and reload if needed
-        window.NewsWidget.setActiveSource(catId, sourceId);
+    // Bind toggle events
+    container.querySelectorAll('.news-source-toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function (e) {
+        // Don't toggle if clicking delete button
+        if (e.target.closest('.ns-delete-feed-btn')) return;
+        var catId = toggle.dataset.cat;
+        var sourceId = toggle.dataset.source;
+        toggle.classList.toggle('active');
+        window.NewsWidget.toggleSource(catId, sourceId);
       });
+    });
+
+    // Bind delete custom category
+    container.querySelectorAll('.ns-delete-cat-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var catId = btn.dataset.cat;
+        if (confirm('Eliminar esta categoria personalizada?')) {
+          window.NewsWidget.removeCustomCategory(catId);
+          renderNewsSourcesSettings();
+          populateFeedCatSelect();
+        }
+      });
+    });
+
+    // Bind delete custom feed
+    container.querySelectorAll('.ns-delete-feed-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var catId = btn.dataset.cat;
+        var sourceId = btn.dataset.source;
+        window.NewsWidget.removeCustomFeed(catId, sourceId);
+        renderNewsSourcesSettings();
+      });
+    });
+
+    // Populate category select for "add feed" form
+    populateFeedCatSelect();
+  }
+
+  function populateFeedCatSelect() {
+    var select = document.getElementById('ns-feed-cat-select');
+    if (!select || !window.NewsWidget) return;
+    var cats = window.NewsWidget.getCategories();
+    select.innerHTML = '<option value="">Elegir categoria...</option>';
+    cats.forEach(function (cat) {
+      var opt = document.createElement('option');
+      opt.value = cat.id;
+      opt.textContent = cat.name + (cat.custom ? ' *' : '');
+      select.appendChild(opt);
     });
   }
 
@@ -224,6 +272,69 @@
         setTimeout(function () {
           newsClearCacheBtn.innerHTML = '<i class="fa-solid fa-broom"></i> Limpiar cache de noticias';
         }, 2000);
+      }
+    });
+  }
+
+  // --- Add custom feed RSS ---
+  var nsFeedAddBtn = document.getElementById('ns-feed-add-btn');
+  if (nsFeedAddBtn) {
+    nsFeedAddBtn.addEventListener('click', function () {
+      var catSelect = document.getElementById('ns-feed-cat-select');
+      var nameInput = document.getElementById('ns-feed-name-input');
+      var urlInput = document.getElementById('ns-feed-url-input');
+      var statusEl = document.getElementById('ns-feed-status');
+
+      var catId = catSelect.value;
+      var name = nameInput.value.trim();
+      var url = urlInput.value.trim();
+
+      if (!catId) {
+        if (statusEl) { statusEl.textContent = 'Elegi una categoria'; statusEl.style.color = '#fb7185'; }
+        return;
+      }
+      if (!name) {
+        if (statusEl) { statusEl.textContent = 'Ingresa un nombre para el medio'; statusEl.style.color = '#fb7185'; }
+        nameInput.focus();
+        return;
+      }
+      if (!url || !url.startsWith('http')) {
+        if (statusEl) { statusEl.textContent = 'Ingresa una URL valida (https://...)'; statusEl.style.color = '#fb7185'; }
+        urlInput.focus();
+        return;
+      }
+
+      if (window.NewsWidget) {
+        window.NewsWidget.addCustomFeed(catId, name, url);
+        nameInput.value = '';
+        urlInput.value = '';
+        if (statusEl) { statusEl.textContent = 'Feed agregado correctamente'; statusEl.style.color = '#57cbde'; }
+        setTimeout(function () { if (statusEl) statusEl.textContent = ''; }, 2500);
+        renderNewsSourcesSettings();
+      }
+    });
+  }
+
+  // --- Add custom category ---
+  var nsCatAddBtn = document.getElementById('ns-cat-add-btn');
+  if (nsCatAddBtn) {
+    nsCatAddBtn.addEventListener('click', function () {
+      var nameInput = document.getElementById('ns-cat-name-input');
+      var statusEl = document.getElementById('ns-cat-status');
+      var name = nameInput.value.trim();
+
+      if (!name) {
+        if (statusEl) { statusEl.textContent = 'Ingresa un nombre para la categoria'; statusEl.style.color = '#fb7185'; }
+        nameInput.focus();
+        return;
+      }
+
+      if (window.NewsWidget) {
+        window.NewsWidget.addCustomCategory(name);
+        nameInput.value = '';
+        if (statusEl) { statusEl.textContent = 'Categoria creada. Ahora agregale feeds.'; statusEl.style.color = '#57cbde'; }
+        setTimeout(function () { if (statusEl) statusEl.textContent = ''; }, 3000);
+        renderNewsSourcesSettings();
       }
     });
   }
