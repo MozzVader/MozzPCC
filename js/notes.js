@@ -29,6 +29,27 @@
   // Mapa de debounce timers por nota ID
   const debounceTimers = {};
 
+  // --- Mini Markdown parser (bold, italic, unordered lists) ---
+  function parseMarkdown(text) {
+    if (!text) return '';
+    // Escape HTML first
+    var html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    // Bold: **text** or __text__
+    html = html.replace(/\*\*(.+?)\*\*|__(.+?)__/g, '<strong>$1$2</strong>');
+    // Italic: *text* or _text_ (not inside bold)
+    html = html.replace(/(?<!\*)\*(?!=)(.+?)(?<!\*)\*(?!\*)|(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1$2</em>');
+    // Unordered lists: lines starting with - or *
+    html = html.replace(/^(?:[-*])\s+(.+)$/gm, '<li>$1</li>');
+    // Wrap consecutive <li> in <ul>
+    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
+    // Line breaks
+    html = html.replace(/\n/g, '<br>');
+    return html;
+  }
+
   /**
    * Obtiene el cliente Supabase
    * @returns {Object|null}
@@ -174,25 +195,43 @@
     header.appendChild(titulo);
     header.appendChild(acciones);
 
-    // Contenido editable
+    // Contenido: toggle entre Markdown renderizado y contenteditable
     const contenido = document.createElement('div');
     contenido.className = 'note-content';
-    contenido.setAttribute('contenteditable', 'true');
     contenido.setAttribute('data-placeholder', 'Escribe algo...');
-    contenido.textContent = nota.contenido || '';
+    contenido.innerHTML = parseMarkdown(nota.contenido);
+    // Start in view mode (not editable)
+    contenido.setAttribute('data-editing', 'false');
+
+    function enterEditMode() {
+      if (contenido.getAttribute('data-editing') === 'true') return;
+      contenido.setAttribute('data-editing', 'true');
+      contenido.setAttribute('contenteditable', 'true');
+      contenido.textContent = nota.contenido || '';
+      contenido.classList.add('note-editing');
+      // Move cursor to end
+      var range = document.createRange();
+      range.selectNodeContents(contenido);
+      range.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+
+    function exitEditMode() {
+      if (contenido.getAttribute('data-editing') !== 'true') return;
+      contenido.setAttribute('data-editing', 'false');
+      contenido.removeAttribute('contenteditable');
+      contenido.classList.remove('note-editing');
+      contenido.innerHTML = parseMarkdown(nota.contenido);
+      contenido.removeAttribute('data-empty');
+    }
+
+    contenido.addEventListener('focus', enterEditMode);
+    contenido.addEventListener('blur', exitEditMode);
     contenido.addEventListener('input', () => {
       nota.contenido = contenido.textContent;
       guardarNotaDebounced(nota.id, { content: nota.contenido });
-    });
-
-    // Placeholder personalizado
-    contenido.addEventListener('focus', function () {
-      if (this.textContent === '') {
-        this.setAttribute('data-empty', 'true');
-      }
-    });
-    contenido.addEventListener('blur', function () {
-      this.removeAttribute('data-empty');
     });
 
     // Selector de color

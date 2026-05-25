@@ -2547,10 +2547,34 @@ body::after {
   transition: var(--transition-fast);
   line-height: 1.5;
   min-height: 60px;
+  cursor: text;
 }
 
-.note-content:focus {
+.note-content:focus,
+.note-content.note-editing {
   background: rgba(255, 255, 255, 0.03);
+}
+
+/* Markdown rendered elements inside notes */
+.note-content strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.note-content em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+.note-content ul {
+  margin: 4px 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+.note-content li {
+  margin: 1px 0;
+}
+.note-content li::marker {
+  color: var(--text-muted);
+  opacity: 0.5;
 }
 
 /* Colores de nota */
