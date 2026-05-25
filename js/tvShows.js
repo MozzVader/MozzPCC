@@ -14,7 +14,6 @@
   var upcomingEpisodes = [];
 
   var TVMAZE_SEARCH = 'https://api.tvmaze.com/search/shows?q=';
-  var TVMAZE_SHOW = 'https://api.tvmaze.com/shows/';
   var TVMAZE_EPISODES = 'https://api.tvmaze.com/shows/{id}/episodes';
   var CACHE_KEY = 'mozzpcc-tv-episodes';
   var CACHE_MS = 2 * 60 * 60 * 1000;

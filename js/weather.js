@@ -43,7 +43,6 @@
   };
 
   // Elementos del DOM
-  var widget = document.getElementById('widget-weather');
   var elIcon = document.getElementById('weather-icon');
   var elTemp = document.getElementById('weather-temp');
   var elDesc = document.getElementById('weather-desc');

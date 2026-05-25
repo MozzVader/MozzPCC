@@ -84,18 +84,6 @@
   }
 
   /**
-   * Convierte "YYYY-MM" en "Mes Anio" (ej: "Abril 2026")
-   * @param {string} ym - Formato YYYY-MM
-   * @returns {string}
-   */
-  function getMonthLabel(ym) {
-    if (!ym || ym.length < 7) return '';
-    var parts = ym.split('-');
-    var monthIndex = parseInt(parts[1], 10) - 1;
-    return MONTH_NAMES_FULL[monthIndex] + ' ' + parts[0];
-  }
-
-  /**
    * Convierte fecha ISO (YYYY-MM-DD) a DD/MM/YYYY
    * @param {string} dateStr
    * @returns {string}

@@ -8,7 +8,6 @@
   'use strict';
 
   var HISTORY_KEY = 'mozzpcc-dollar-evolution';
-  var CACHE_MS = 60 * 60 * 1000;
   var REFRESH_MS = 30 * 60 * 1000;
   var API_LATEST = 'https://api.bluelytics.com.ar/v2/latest';
   var API_EVOLUTION = 'https://api.bluelytics.com.ar/v2/evolution.json';

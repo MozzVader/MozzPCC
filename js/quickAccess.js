@@ -162,7 +162,7 @@
             .then(function (result) {
               if (result.error) {
                 console.warn('Error al eliminar acceso rapido:', result.error);
-                loadLinks();
+                loadQuickLinks();
               }
             })
             .catch(function (e) {

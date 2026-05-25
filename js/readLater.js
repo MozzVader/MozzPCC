@@ -25,7 +25,6 @@
   var TAG_COLORS = ['yellow', 'green', 'pink', 'blue', 'purple'];
 
   // --- Drag & Drop state ---
-  var dragItem = null;
   var dragElement = null;
   var placeholder = null;
   var dragging = false;
@@ -451,7 +450,6 @@
     if (dragging) return;
     dragging = true;
 
-    dragItem = item;
     dragElement = element;
 
     element.classList.add('dragging');
@@ -537,7 +535,6 @@
       saveOrder();
     }
 
-    dragItem = null;
     dragElement = null;
     placeholder = null;
     dragging = false;

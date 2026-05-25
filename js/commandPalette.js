@@ -89,7 +89,7 @@
   function getNotes() {
     var grid = document.getElementById('notes-grid');
     if (!grid) return [];
-    var noteEls = grid.querySelectorAll('.note-card');
+    var noteEls = grid.querySelectorAll('.note');
     var notes = [];
     noteEls.forEach(function (el, i) {
       var titleEl = el.querySelector('.note-title');

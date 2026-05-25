@@ -24,7 +24,8 @@
     'notes',
     'finance_categories',
     'finance_transactions',
-    'read_later_items'
+    'read_later_items',
+    'tv_shows'
   ];
 
   function getSupabase() {

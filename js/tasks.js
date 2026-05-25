@@ -38,7 +38,6 @@
   var STORAGE_KEY = 'mozzpcc_tasks_order';
 
   // --- Drag & Drop state ---
-  var dragItem = null;
   var dragElement = null;
   var placeholder = null;
   var isDragging = false;
@@ -555,7 +554,6 @@
     if (isDragging) return;
     isDragging = true;
 
-    dragItem = item;
     dragElement = element;
 
     element.classList.add('dragging');
@@ -642,7 +640,6 @@
       saveCustomOrder();
     }
 
-    dragItem = null;
     dragElement = null;
     placeholder = null;
     isDragging = false;

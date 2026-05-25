@@ -461,11 +461,6 @@
     listEl.innerHTML = '<div class="nw-empty"><i class="fa-regular fa-newspaper"></i><span>' + esc(msg) + '</span></div>';
   }
 
-  function showError(msg) {
-    listEl.className = 'nw-list';
-    listEl.innerHTML = '<div class="nw-error"><i class="fa-solid fa-triangle-exclamation"></i><span>' + esc(msg) + '</span></div>';
-  }
-
   // --- PUBLIC API (for settings panel) ---
   window.NewsWidget = {
     getCategories: function () { return categories; },
