@@ -29,6 +29,13 @@
   var taskCounter = document.getElementById('task-counter');
   var taskKanban = document.getElementById('task-kanban');
 
+  // --- Priorities ---
+  var PRIORITIES = [
+    { id: 'alta',  nombre: 'Alta',  color: '#f87171' },
+    { id: 'media', nombre: 'Media', color: '#fbbf24' },
+    { id: 'baja',  nombre: 'Baja',  color: '#4ade80' }
+  ];
+
   // --- Estado ---
   var tareas = [];
   var userId = null;
@@ -36,6 +43,10 @@
   var currentTab = 'lista';
   var openDropdown = null; // reference to currently open dropdown
   var STORAGE_KEY = 'mozzpcc_tasks_order';
+  var activeFilter = 'all'; // filtro de prioridad
+  var searchQuery = ''; // búsqueda de texto
+  var editingTaskId = null; // ID de tarea en edición
+  var openPriorityDropdown = null; // reference to priority dropdown
 
   // --- Drag & Drop state ---
   var dragElement = null;
@@ -61,6 +72,7 @@
       if (openDropdown.parentNode) openDropdown.parentNode.removeChild(openDropdown);
       openDropdown = null;
     }
+    closePriorityDropdown();
   }
 
   /**
@@ -109,6 +121,7 @@
           id: t.id,
           texto: t.text,
           status: status,
+          priority: t.priority || 'media',
           sort_order: t.sort_order !== undefined ? t.sort_order : idx,
           created_at: t.created_at
         };
@@ -138,20 +151,40 @@
   }
 
   /**
-   * Renderiza vista de lista
+   * Filtra tareas según filtro activo y búsqueda
    */
+  function getFilteredTasks() {
+    var filtered = tareas;
+    // Filtro por prioridad
+    if (activeFilter !== 'all') {
+      filtered = filtered.filter(function(t) { return t.priority === activeFilter; });
+    }
+    // Filtro por búsqueda
+    if (searchQuery) {
+      var q = searchQuery.toLowerCase();
+      filtered = filtered.filter(function(t) { return t.texto.toLowerCase().indexOf(q) !== -1; });
+    }
+    return filtered;
+  }
+
   function renderLista() {
     taskList.innerHTML = '';
 
-    if (tareas.length === 0) {
+    var filtered = getFilteredTasks();
+
+    if (filtered.length === 0) {
       var empty = document.createElement('div');
       empty.className = 'task-empty';
-      empty.innerHTML = '<i class="fa-regular fa-clipboard"></i>No hay tareas pendientes';
+      if (tareas.length > 0 && (activeFilter !== 'all' || searchQuery)) {
+        empty.innerHTML = '<i class="fa-solid fa-filter"></i>No hay tareas con este filtro';
+      } else {
+        empty.innerHTML = '<i class="fa-regular fa-clipboard"></i>No hay tareas pendientes';
+      }
       taskList.appendChild(empty);
       return;
     }
 
-    for (var i = 0; i < tareas.length; i++) {
+    for (var i = 0; i < filtered.length; i++) {
       var tarea = tareas[i];
       var status = getStatusById(tarea.status);
       var isCompleted = tarea.status === 'completada' || tarea.status === 'descartada';
@@ -176,11 +209,40 @@
         };
       })(tarea));
 
-      // Texto
-      var texto = document.createElement('span');
-      texto.className = 'task-text' + (tarea.status === 'completada' ? ' completada' : '') + (tarea.status === 'descartada' ? ' descartada' : '');
-      texto.textContent = tarea.texto;
-      texto.title = tarea.texto;
+      // Priority dot (clic cambia prioridad)
+      var priorityDot = document.createElement('span');
+      priorityDot.className = 'task-priority-dot ' + tarea.priority;
+      priorityDot.title = 'Prioridad: ' + (tarea.priority.charAt(0).toUpperCase() + tarea.priority.slice(1));
+      priorityDot.addEventListener('click', (function(t) {
+        return function(e) { e.stopPropagation(); togglePriorityDropdown(e, t.id); };
+      })(tarea));
+
+      // Texto (o input de edición)
+      var texto;
+      if (editingTaskId === tarea.id) {
+        texto = document.createElement('input');
+        texto.className = 'task-text-editing';
+        texto.value = tarea.texto;
+        texto.setAttribute('aria-label', 'Editar tarea');
+        texto.addEventListener('keydown', (function(t) {
+          return function(e) {
+            if (e.key === 'Enter') { e.preventDefault(); finishEdit(t.id, texto.value); }
+            if (e.key === 'Escape') { editingTaskId = null; render(); }
+          };
+        })(tarea));
+        texto.addEventListener('blur', (function(t) {
+          return function() { finishEdit(t.id, texto.value); };
+        })(tarea));
+      } else {
+        texto = document.createElement('span');
+        texto.className = 'task-text' + (tarea.status === 'completada' ? ' completada' : '') + (tarea.status === 'descartada' ? ' descartada' : '');
+        texto.textContent = tarea.texto;
+        texto.title = tarea.texto;
+        // Double click para editar
+        texto.addEventListener('dblclick', (function(t) {
+          return function(e) { e.stopPropagation(); startEditTask(t.id); };
+        })(tarea));
+      }
 
       // Status badge (clic abre dropdown)
       var badgeWrap = document.createElement('div');
@@ -195,6 +257,15 @@
       })(tarea));
 
       badgeWrap.appendChild(badge);
+
+      // Edit button
+      var btnEdit = document.createElement('button');
+      btnEdit.className = 'task-edit-btn';
+      btnEdit.setAttribute('aria-label', 'Editar tarea');
+      btnEdit.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      btnEdit.addEventListener('click', (function(t) {
+        return function(e) { e.stopPropagation(); startEditTask(t.id); };
+      })(tarea));
 
       // Grip handle for drag & drop
       var grip = document.createElement('button');
@@ -218,11 +289,22 @@
       })(tarea));
 
       li.appendChild(grip);
+      li.appendChild(btnEdit);
       li.appendChild(checkbox);
+      li.appendChild(priorityDot);
       li.appendChild(texto);
       li.appendChild(badgeWrap);
       li.appendChild(btnEliminar);
       taskList.appendChild(li);
+    }
+
+    // Focus input de edición si existe
+    if (editingTaskId) {
+      var editInput = taskList.querySelector('.task-text-editing');
+      if (editInput) {
+        editInput.focus();
+        editInput.setSelectionRange(editInput.value.length, editInput.value.length);
+      }
     }
   }
 
@@ -319,6 +401,23 @@
           statusBadge.className = 'kanban-card-status status-' + tarea.status;
           statusBadge.textContent = status.nombre;
 
+          // Priority dot
+          var prioDot = document.createElement('span');
+          prioDot.className = 'task-priority-dot ' + tarea.priority;
+          prioDot.title = tarea.priority.charAt(0).toUpperCase() + tarea.priority.slice(1);
+          prioDot.addEventListener('click', (function(t) {
+            return function(e) { e.stopPropagation(); togglePriorityDropdown(e, t.id); };
+          })(tarea));
+
+          // Edit button
+          var editBtn = document.createElement('button');
+          editBtn.className = 'kanban-card-edit';
+          editBtn.title = 'Editar';
+          editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+          editBtn.addEventListener('click', (function(taskId) {
+            return function(e) { e.stopPropagation(); startEditTask(taskId); };
+          })(tarea.id));
+
           // Delete button
           var deleteBtn = document.createElement('button');
           deleteBtn.className = 'kanban-card-delete';
@@ -335,6 +434,8 @@
           })(tarea.id, tarea.status));
 
           footer.appendChild(statusBadge);
+          footer.appendChild(prioDot);
+          footer.appendChild(editBtn);
           footer.appendChild(deleteBtn);
           card.appendChild(cardText);
           card.appendChild(footer);
@@ -348,7 +449,7 @@
   }
 
   function getTasksForColumn(statuses) {
-    return tareas.filter(function(t) { return statuses.indexOf(t.status) !== -1; });
+    return getFilteredTasks().filter(function(t) { return statuses.indexOf(t.status) !== -1; });
   }
 
   /**
@@ -442,6 +543,7 @@
         user_id: userId,
         text: texto,
         status: 'pending',
+        priority: 'media',
         sort_order: maxSort + 1
       };
 
@@ -475,6 +577,7 @@
         id: data.id,
         texto: data.text,
         status: data.status || 'pending',
+        priority: data.priority || 'media',
         sort_order: data.sort_order !== undefined ? data.sort_order : 0,
         created_at: data.created_at
       });
@@ -726,10 +829,166 @@
     tareas = [];
     userId = null;
     currentTab = 'lista';
+    activeFilter = 'all';
+    searchQuery = '';
+    editingTaskId = null;
     if (taskList) taskList.innerHTML = '';
     if (taskKanban) taskKanban.innerHTML = '';
     if (taskInput) taskInput.value = '';
     if (taskCounter) taskCounter.innerHTML = '<span>0</span> / <span>0</span> completadas';
+    var searchEl = document.getElementById('task-search');
+    if (searchEl) searchEl.value = '';
+  }
+
+  // --- Priority dropdown ---
+  function closePriorityDropdown() {
+    if (openPriorityDropdown) {
+      if (openPriorityDropdown.parentNode) openPriorityDropdown.parentNode.removeChild(openPriorityDropdown);
+      openPriorityDropdown = null;
+    }
+  }
+
+  function togglePriorityDropdown(event, taskId) {
+    closePriorityDropdown();
+    closeAllDropdowns();
+
+    var tarea = tareas.find(function(t) { return t.id === taskId; });
+    if (!tarea) return;
+
+    var dropdown = document.createElement('div');
+    dropdown.className = 'task-status-dropdown';
+
+    for (var i = 0; i < PRIORITIES.length; i++) {
+      var p = PRIORITIES[i];
+      var option = document.createElement('button');
+      option.className = 'task-priority-option' + (tarea.priority === p.id ? ' active-priority' : '');
+      option.innerHTML = '<span class="task-priority-dot ' + p.id + '" style="width:10px;height:10px"></span> ' + p.nombre;
+      option.addEventListener('click', (function(taskId, priorityId) {
+        return function(e) {
+          e.stopPropagation();
+          closePriorityDropdown();
+          cambiarPrioridad(taskId, priorityId);
+        };
+      })(taskId, p.id));
+      dropdown.appendChild(option);
+    }
+
+    var rect = event.currentTarget.getBoundingClientRect();
+    dropdown.style.position = 'fixed';
+    dropdown.style.top = (rect.bottom + 4) + 'px';
+    dropdown.style.left = rect.left + 'px';
+
+    document.body.appendChild(dropdown);
+    openPriorityDropdown = dropdown;
+
+    setTimeout(function() {
+      document.addEventListener('click', closePriorityDropdown, { once: true });
+    }, 0);
+  }
+
+  async function cambiarPrioridad(id, newPriority) {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    var tarea = tareas.find(function(t) { return t.id === id; });
+    if (tarea) {
+      tarea.priority = newPriority;
+      render();
+    }
+
+    try {
+      var { error } = await client
+        .from('tasks')
+        .update({ priority: newPriority })
+        .eq('id', id);
+
+      if (error) {
+        console.warn('Error al cambiar prioridad:', error);
+      } else {
+        window.dispatchEvent(new CustomEvent('sync:success'));
+      }
+    } catch (e) {
+      console.warn('Error al cambiar prioridad:', e);
+    }
+  }
+
+  // --- Edit task inline ---
+  function startEditTask(taskId) {
+    if (editingTaskId) return;
+    editingTaskId = taskId;
+    render(); // re-render para mostrar el input de edición
+  }
+
+  function finishEdit(taskId, newText) {
+    editingTaskId = null;
+    var trimmed = newText.trim();
+    if (!trimmed) { render(); return; }
+
+    var tarea = tareas.find(function(t) { return t.id === taskId; });
+    if (!tarea || tarea.texto === trimmed) { render(); return; }
+
+    editarTarea(taskId, trimmed);
+  }
+
+  async function editarTarea(id, newText) {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    // Optimistic update
+    var tarea = tareas.find(function(t) { return t.id === id; });
+    if (tarea) {
+      tarea.texto = newText;
+      render();
+    }
+
+    try {
+      var { error } = await client
+        .from('tasks')
+        .update({ text: newText })
+        .eq('id', id);
+
+      if (error) {
+        console.warn('Error al editar tarea:', error);
+      } else {
+        window.dispatchEvent(new CustomEvent('sync:success'));
+      }
+    } catch (e) {
+      console.warn('Error al editar tarea:', e);
+    }
+  }
+
+  // --- Filter chips & search ---
+  function initFilters() {
+    var filtersEl = document.getElementById('task-filters');
+    if (!filtersEl) return;
+
+    filtersEl.addEventListener('click', function(e) {
+      var chip = e.target.closest('.task-filter-chip');
+      if (!chip) return;
+
+      var filter = chip.dataset.filter;
+      activeFilter = filter;
+
+      filtersEl.querySelectorAll('.task-filter-chip').forEach(function(c) {
+        c.classList.toggle('active', c.dataset.filter === filter);
+      });
+
+      render();
+    });
+  }
+
+  function initSearch() {
+    var searchEl = document.getElementById('task-search');
+    if (!searchEl) return;
+
+    var debounceTimer = null;
+    searchEl.addEventListener('input', function() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(function() {
+        searchQuery = searchEl.value.trim();
+        render();
+      }, 250);
+    });
   }
 
   // --- Tab switching ---
@@ -772,6 +1031,8 @@
     if (!isInitialized) {
       isInitialized = true;
       initTabs();
+      initFilters();
+      initSearch();
     }
     cargarTareas();
   });

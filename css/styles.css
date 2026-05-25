@@ -639,7 +639,7 @@ body::after {
   margin-bottom: 16px;
 }
 
-.task-input-container input {
+.task-input-container input:not(.task-search) {
   flex: 1;
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.05);
@@ -652,11 +652,11 @@ body::after {
   transition: var(--transition);
 }
 
-.task-input-container input::placeholder {
+.task-input-container input:not(.task-search)::placeholder {
   color: var(--text-muted);
 }
 
-.task-input-container input:focus {
+.task-input-container input:not(.task-search):focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
@@ -1076,6 +1076,163 @@ body::after {
 .task-kanban::-webkit-scrollbar-thumb {
   background: var(--border-glass);
   border-radius: 4px;
+}
+
+/* Task priority dot */
+.task-priority-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.task-priority-dot.alta { background: #f87171; box-shadow: 0 0 6px rgba(248,113,113,0.4); }
+.task-priority-dot.media { background: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,0.3); }
+.task-priority-dot.baja { background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.3); }
+
+/* Task priority in kanban cards */
+.kanban-card-footer .task-priority-dot {
+  margin-left: auto;
+}
+
+/* Edit mode for task text */
+.task-text-editing {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 2px 6px;
+  color: var(--text-primary);
+  font-size: inherit;
+  font-family: inherit;
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Task filter chips */
+.task-filters {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 0 0 4px;
+}
+.task-filter-chip {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-family: var(--font);
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.task-filter-chip:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-secondary);
+}
+.task-filter-chip.active {
+  background: var(--accent-dim, rgba(99,102,241,0.15));
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.task-filter-chip .chip-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 3px;
+  vertical-align: middle;
+}
+
+/* Edit button (between grip and checkbox) */
+.task-edit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: var(--transition-fast);
+  font-size: 0.7rem;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.task-item:hover .task-edit-btn { opacity: 0.6; }
+.task-edit-btn:hover { opacity: 1 !important; color: var(--accent); background: rgba(255,255,255,0.06); }
+
+/* Kanban edit button */
+.kanban-card-edit {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  opacity: 0;
+  transition: var(--transition-fast);
+}
+.kanban-card:hover .kanban-card-edit { opacity: 0.6; }
+.kanban-card-edit:hover { opacity: 1 !important; color: var(--accent); }
+
+/* Priority dropdown (reuses task-status-dropdown style) */
+.task-priority-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-family: inherit;
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+.task-priority-option:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-primary);
+}
+.task-priority-option.active-priority {
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.05);
+}
+
+/* Search input for tasks */
+.task-search {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-glass);
+  color: var(--text-primary);
+  font-family: var(--font);
+  font-size: 0.78rem;
+  padding: 6px 10px 6px 28px;
+  border-radius: 20px;
+  outline: none;
+  width: 100%;
+  max-width: 200px;
+  transition: border-color 0.2s, max-width 0.2s;
+}
+.task-search:focus {
+  border-color: var(--accent);
+  max-width: 260px;
+}
+.task-search::placeholder { color: var(--text-muted); font-size: 0.75rem; }
+.task-search-wrap {
+  position: relative;
+  flex-shrink: 1;
+}
+.task-search-wrap i {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  pointer-events: none;
 }
 
 .kanban-column {
