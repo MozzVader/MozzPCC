@@ -7,7 +7,6 @@
 (function () {
   'use strict';
 
-  var HISTORY_KEY = 'mozzpcc-dollar-evolution';
   var TYPE_KEY = 'mozzpcc-dollar-type';
   var REFRESH_MS = 30 * 60 * 1000;
   var API_LATEST = 'https://api.bluelytics.com.ar/v2/latest';
@@ -45,19 +44,6 @@
     try { localStorage.setItem(TYPE_KEY, activeType); } catch (e) {}
   }
 
-  // --- Historial en localStorage ---
-  function loadEvolution() {
-    try {
-      localStorage.removeItem(HISTORY_KEY);
-    } catch (e) {}
-  }
-
-  function saveEvolution() {
-    try {
-      localStorage.setItem(HISTORY_KEY, JSON.stringify({ ts: Date.now(), values: evolution }));
-    } catch (e) {}
-  }
-
   // --- Fetch evolución diaria ---
   async function fetchEvolution() {
     if (evolutionLoaded) return;
@@ -83,7 +69,6 @@
       }
 
       evolution = seriesMap;
-      saveEvolution();
       evolutionLoaded = true;
     } catch (e) {
       console.warn('[Dólar] Error evolución:', e.message);
@@ -283,7 +268,6 @@
   // --- Init ---
   async function init() {
     loadTypePreference();
-    loadEvolution();
     renderLoading(document.getElementById('dollar-content'));
     initDropdown();
 

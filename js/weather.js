@@ -293,13 +293,6 @@
     if (cityInput) cityInput.value = '';
   });
 
-  // Escuchar cuando settings.js carga las prefs para actualizar el input
-  window.addEventListener('weather:city-loaded', function (e) {
-    if (e.detail && e.detail.city && cityInput) {
-      cityInput.value = e.detail.city;
-    }
-  });
-
   // Estado inicial vacío
   setEmpty();
 })();
