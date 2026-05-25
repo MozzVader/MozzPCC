@@ -139,12 +139,19 @@
       var hash = window.location.hash.replace('#', '');
       if (!hash) return;
       var target = document.getElementById(hash);
-      if (target && target.classList.contains('snap-section')) {
-        // Wait a tick for dashboard to be visible
+      if (!target || !target.classList.contains('snap-section')) return;
+      // Try multiple times because dashboard may become visible after auth
+      function tryScroll(attempts) {
+        if (attempts <= 0) return;
+        if (dashboard.offsetHeight === 0) {
+          setTimeout(function () { tryScroll(attempts - 1); }, 200);
+          return;
+        }
         setTimeout(function () {
           target.scrollIntoView({ behavior: 'instant' });
-        }, 100);
+        }, 50);
       }
+      tryScroll(15); // retry for up to 3 seconds
     }
 
     // IntersectionObserver: detecta qué sección está visible
