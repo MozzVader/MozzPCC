@@ -4287,12 +4287,17 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 .skel-note {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   padding: 16px;
-  min-height: 160px;
   background: rgba(255,255,255,0.03);
-  border-radius: 8px;
-  border: 1px solid var(--border, rgba(255,255,255,0.06));
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255,255,255,0.06);
+  min-height: 140px;
+}
+#skel-notes.skeleton-container:not([data-loaded="true"]) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
 }
 .skel-note-bar { height: 3px; width: 100%; border-radius: 2px; }
 .skel-note-title { height: 14px; width: 70%; }
@@ -4806,6 +4811,41 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 6px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Markdown reference table in tips */
+.tip-markdown-table {
+  margin: 4px 0 8px 16px;
+}
+.tip-markdown-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+.tip-markdown-table th {
+  text-align: left;
+  padding: 4px 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.tip-markdown-table td {
+  padding: 5px 10px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.tip-markdown-table code {
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+}
+.tip-list-demo {
+  color: var(--text-muted);
 }
 
 /* Overlay */

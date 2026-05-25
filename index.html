@@ -568,7 +568,7 @@
             </button>
           </div>
 
-          <div class="skeleton-container" id="skel-notes" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px;">
+          <div class="skeleton-container" id="skel-notes">
             <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title"></span><span class="skeleton-bar skel-note-line" style="width:90%"></span><span class="skeleton-bar skel-note-line" style="width:70%"></span><span class="skeleton-bar skel-note-line" style="width:45%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
             <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title" style="width:55%"></span><span class="skeleton-bar skel-note-line" style="width:80%"></span><span class="skeleton-bar skel-note-line" style="width:60%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
             <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title" style="width:75%"></span><span class="skeleton-bar skel-note-line" style="width:95%"></span><span class="skeleton-bar skel-note-line" style="width:50%"></span><span class="skeleton-bar skel-note-line" style="width:65%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
@@ -783,6 +783,20 @@
           <div class="tip-item">
             <span class="tip-label">Notas</span>
             <span class="tip-desc">Clic en el color para cambiarlo; arrastrá para reordenar</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-label">Formato en Notas</span>
+            <span class="tip-desc">Soporta Markdown básico al salir de edición</span>
+          </div>
+          <div class="tip-markdown-table">
+            <table>
+              <thead><tr><th>Markdown</th><th>Resultado</th></tr></thead>
+              <tbody>
+                <tr><td><code>**texto**</code></td><td><strong>texto</strong> (negrita)</td></tr>
+                <tr><td><code>*texto*</code></td><td><em>texto</em> (itálica)</td></tr>
+                <tr><td><code>- item</code></td><td><span class="tip-list-demo">&#8226; item</span> (lista)</td></tr>
+              </tbody>
+            </table>
           </div>
           <div class="tip-item">
             <span class="tip-label">Ver Mas Tarde</span>
