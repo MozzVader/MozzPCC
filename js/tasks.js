@@ -37,6 +37,12 @@
   var openDropdown = null; // reference to currently open dropdown
   var STORAGE_KEY = 'mozzpcc_tasks_order';
 
+  // --- Drag & Drop state ---
+  var dragItem = null;
+  var dragElement = null;
+  var placeholder = null;
+  var isDragging = false;
+
   function getSupabase() {
     return window.supabaseClient || null;
   }
@@ -189,30 +195,15 @@
 
       badgeWrap.appendChild(badge);
 
-      // Reorder buttons
-      var reorder = document.createElement('div');
-      reorder.className = 'task-reorder';
-
-      var upBtn = document.createElement('button');
-      upBtn.className = 'task-reorder-btn';
-      upBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i>';
-      upBtn.title = 'Subir';
-      upBtn.disabled = (i === 0);
-      upBtn.addEventListener('click', (function(t) {
-        return function(e) { e.stopPropagation(); moveTask(t.id, -1); };
-      })(tarea));
-
-      var downBtn = document.createElement('button');
-      downBtn.className = 'task-reorder-btn';
-      downBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i>';
-      downBtn.title = 'Bajar';
-      downBtn.disabled = (i === tareas.length - 1);
-      downBtn.addEventListener('click', (function(t) {
-        return function(e) { e.stopPropagation(); moveTask(t.id, 1); };
-      })(tarea));
-
-      reorder.appendChild(upBtn);
-      reorder.appendChild(downBtn);
+      // Grip handle for drag & drop
+      var grip = document.createElement('button');
+      grip.className = 'task-grip';
+      grip.setAttribute('aria-label', 'Arrastrar para reordenar');
+      grip.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>';
+      grip.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        startDrag(e, tarea, li);
+      });
 
       // Delete button
       var btnEliminar = document.createElement('button');
@@ -223,10 +214,10 @@
         return function() { eliminarTarea(t.id); };
       })(tarea));
 
+      li.appendChild(grip);
       li.appendChild(checkbox);
       li.appendChild(texto);
       li.appendChild(badgeWrap);
-      li.appendChild(reorder);
       li.appendChild(btnEliminar);
       taskList.appendChild(li);
     }
@@ -554,28 +545,113 @@
     tareas = reordered;
   }
 
-  /**
-   * Mueve una tarea arriba/abajo (reordenar)
-   */
-  function moveTask(id, direction) {
-    var index = -1;
-    for (var i = 0; i < tareas.length; i++) {
-      if (tareas[i].id === id) { index = i; break; }
+  // =============================================
+  // DRAG & DROP (Pointer Events) — adapted from readLater
+  // =============================================
+
+  function startDrag(e, item, element) {
+    if (isDragging) return;
+    isDragging = true;
+
+    dragItem = item;
+    dragElement = element;
+
+    element.classList.add('dragging');
+
+    placeholder = document.createElement('li');
+    placeholder.className = 'task-item';
+    placeholder.style.visibility = 'hidden';
+    placeholder.style.height = element.offsetHeight + 'px';
+    placeholder.style.padding = '0';
+
+    element.parentNode.insertBefore(placeholder, element.nextSibling);
+    element.setPointerCapture(e.pointerId);
+
+    element.addEventListener('pointermove', onDragMove);
+    element.addEventListener('pointerup', onDragEnd);
+    element.addEventListener('pointercancel', onDragEnd);
+  }
+
+  function onDragMove(e) {
+    if (!isDragging || !dragElement) return;
+
+    var listItems = taskList.querySelectorAll('.task-item:not(.dragging):not([style*="visibility: hidden"])');
+    var closestItem = null;
+    var closestOffset = Number.POSITIVE_INFINITY;
+    var insertBefore = true;
+
+    for (var i = 0; i < listItems.length; i++) {
+      var box = listItems[i].getBoundingClientRect();
+      var midY = box.top + box.height / 2;
+      var offset = e.clientY - midY;
+
+      if (Math.abs(offset) < Math.abs(closestOffset)) {
+        closestOffset = offset;
+        closestItem = listItems[i];
+        insertBefore = offset < 0;
+      }
     }
-    if (index === -1) return;
 
-    var newIndex = index + direction;
-    if (newIndex < 0 || newIndex >= tareas.length) return;
+    clearDropIndicators();
 
-    // Swap in array
-    var temp = tareas[index];
-    tareas[index] = tareas[newIndex];
-    tareas[newIndex] = temp;
+    if (closestItem) {
+      if (insertBefore) {
+        closestItem.classList.add('drop-before');
+        taskList.insertBefore(placeholder, closestItem);
+      } else {
+        closestItem.classList.add('drop-after');
+        var nextSibling = closestItem.nextSibling;
+        if (nextSibling) {
+          taskList.insertBefore(placeholder, nextSibling);
+        } else {
+          taskList.appendChild(placeholder);
+        }
+      }
+    }
+  }
 
-    // Persist to localStorage
-    saveCustomOrder();
+  function onDragEnd(e) {
+    if (!isDragging || !dragElement) return;
 
-    render();
+    dragElement.removeEventListener('pointermove', onDragMove);
+    dragElement.removeEventListener('pointerup', onDragEnd);
+    dragElement.removeEventListener('pointercancel', onDragEnd);
+
+    clearDropIndicators();
+
+    if (placeholder && placeholder.parentNode) {
+      placeholder.parentNode.insertBefore(dragElement, placeholder);
+      placeholder.parentNode.removeChild(placeholder);
+    }
+
+    dragElement.classList.remove('dragging');
+
+    // Reorder tareas array from DOM order
+    var newOrder = [];
+    var listElements = taskList.querySelectorAll('.task-item[data-id]');
+    listElements.forEach(function (el) {
+      var id = el.dataset.id;
+      var item = tareas.find(function (t) { return t.id === id; });
+      if (item) newOrder.push(item);
+    });
+
+    if (newOrder.length === tareas.length) {
+      tareas = newOrder;
+      saveCustomOrder();
+    }
+
+    dragItem = null;
+    dragElement = null;
+    placeholder = null;
+    isDragging = false;
+  }
+
+  function clearDropIndicators() {
+    var indicators = taskList.querySelectorAll('.drop-before, .drop-after');
+    indicators.forEach(function (el) {
+      el.classList.remove('drop-before');
+      el.classList.remove('drop-after');
+    });
   }
 
   /**

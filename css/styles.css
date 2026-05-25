@@ -998,40 +998,69 @@ body::after {
   font-size: 0.75rem;
 }
 
-/* Task reorder buttons */
-.task-reorder {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  flex-shrink: 0;
-}
-
-.task-reorder-btn {
+/* Task reorder grip */
+.task-grip {
   background: none;
   border: none;
   color: var(--text-muted);
-  cursor: pointer;
-  font-size: 0.6rem;
-  padding: 2px 4px;
-  border-radius: 3px;
+  cursor: grab;
+  padding: 4px;
+  border-radius: 4px;
   transition: var(--transition-fast);
-  opacity: 0;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  touch-action: none;
   line-height: 1;
+  opacity: 0;
 }
 
-.task-item:hover .task-reorder-btn {
+.task-item:hover .task-grip {
   opacity: 0.6;
 }
 
-.task-reorder-btn:hover {
+.task-grip:hover {
   opacity: 1 !important;
-  color: var(--accent);
-  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.task-reorder-btn:disabled {
-  opacity: 0 !important;
-  pointer-events: none;
+.task-grip:active {
+  cursor: grabbing;
+}
+
+/* Task dragging states */
+.task-item.dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+}
+
+.task-item.drag-over {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.task-item.drop-before::before {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent-glow);
+}
+
+.task-item.drop-after::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  box-shadow: 0 0 6px var(--accent-glow);
 }
 
 /* Kanban board */
