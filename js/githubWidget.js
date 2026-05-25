@@ -12,6 +12,73 @@
   var loadingEl, emptyEl, profileEl;
   var userId = null;
 
+  // --- Cache & Rate Limit ---
+  var CACHE_PREFIX = 'mozzpcc_gh_';
+  var CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+  var rateLimited = false;
+
+  function cacheKey(url) {
+    return CACHE_PREFIX + url;
+  }
+
+  function getCached(url) {
+    try {
+      var raw = sessionStorage.getItem(cacheKey(url));
+      if (!raw) return null;
+      var entry = JSON.parse(raw);
+      if (Date.now() - entry.ts < CACHE_TTL) return entry.data;
+      sessionStorage.removeItem(cacheKey(url));
+      return null;
+    } catch(e) { return null; }
+  }
+
+  function setCache(url, data) {
+    try {
+      sessionStorage.setItem(cacheKey(url), JSON.stringify({ data: data, ts: Date.now() }));
+    } catch(e) { /* full, ignore */ }
+  }
+
+  async function fetchWithCache(url) {
+    // Si ya sabemos que estamos rate-limited, no insistir
+    if (rateLimited) return null;
+
+    // Devolver cache si es válido
+    var cached = getCached(url);
+    if (cached) return cached;
+
+    var res;
+    try {
+      res = await fetch(url);
+    } catch(e) {
+      console.warn('GitHub fetch network error:', e);
+      return null;
+    }
+
+    // Detectar rate limit
+    var remaining = res.headers.get('X-RateLimit-Remaining');
+    if (remaining !== null && parseInt(remaining, 10) <= 0) {
+      rateLimited = true;
+      var reset = res.headers.get('X-RateLimit-Reset');
+      var resetDate = reset ? new Date(parseInt(reset, 10) * 1000) : null;
+      var waitMin = resetDate ? Math.ceil((resetDate - Date.now()) / 60000) : '?';
+      console.warn('GitHub API rate limit alcanzado. Se reinicia en ~' + waitMin + ' min.');
+      return null;
+    }
+
+    if (!res.ok) {
+      // 403 puede ser rate limit sin header (ocurre a veces)
+      if (res.status === 403) {
+        rateLimited = true;
+        console.warn('GitHub API 403 — posible rate limit.');
+      }
+      return null;
+    }
+
+    var data = await res.json();
+    setCache(url, data);
+    return data;
+  }
+
   function getSupabase() { return window.supabaseClient || null; }
 
   // --- Load github_username from user_preferences ---
@@ -129,9 +196,12 @@
   // --- Load profile ---
   async function loadProfile(username) {
     try {
-      var res = await fetch(API + '/users/' + encodeURIComponent(username));
-      if (!res.ok) throw new Error('User not found');
-      var data = await res.json();
+      var data = await fetchWithCache(API + '/users/' + encodeURIComponent(username));
+      if (!data) {
+        if (rateLimited) showRateLimitView();
+        else showView('empty');
+        return;
+      }
 
       var avatarEl = document.getElementById('gh-avatar');
       var nameEl = document.getElementById('gh-name');
@@ -248,9 +318,8 @@
     var list = document.getElementById('gh-activity-list');
     if (!list) return;
     try {
-      var res = await fetch(API + '/users/' + encodeURIComponent(username) + '/events/public?per_page=15');
-      if (!res.ok) return;
-      var events = await res.json();
+      var events = await fetchWithCache(API + '/users/' + encodeURIComponent(username) + '/events/public?per_page=15');
+      if (!events) return;
       list.innerHTML = '';
       if (events.length === 0) {
         list.innerHTML = '<li class="gh-activity-item" style="justify-content:center;color:var(--text-muted);">Sin actividad reciente</li>';
@@ -269,9 +338,8 @@
     var container = document.getElementById('gh-repos-list');
     if (!container) return;
     try {
-      var res = await fetch(API + '/users/' + encodeURIComponent(username) + '/repos?sort=updated&per_page=30');
-      if (!res.ok) return;
-      var repos = await res.json();
+      var repos = await fetchWithCache(API + '/users/' + encodeURIComponent(username) + '/repos?sort=updated&per_page=30');
+      if (!repos) return;
       container.innerHTML = '';
 
       // --- Update streak: repos updated in the last 30 days ---
@@ -325,9 +393,8 @@
       var date = new Date();
       date.setDate(date.getDate() - 7);
       var since = date.toISOString().split('T')[0];
-      var res = await fetch(API + '/search/repositories?q=created:>' + since + '&sort=stars&order=desc&per_page=10');
-      if (!res.ok) return;
-      var data = await res.json();
+      var data = await fetchWithCache(API + '/search/repositories?q=created:>' + since + '&sort=stars&order=desc&per_page=10');
+      if (!data) return;
       var items = data.items || [];
       list.innerHTML = '';
       if (items.length === 0) {
@@ -372,21 +439,57 @@
     }
   }
 
+  // --- Rate limit view ---
+  function showRateLimitView() {
+    var existing = document.getElementById('gh-rate-limit-msg');
+    if (existing) return;
+    var msg = document.createElement('div');
+    msg.id = 'gh-rate-limit-msg';
+    msg.style.cssText = 'text-align:center;padding:30px 16px;color:var(--text-muted);';
+    msg.innerHTML =
+      '<i class="fa-solid fa-hourglass-half" style="font-size:1.5rem;display:block;margin-bottom:10px;"></i>' +
+      '<p style="margin:0;font-size:0.85rem;">GitHub API rate limit alcanzado</p>' +
+      '<p style="margin:4px 0 0;font-size:0.75rem;opacity:0.7;">Los datos se recargarán automáticamente en unos minutos</p>';
+
+    // Insertar en el contenedor del widget
+    var widget = document.querySelector('.widget-github');
+    if (widget) {
+      var container = widget.querySelector('.widget-body') || widget;
+      container.appendChild(msg);
+    }
+    showView('empty');
+  }
+
   // --- Main load ---
   async function loadGithubWidget() {
+    // Reset rate limit flag si ya pasó suficiente tiempo
+    try {
+      var rlTs = sessionStorage.getItem(CACHE_PREFIX + 'ratelimited_at');
+      if (rlTs && Date.now() - parseInt(rlTs, 10) > 10 * 60 * 1000) {
+        rateLimited = false;
+        sessionStorage.removeItem(CACHE_PREFIX + 'ratelimited_at');
+      }
+    } catch(e) { /* ignore */ }
+
     showView('loading');
     var username = await loadGithubUsername();
     if (!username) { showView('empty'); return; }
+
+    // Cargar profile primero (es la que decide si mostramos datos o empty)
+    await loadProfile(username);
+
+    // Si profile falló por rate limit, no seguir gastando requests
+    if (rateLimited) return;
+
+    // Cargar el resto en paralelo
     try {
       await Promise.all([
-        loadProfile(username),
         loadActivity(username),
         loadRepos(username),
         loadTrending()
       ]);
     } catch(e) {
       console.warn('GitHub error:', e);
-      showView('empty');
     }
   }
 
@@ -399,6 +502,7 @@
 
   window.addEventListener('auth:logout', function() {
     userId = null;
+    rateLimited = false;
     showView('empty');
   });
 
