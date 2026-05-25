@@ -224,15 +224,15 @@
         texto.className = 'task-text-editing';
         texto.value = tarea.texto;
         texto.setAttribute('aria-label', 'Editar tarea');
-        texto.addEventListener('keydown', (function(t) {
+        texto.addEventListener('keydown', (function(t, inputEl) {
           return function(e) {
-            if (e.key === 'Enter') { e.preventDefault(); finishEdit(t.id, texto.value); }
+            if (e.key === 'Enter') { e.preventDefault(); finishEdit(t.id, inputEl.value); }
             if (e.key === 'Escape') { editingTaskId = null; render(); }
           };
-        })(tarea));
-        texto.addEventListener('blur', (function(t) {
-          return function() { finishEdit(t.id, texto.value); };
-        })(tarea));
+        })(tarea, texto));
+        texto.addEventListener('blur', (function(t, inputEl) {
+          return function() { finishEdit(t.id, inputEl.value); };
+        })(tarea, texto));
       } else {
         texto = document.createElement('span');
         texto.className = 'task-text' + (tarea.status === 'completada' ? ' completada' : '') + (tarea.status === 'descartada' ? ' descartada' : '');

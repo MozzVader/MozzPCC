@@ -1207,31 +1207,32 @@ body::after {
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  font-family: var(--font);
-  font-size: 0.78rem;
-  padding: 6px 10px 6px 28px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  padding: 10px 10px 10px 32px;
   border-radius: 20px;
   outline: none;
   width: 100%;
-  max-width: 200px;
-  transition: border-color 0.2s, max-width 0.2s;
+  max-width: 240px;
+  transition: border-color 0.2s, max-width 0.2s, box-shadow 0.2s;
 }
 .task-search:focus {
   border-color: var(--accent);
-  max-width: 260px;
+  max-width: 280px;
+  box-shadow: 0 0 0 3px var(--accent-dim);
 }
-.task-search::placeholder { color: var(--text-muted); font-size: 0.75rem; }
+.task-search::placeholder { color: var(--text-muted); font-size: 0.82rem; }
 .task-search-wrap {
   position: relative;
   flex-shrink: 1;
 }
 .task-search-wrap i {
   position: absolute;
-  left: 10px;
+  left: 11px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   pointer-events: none;
 }
 
