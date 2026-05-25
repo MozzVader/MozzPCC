@@ -25,6 +25,9 @@
         { id: 'lanacion', name: 'La Nacion',    url: 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/?outputType=xml', builtin: true },
         { id: 'cronica',  name: 'Cronica',      url: 'https://www.cronica.com.ar/feed/feed.xml', builtin: true },
         { id: 'infobae',  name: 'Infobae',      url: 'https://www.infobae.com/arc/outboundfeeds/rss/', builtin: true },
+        { id: 'mu-sociedad',  name: 'MinutoUno Sociedad',   url: 'https://www.minutouno.com/rss/pages/sociedad.xml', builtin: true },
+        { id: 'mu-economia',  name: 'MinutoUno Economia',   url: 'https://www.minutouno.com/rss/pages/economia.xml', builtin: true },
+        { id: 'mu-politica',  name: 'MinutoUno Politica',    url: 'https://www.minutouno.com/rss/pages/politica.xml', builtin: true },
       ],
     },
     {
@@ -41,6 +44,7 @@
       sources: [
         { id: 'ole',     name: 'Ole',            url: 'https://www.ole.com.ar/rss/', builtin: true },
         { id: 'espn-ar', name: 'ESPN Argentina',  url: 'https://www.espn.com.ar/rss/news', builtin: true },
+        { id: 'mu-deportes', name: 'MinutoUno Deportes', url: 'https://www.minutouno.com/rss/pages/deportes.xml', builtin: true },
         { id: 'tycsports', name: 'TyC Sports',    url: 'https://www.tycsports.com/feed', builtin: true },
         { id: 'mundodeportivo', name: 'Mundo Deportivo', url: 'https://www.mundodeportivo.com/rss', builtin: true },
         { id: 'marca',   name: 'Marca',           url: 'https://e00-marca.uecdn.es/rss/marca.xml', builtin: true },
@@ -50,6 +54,7 @@
       id: 'entretenimiento', name: 'Entretenimiento', icon: 'fa-solid fa-film',
       sources: [
         { id: 'ign',       name: 'IGN',           url: 'https://feeds.feedburner.com/ign/all', builtin: true },
+        { id: 'mu-espectaculos', name: 'MinutoUno Espectaculos', url: 'https://www.minutouno.com/rss/pages/espectaculos.xml', builtin: true },
         { id: 'deadline',  name: 'Deadline',       url: 'https://deadline.com/feed/', builtin: true },
         { id: 'variety',   name: 'Variety',        url: 'https://variety.com/feed/', builtin: true },
         { id: 'rollingstone', name: 'Rolling Stone', url: 'https://www.rollingstone.com/feed/', builtin: true },
@@ -80,6 +85,7 @@
     {
       id: 'tech', name: 'Tecnologia', icon: 'fa-solid fa-microchip',
       sources: [
+        { id: 'mu-tecno',     name: 'MinutoUno Tecno',    url: 'https://www.minutouno.com/rss/pages/tecno.xml', builtin: true },
         { id: 'techcrunch',  name: 'TechCrunch',     url: 'https://feeds.feedburner.com/TechCrunch/', builtin: true },
         { id: 'verge',       name: 'The Verge',      url: 'https://www.theverge.com/rss/index.xml', builtin: true },
         { id: 'arstechnica', name: 'Ars Technica',   url: 'https://feeds.arstechnica.com/arstechnica/index', builtin: true },
