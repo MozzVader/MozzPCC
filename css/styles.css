@@ -4655,7 +4655,22 @@ body::after {
 .settings-tab-content {
   display: none;
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.settings-tab-content::-webkit-scrollbar {
+  width: 5px;
+}
+.settings-tab-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.settings-tab-content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 3px;
+}
+.settings-tab-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.22);
 }
 
 .settings-tab-content.active {
