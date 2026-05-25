@@ -53,10 +53,6 @@
   var placeholder = null;
   var isDragging = false;
 
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
   function getStatusById(statusId) {
     for (var i = 0; i < STATUSES.length; i++) {
       if (STATUSES[i].id === statusId) return STATUSES[i];

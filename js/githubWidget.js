@@ -79,8 +79,6 @@
     return data;
   }
 
-  function getSupabase() { return window.supabaseClient || null; }
-
   // --- Load github_username from user_preferences ---
   async function loadGithubUsername() {
     var client = getSupabase();
@@ -96,21 +94,6 @@
     } catch(e) { return null; }
   }
 
-  // --- Time ago helper ---
-  function timeAgo(dateStr) {
-    var now = new Date();
-    var date = new Date(dateStr);
-    var seconds = Math.floor((now - date) / 1000);
-    if (seconds < 60) return 'ahora';
-    var minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return minutes + 'm';
-    var hours = Math.floor(minutes / 60);
-    if (hours < 24) return hours + 'h';
-    var days = Math.floor(hours / 24);
-    if (days < 30) return days + 'd';
-    var months = Math.floor(days / 30);
-    return months + 'mo';
-  }
 
   // --- Language colors ---
   var LANG_COLORS = {

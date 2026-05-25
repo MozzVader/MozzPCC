@@ -29,10 +29,6 @@
   var placeholder = null;
   var dragging = false;
 
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
   // =============================================
   // TAG PICKER (color dots below inputs)
   // =============================================

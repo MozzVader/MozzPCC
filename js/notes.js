@@ -53,14 +53,6 @@
   }
 
   /**
-   * Obtiene el cliente Supabase
-   * @returns {Object|null}
-   */
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
-  /**
    * Carga las notas desde Supabase
    */
   async function cargarNotas() {

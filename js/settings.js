@@ -170,10 +170,6 @@
     }
   ];
 
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
   // --- News Sources Settings (v2: toggles multi-select + custom) ---
   function renderNewsSourcesSettings() {
     var container = document.getElementById('news-sources-list');
@@ -488,13 +484,6 @@
 
   function closeSettings() {
     settingsModal.style.display = 'none';
-  }
-
-  // --- Utilidad: escape HTML ---
-  function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
   }
 
   // --- Quick Links Settings (Tab "Rápidos") ---

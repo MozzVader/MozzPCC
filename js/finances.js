@@ -88,18 +88,6 @@
   // =========================================================================
 
   /**
-   * Escapa HTML para prevenir inyeccion XSS
-   * @param {string} text
-   * @returns {string}
-   */
-  function escapeHtml(text) {
-    if (!text) return '';
-    var div = document.createElement('div');
-    div.appendChild(document.createTextNode(text));
-    return div.innerHTML;
-  }
-
-  /**
    * Obtiene la fecha actual en formato YYYY-MM-DD
    * @returns {string}
    */
@@ -147,13 +135,6 @@
     return null;
   }
 
-  /**
-   * Obtiene el simbolo de moneda desde localStorage
-   * @returns {string}
-   */
-  function getCurrency() {
-    return localStorage.getItem('mozzpcc-currency') || '$';
-  }
 
   /**
    * Formatea un numero con formato argentino: 1.234,56

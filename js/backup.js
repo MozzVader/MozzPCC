@@ -28,10 +28,6 @@
     'tv_shows'
   ];
 
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
   async function getUserId() {
     var client = getSupabase();
     if (!client) return null;

@@ -17,10 +17,6 @@
   var quickLinks = [];
   var userId = null;
 
-  function getSupabase() {
-    return window.supabaseClient || null;
-  }
-
   // =============================================
   // CARGA DESDE SUPABASE
   // =============================================
@@ -229,12 +225,6 @@
   // =============================================
   // HELPERS
   // =============================================
-
-  function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
 
   function escapeAttr(text) {
     return text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

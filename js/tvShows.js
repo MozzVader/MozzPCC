@@ -18,8 +18,6 @@
   var CACHE_KEY = 'mozzpcc-tv-episodes';
   var CACHE_MS = 2 * 60 * 60 * 1000;
 
-  // --- Helpers ---
-  function getSupabase() { return window.supabaseClient || null; }
 
   // --- Supabase CRUD ---
   async function loadShows() {
@@ -463,12 +461,6 @@
     initTabs();
 
     loadShows();
-  }
-
-  function escapeHtml(text) {
-    var div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
   }
 
   function cleanup() {
