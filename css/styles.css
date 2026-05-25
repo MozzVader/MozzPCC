@@ -2471,6 +2471,8 @@ body::after {
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 .gh-empty i { font-size: 2rem; opacity: 0.4; }
 
@@ -2665,6 +2667,7 @@ body::after {
   display: flex;
   flex: 1;
   min-height: 0;
+  min-width: 0;
 }
 
 /* Activity list */
@@ -2838,7 +2841,8 @@ body::after {
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid transparent;
-  flex-shrink: 0;
+  flex-shrink: 1;
+  min-width: 0;
   transition: background 0.2s, border-color 0.2s;
 }
 .gh-trending-item:hover {
