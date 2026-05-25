@@ -247,7 +247,7 @@
         menu.querySelectorAll('.dollar-type-option').forEach(function(o) {
           o.classList.toggle('active', o.dataset.type === t.id);
         });
-        closeTypeMenu();
+        closeAllDollarMenus();
         render();
       });
       menu.appendChild(opt);
