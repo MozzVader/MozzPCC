@@ -8,6 +8,45 @@
 (function () {
   'use strict';
 
+  // =========================================================================
+  //  LAZY LOADING DE CDN (Chart.js + SheetJS)
+  // =========================================================================
+
+  var CDN_URLS = {
+    chartjs: 'https://cdn.jsdelivr.net/npm/chart.js@4',
+    xlsx: 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'
+  };
+  var _cdnLoaded = { chartjs: false, xlsx: false };
+  var _cdnLoading = { chartjs: null, xlsx: null };
+
+  /**
+   * Carga un script CDN dinámicamente. Solo se carga una vez.
+   * @param {string} name - Clave en CDN_URLS
+   * @returns {Promise<boolean>} true si ya estaba cargado o se cargó ok
+   */
+  function loadCDN(name) {
+    if (_cdnLoaded[name]) return Promise.resolve(true);
+    if (_cdnLoading[name]) return _cdnLoading[name];
+    console.log('[Finanzas] Cargando ' + name + ' on-demand...');
+    _cdnLoading[name] = new Promise(function (resolve) {
+      var s = document.createElement('script');
+      s.src = CDN_URLS[name];
+      s.onload = function () {
+        _cdnLoaded[name] = true;
+        _cdnLoading[name] = null;
+        console.log('[Finanzas] ' + name + ' cargado correctamente.');
+        resolve(true);
+      };
+      s.onerror = function () {
+        console.warn('[Finanzas] Error al cargar ' + name);
+        _cdnLoading[name] = null;
+        resolve(false);
+      };
+      document.head.appendChild(s);
+    });
+    return _cdnLoading[name];
+  }
+
   // --- Estado global del modulo ---
   var client = null;
   var userId = null;
@@ -637,9 +676,15 @@
   // =========================================================================
 
   /**
-   * Renderiza graficos segun el tab activo
+   * Renderiza graficos segun el tab activo (carga Chart.js on-demand si hace falta)
    */
   function renderCharts() {
+    if (typeof Chart === 'undefined') {
+      loadCDN('chartjs').then(function (ok) {
+        if (ok) { renderCharts(); }
+      });
+      return;
+    }
     renderDonutChart();
     if (currentTab === 'graficos') {
       renderGraficosTab();
@@ -1261,10 +1306,23 @@
 
   /**
    * Exporta las transacciones filtradas actualmente a un archivo XLSX
+   * Carga SheetJS on-demand si no está disponible
    */
   function exportToXlsx() {
     if (typeof XLSX === 'undefined') {
-      console.warn('[Finanzas] XLSX library no disponible');
+      var exportBtn = document.getElementById('fin-export-btn');
+      if (exportBtn) {
+        exportBtn.disabled = true;
+        exportBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+      }
+      loadCDN('xlsx').then(function (ok) {
+        if (exportBtn) {
+          exportBtn.disabled = false;
+          exportBtn.innerHTML = '<i class="fa-solid fa-file-excel"></i>';
+        }
+        if (ok) { exportToXlsx(); }
+        else { console.warn('[Finanzas] No se pudo cargar SheetJS'); }
+      });
       return;
     }
 
@@ -1519,6 +1577,15 @@
 
       // Render charts for the new tab (needed because Chart.js requires visible canvas)
       setTimeout(function () {
+        if (typeof Chart === 'undefined') {
+          loadCDN('chartjs').then(function (ok) {
+            if (ok) {
+              if (tabName === 'graficos') { renderGraficosTab(); }
+              else { renderDonutChart(); }
+            }
+          });
+          return;
+        }
         if (tabName === 'graficos') {
           renderGraficosTab();
         } else {
