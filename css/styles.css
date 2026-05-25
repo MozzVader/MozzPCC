@@ -3254,17 +3254,35 @@ body::after {
     flex: none;
   }
 
-  /* News/Sports stacked: allow natural height on mobile */
+  /* News/Sports stacked: constrain to viewport on mobile, split 50/50 */
   .snap-section-inner-stacked {
-    height: auto;
-    max-height: none;
+    height: calc(100dvh - 140px);
+    max-height: calc(100dvh - 140px);
+    overflow: hidden;
   }
 
   .snap-section-inner-stacked .snap-section-grid {
-    overflow-y: visible;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    grid-template-rows: 1fr 1fr;
   }
 
-  /* News: hide thumbnails on mobile list view to prevent overflow */
+  .snap-section-inner-stacked .snap-section-grid .widget-news,
+  .snap-section-inner-stacked .snap-section-grid .widget-sports {
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 0;
+  }
+
+  .snap-section-inner-stacked .widget-news .nw-content,
+  .snap-section-inner-stacked .widget-sports .sp-tab-content.active {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* News: smaller thumbnails on mobile */
   .nw-thumb,
   .nw-thumb-placeholder {
     width: 40px;
@@ -3272,11 +3290,11 @@ body::after {
   }
 
   .nw-featured-img {
-    height: 80px;
+    height: 70px;
   }
 
   .nw-featured-img-placeholder {
-    height: 60px;
+    height: 50px;
   }
 
   /* Productividad: tareas sin límite en mobile */
