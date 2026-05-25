@@ -32,20 +32,22 @@
   // --- Mini Markdown parser (bold, italic, unordered lists) ---
   function parseMarkdown(text) {
     if (!text) return '';
-    // Escape HTML first
+    // Escape HTML
     var html = text
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
     // Bold: **text** or __text__
     html = html.replace(/\*\*(.+?)\*\*|__(.+?)__/g, '<strong>$1$2</strong>');
-    // Italic: *text* or _text_ (not inside bold)
-    html = html.replace(/(?<!\*)\*(?!=)(.+?)(?<!\*)\*(?!\*)|(?<!_)_(?!_)(.+?)(?<!_)_(?!_)/g, '<em>$1$2</em>');
-    // Unordered lists: lines starting with - or *
-    html = html.replace(/^(?:[-*])\s+(.+)$/gm, '<li>$1</li>');
+    // Italic: *text* (single, not part of bold — no lookbehind for compat)
+    html = html.replace(/(^|\s)\*([^*\n]+)\*(\s|$)/gm, '$1<em>$2</em>$3');
+    // Unordered lists: lines starting with - or * (not inside existing tags)
+    html = html.replace(/^([-*])\s+(.+)$/gm, '<li>$2</li>');
     // Wrap consecutive <li> in <ul>
-    html = html.replace(/((?:<li>.*<\/li>\n?)+)/g, '<ul>$1</ul>');
-    // Line breaks
+    html = html.replace(/((?:<li>.*<\/li>\s*)+)/g, '<ul>$1</ul>');
+    // Clean extra whitespace/newlines inside <ul> blocks
+    html = html.replace(/<\/li>\s+<li>/g, '</li><li>');
+    // Line breaks (only outside <ul> blocks)
     html = html.replace(/\n/g, '<br>');
     return html;
   }
@@ -227,7 +229,14 @@
       contenido.removeAttribute('data-empty');
     }
 
-    contenido.addEventListener('focus', enterEditMode);
+    // Use mousedown to enter edit mode (div isn't focusable without contenteditable)
+    contenido.addEventListener('mousedown', function (e) {
+      if (contenido.getAttribute('data-editing') !== 'true') {
+        e.preventDefault(); // prevent text selection before entering edit
+        enterEditMode();
+        contenido.focus();
+      }
+    });
     contenido.addEventListener('blur', exitEditMode);
     contenido.addEventListener('input', () => {
       nota.contenido = contenido.textContent;

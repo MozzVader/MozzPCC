@@ -2548,6 +2548,9 @@ body::after {
   line-height: 1.5;
   min-height: 60px;
   cursor: text;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  overflow: hidden;
 }
 
 .note-content:focus,
@@ -2565,12 +2568,13 @@ body::after {
   color: var(--text-secondary);
 }
 .note-content ul {
-  margin: 4px 0;
+  margin: 2px 0;
   padding-left: 18px;
   list-style: disc;
 }
 .note-content li {
-  margin: 1px 0;
+  margin: 0;
+  padding: 0;
 }
 .note-content li::marker {
   color: var(--text-muted);
