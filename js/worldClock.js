@@ -35,6 +35,7 @@
   ];
 
   var selectedCities = [];
+  var clockRefs = []; // cached DOM references [{el, timeEl, metaEl}]
 
   function load() {
     try {
@@ -107,6 +108,22 @@
     el.querySelectorAll('.wc-card').forEach(function (item) {
       item.addEventListener('click', function (e) { e.stopPropagation(); openPicker(parseInt(item.dataset.idx)); });
     });
+
+    // Cache DOM references for tick()
+    cacheElements();
+  }
+
+  function cacheElements() {
+    clockRefs = [];
+    var el = document.getElementById('world-clocks-container');
+    if (!el) return;
+    el.querySelectorAll('.wc-card').forEach(function (item) {
+      clockRefs.push({
+        name: item.dataset.name,
+        timeEl: item.querySelector('.wc-time'),
+        metaEl: item.querySelector('.wc-meta')
+      });
+    });
   }
 
   // --- City picker dropdown ---
@@ -168,20 +185,15 @@
     if (old) old.remove();
   }
 
-  // --- Tick each second ---
+  // --- Tick each second (uses cached refs, no querySelector) ---
   function tick() {
-    var el = document.getElementById('world-clocks-container');
-    if (!el) return;
-    var items = el.querySelectorAll('.wc-card');
-    items.forEach(function (item, i) {
-      if (i >= selectedCities.length) return;
-      var c = info(item.dataset.name);
-      if (!c) return;
-      var timeEl = item.querySelector('.wc-time');
-      var metaEl = item.querySelector('.wc-meta');
-      if (timeEl) timeEl.textContent = timeStr(c.tz);
-      if (metaEl) metaEl.textContent = dateStr(c.tz) + ' \u00B7 ' + offsetStr(c.tz);
-    });
+    for (var i = 0; i < clockRefs.length; i++) {
+      var ref = clockRefs[i];
+      var c = info(ref.name);
+      if (!c) continue;
+      if (ref.timeEl) ref.timeEl.textContent = timeStr(c.tz);
+      if (ref.metaEl) ref.metaEl.textContent = dateStr(c.tz) + ' \u00B7 ' + offsetStr(c.tz);
+    }
   }
 
   // --- Init (no auth needed) ---
