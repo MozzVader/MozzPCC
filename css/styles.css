@@ -5996,14 +5996,18 @@ body.clean-mode .clean-mode-hint {
    NOTICIAS Y DEPORTES (Nueva seccion)
    ============================================ */
 
-/* Inner stacked: grid + footer */
+/* Inner stacked: grid + footer (last section) */
 .snap-section-inner-stacked {
-  gap: 12px;
+  gap: 10px;
   justify-content: flex-start;
+  height: calc(100dvh - 140px);
+  max-height: calc(100dvh - 140px);
 }
 
 .snap-section-inner-stacked .snap-section-grid {
-  max-height: calc(100dvh - 220px);
+  flex: 1;
+  min-height: 0;
+  max-height: none;
 }
 
 /* --- NEWS WIDGET --- */
@@ -6641,4 +6645,90 @@ body.clean-mode .clean-mode-hint {
 .sp-table .team-cell img.twemoji {
   width: 14px;
   height: 14px;
+}
+
+/* ============================================
+   SETTINGS — NEWS SOURCES
+   ============================================ */
+.news-settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.news-settings-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.news-sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.news-source-group {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.news-source-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.news-source-group-title i {
+  color: var(--accent);
+  font-size: 0.85rem;
+  width: 18px;
+  text-align: center;
+}
+
+.news-source-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.news-source-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  user-select: none;
+}
+
+.news-source-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: var(--text-secondary);
+}
+
+.news-source-chip.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.news-settings-actions {
+  display: flex;
+  gap: 8px;
 }

@@ -1,7 +1,8 @@
 /**
  * newsWidget.js — Widget de noticias
  * RSS feeds via RSS2JSON API (free, no key needed, 10k req/day)
- * Approach A: un medio por categoría (configurable en settings)
+ * Categorías con múltiples medios seleccionables.
+ * La configuración de medios activos se persiste en localStorage.
  */
 
 (function () {
@@ -10,19 +11,71 @@
   var RSS_API = 'https://api.rss2json.com/v1/api.json';
   var CACHE_KEY = 'mozzpcc-news-cache';
   var CACHE_TTL = 10 * 60 * 1000; // 10 minutos
+  var SOURCES_KEY = 'mozzpcc-news-sources';
 
-  // --- FEEDS (sorted alphabetically) ---
-  var FEEDS = [
-    { id: 'ar',       name: 'Argentina',   icon: 'fa-solid fa-location-dot',  url: 'https://www.infobae.com/rss/' },
-    { id: 'gaming',   name: 'Gaming',      icon: 'fa-solid fa-gamepad',       url: 'https://www.polygon.com/rss/index.xml' },
-    { id: 'sports',   name: 'Deportes',    icon: 'fa-solid fa-futbol',        url: 'https://www.ole.com.ar/rss/' },
-    { id: 'tech',     name: 'Tecnologia',  icon: 'fa-solid fa-microchip',     url: 'https://feeds.feedburner.com/TechCrunch/' },
+  // --- CATEGORIAS CON FEEDS (sorted alphabetically by category name) ---
+  var CATEGORIES = [
+    {
+      id: 'ar', name: 'Argentina', icon: 'fa-solid fa-location-dot',
+      sources: [
+        { id: 'tn',     name: 'TN',           url: 'https://tn.com.ar/rss.xml' },
+        { id: 'clarin', name: 'Clarin',       url: 'https://www.clarin.com/rss/' },
+        { id: 'perfil', name: 'Perfil',       url: 'https://www.perfil.com/feed' },
+      ],
+    },
+    {
+      id: 'deportes', name: 'Deportes', icon: 'fa-solid fa-futbol',
+      sources: [
+        { id: 'ole', name: 'Ole', url: 'https://www.ole.com.ar/rss/' },
+      ],
+    },
+    {
+      id: 'gaming', name: 'Gaming', icon: 'fa-solid fa-gamepad',
+      sources: [
+        { id: 'polygon', name: 'Polygon', url: 'https://www.polygon.com/rss/index.xml' },
+      ],
+    },
+    {
+      id: 'tech', name: 'Tecnologia', icon: 'fa-solid fa-microchip',
+      sources: [
+        { id: 'techcrunch', name: 'TechCrunch', url: 'https://feeds.feedburner.com/TechCrunch/' },
+      ],
+    },
   ];
 
-  var currentFeed = FEEDS[0];
+  // --- State ---
+  var currentCategory = CATEGORIES[0];
+  var currentFeed = currentCategory.sources[0];
   var currentView = 'all';
   var isLoading = false;
   var articles = [];
+
+  // --- Active source per category (localStorage) ---
+  var activeSources = {};
+
+  function loadActiveSources() {
+    try {
+      var raw = localStorage.getItem(SOURCES_KEY);
+      if (raw) activeSources = JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+  }
+
+  function saveActiveSources() {
+    try {
+      localStorage.setItem(SOURCES_KEY, JSON.stringify(activeSources));
+    } catch (e) { /* ignore */ }
+  }
+
+  function resolveActiveFeed(category) {
+    var saved = activeSources[category.id];
+    if (saved) {
+      var found = category.sources.find(function (s) { return s.id === saved; });
+      if (found) return found;
+    }
+    return category.sources[0];
+  }
+
+  loadActiveSources();
 
   // --- DOM ---
   var selectEl = document.getElementById('nw-feed-select');
@@ -75,21 +128,22 @@
     } catch (e) { /* ignore */ }
   }
 
-  // --- INIT FEED SELECT ---
+  // --- INIT CATEGORY SELECT ---
   function initSelect() {
     if (!selectEl) return;
-    FEEDS.forEach(function (f, i) {
+    CATEGORIES.forEach(function (cat, i) {
       var opt = document.createElement('option');
-      opt.value = f.id;
-      opt.textContent = f.name;
+      opt.value = cat.id;
+      opt.textContent = cat.name;
       if (i === 0) opt.selected = true;
       selectEl.appendChild(opt);
     });
-    if (feedIconEl) feedIconEl.innerHTML = '<i class="' + FEEDS[0].icon + '"></i>';
+    if (feedIconEl) feedIconEl.innerHTML = '<i class="' + CATEGORIES[0].icon + '"></i>';
 
     selectEl.addEventListener('change', function () {
-      currentFeed = FEEDS.find(function (f) { return f.id === selectEl.value; }) || FEEDS[0];
-      if (feedIconEl) feedIconEl.innerHTML = '<i class="' + currentFeed.icon + '"></i>';
+      currentCategory = CATEGORIES.find(function (c) { return c.id === selectEl.value; }) || CATEGORIES[0];
+      currentFeed = resolveActiveFeed(currentCategory);
+      if (feedIconEl) feedIconEl.innerHTML = '<i class="' + currentCategory.icon + '"></i>';
       loadFeed();
     });
   }
@@ -110,7 +164,7 @@
     if (isLoading || !listEl) return;
     isLoading = true;
 
-    // Check cache first
+    // Check cache first (key by feed source id)
     var cached = getCache(currentFeed.id);
     if (cached) {
       articles = cached;
@@ -238,6 +292,30 @@
     listEl.className = 'nw-list';
     listEl.innerHTML = '<div class="nw-error"><i class="fa-solid fa-triangle-exclamation"></i><span>' + esc(msg) + '</span></div>';
   }
+
+  // --- Public API (for settings panel) ---
+  window.NewsWidget = {
+    getCategories: function () { return CATEGORIES; },
+    getActiveSources: function () { return activeSources; },
+    setActiveSource: function (categoryId, sourceId) {
+      activeSources[categoryId] = sourceId;
+      saveActiveSources();
+      // If this category is currently selected, reload
+      if (currentCategory && currentCategory.id === categoryId) {
+        currentFeed = resolveActiveFeed(currentCategory);
+        loadFeed();
+      }
+    },
+    reload: function () { loadFeed(); },
+    clearCache: function () {
+      CATEGORIES.forEach(function (cat) {
+        cat.sources.forEach(function (s) {
+          localStorage.removeItem(CACHE_KEY + '-' + s.id);
+        });
+      });
+      loadFeed();
+    },
+  };
 
   // --- INIT ---
   initSelect();

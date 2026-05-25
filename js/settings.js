@@ -174,6 +174,60 @@
     return window.supabaseClient || null;
   }
 
+  // --- News Sources Settings ---
+  function renderNewsSourcesSettings() {
+    var container = document.getElementById('news-sources-list');
+    if (!container || !window.NewsWidget) return;
+
+    var categories = window.NewsWidget.getCategories();
+    var activeSources = window.NewsWidget.getActiveSources();
+    var html = '';
+
+    categories.forEach(function (cat) {
+      var activeId = activeSources[cat.id] || cat.sources[0].id;
+      html += '<div class="news-source-group">';
+      html += '<div class="news-source-group-title"><i class="' + cat.icon + '"></i> ' + escapeHtml(cat.name) + '</div>';
+      html += '<div class="news-source-options">';
+      cat.sources.forEach(function (source) {
+        var isActive = source.id === activeId ? ' active' : '';
+        html += '<button class="news-source-chip' + isActive + '" data-cat="' + cat.id + '" data-source="' + source.id + '">' + escapeHtml(source.name) + '</button>';
+      });
+      html += '</div>';
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+
+    // Bind click events on chips
+    container.querySelectorAll('.news-source-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        var catId = chip.dataset.cat;
+        var sourceId = chip.dataset.source;
+        // Update active state within this group
+        chip.closest('.news-source-options').querySelectorAll('.news-source-chip').forEach(function (c) {
+          c.classList.remove('active');
+        });
+        chip.classList.add('active');
+        // Persist and reload if needed
+        window.NewsWidget.setActiveSource(catId, sourceId);
+      });
+    });
+  }
+
+  // --- News clear cache ---
+  var newsClearCacheBtn = document.getElementById('news-clear-cache');
+  if (newsClearCacheBtn) {
+    newsClearCacheBtn.addEventListener('click', function () {
+      if (window.NewsWidget) {
+        window.NewsWidget.clearCache();
+        newsClearCacheBtn.innerHTML = '<i class="fa-solid fa-check"></i> Cache limpiado';
+        setTimeout(function () {
+          newsClearCacheBtn.innerHTML = '<i class="fa-solid fa-broom"></i> Limpiar cache de noticias';
+        }, 2000);
+      }
+    });
+  }
+
   // --- Tabs ---
   function initTabs() {
     var tabs = document.querySelectorAll('.settings-tab');
@@ -199,6 +253,10 @@
           } else {
             renderQuickLinksSettings();
           }
+        }
+        // Renderizar fuentes de noticias al abrir la pestaña
+        if (target === 'news' && typeof renderNewsSourcesSettings === 'function') {
+          renderNewsSourcesSettings();
         }
       });
     });
