@@ -22,8 +22,7 @@
       sources: [
         { id: 'tn',       name: 'TN',           url: 'https://tn.com.ar/rss.xml', builtin: true },
         { id: 'clarin',   name: 'Clarin',       url: 'https://www.clarin.com/rss/', builtin: true },
-        { id: 'cronista', name: 'El Cronista',  url: 'https://www.cronista.com.ar/rss/', builtin: true },
-        { id: 'minutouno', name: 'Minuto Uno',  url: 'https://www.minutouno.com/rss.xml', builtin: true },
+        { id: 'lanacion', name: 'La Nacion',    url: 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/?outputType=xml', builtin: true },
       ],
     },
     {
