@@ -23,6 +23,7 @@
         { id: 'tn',       name: 'TN',           url: 'https://tn.com.ar/rss.xml', builtin: true },
         { id: 'clarin',   name: 'Clarin',       url: 'https://www.clarin.com/rss/', builtin: true },
         { id: 'lanacion', name: 'La Nacion',    url: 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/?outputType=xml', builtin: true },
+        { id: 'cronica',  name: 'Cronica',      url: 'https://www.cronica.com.ar/feed/feed.xml', builtin: true },
       ],
     },
     {
