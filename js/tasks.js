@@ -200,10 +200,12 @@
       grip.className = 'task-grip';
       grip.setAttribute('aria-label', 'Arrastrar para reordenar');
       grip.innerHTML = '<i class="fa-solid fa-grip-vertical"></i>';
-      grip.addEventListener('pointerdown', function (e) {
-        e.preventDefault();
-        startDrag(e, tarea, li);
-      });
+      grip.addEventListener('pointerdown', (function(t, el) {
+        return function (e) {
+          e.preventDefault();
+          startDrag(e, t, el);
+        };
+      })(tarea, li));
 
       // Delete button
       var btnEliminar = document.createElement('button');
