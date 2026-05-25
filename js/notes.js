@@ -53,9 +53,15 @@
 
       if (error) {
         console.warn('Error al cargar notas:', error);
+        window.showWidgetError('notes-grid', {
+          message: 'No se pudieron cargar las notas',
+          retry: cargarNotas,
+          skeletons: ['skel-notes']
+        });
         return;
       }
 
+      window.clearWidgetError('notes-grid');
       // Mapear datos de Supabase al formato local
       notas = (data || []).map(n => ({
         id: n.id,
@@ -68,6 +74,11 @@
       renderizarNotas();
     } catch (e) {
       console.warn('Error al cargar notas:', e);
+      window.showWidgetError('notes-grid', {
+        message: 'Error de conexion. Verifica tu internet.',
+        retry: cargarNotas,
+        skeletons: ['skel-notes']
+      });
     }
   }
 

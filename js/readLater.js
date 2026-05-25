@@ -139,9 +139,15 @@
 
       if (result.error) {
         console.warn('MozzPCC: Error cargando read later:', result.error);
+        window.showWidgetError('rl-list', {
+          message: 'No se pudieron cargar los marcadores',
+          retry: loadItems,
+          skeletons: ['skel-readlater']
+        });
         return;
       }
 
+      window.clearWidgetError('rl-list');
       items = (result.data || []).map(function (r) {
         return {
           id: r.id,
@@ -156,6 +162,11 @@
       render();
     } catch (e) {
       console.warn('MozzPCC: Error cargando read later:', e);
+      window.showWidgetError('rl-list', {
+        message: 'Error de conexion. Verifica tu internet.',
+        retry: loadItems,
+        skeletons: ['skel-readlater']
+      });
     }
   }
 

@@ -4144,6 +4144,52 @@ body::after {
 /* Hide when data is ready */
 .skeleton-container[data-loaded="true"] { display: none; }
 
+/* Widget error/retry state */
+.widget-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 28px 16px;
+  text-align: center;
+  color: var(--text-muted);
+  animation: widgetErrorFadeIn 0.3s ease;
+}
+.widget-error > i {
+  font-size: 1.4rem;
+  opacity: 0.5;
+}
+.widget-error-msg {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  max-width: 260px;
+}
+.widget-error-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  margin-top: 4px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xs, 6px);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.widget-error-retry:hover {
+  background: rgba(255,255,255,0.1);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+@keyframes widgetErrorFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* Hide skeletons before auth (shown by auth:ready reset) */
 body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 

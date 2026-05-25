@@ -27,11 +27,27 @@
     if (!c || !userId) return;
     try {
       var res = await c.from('tv_shows').select('*').eq('user_id', userId);
-      if (res.error) { console.warn('[TV] Error loading:', res.error); return; }
+      if (res.error) {
+        console.warn('[TV] Error loading:', res.error);
+        window.showWidgetError('tv-upcoming-list', {
+          message: 'No se pudieron cargar las series',
+          retry: loadShows,
+          skeletons: ['skel-tv-agenda', 'skel-tv-series']
+        });
+        return;
+      }
+      window.clearWidgetError('tv-upcoming-list');
       shows = res.data || [];
       render();
       loadUpcoming();
-    } catch (e) { console.warn('[TV] Error:', e); }
+    } catch (e) {
+      console.warn('[TV] Error:', e);
+      window.showWidgetError('tv-upcoming-list', {
+        message: 'Error de conexion. Verifica tu internet.',
+        retry: loadShows,
+        skeletons: ['skel-tv-agenda', 'skel-tv-series']
+      });
+    }
   }
 
   async function addShow(tvmazeId, title, posterUrl, status) {

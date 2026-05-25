@@ -101,15 +101,26 @@
 
           if (fallbackError) {
             console.warn('Error al cargar tareas:', fallbackError);
+            window.showWidgetError('task-list', {
+              message: 'No se pudieron cargar las tareas',
+              retry: cargarTareas,
+              skeletons: ['skel-tasks-list', 'skel-tasks-kanban']
+            });
             return;
           }
           data = fallbackData;
         } else {
           console.warn('Error al cargar tareas:', error);
+          window.showWidgetError('task-list', {
+            message: 'No se pudieron cargar las tareas',
+            retry: cargarTareas,
+            skeletons: ['skel-tasks-list', 'skel-tasks-kanban']
+          });
           return;
         }
       }
 
+      window.clearWidgetError('task-list');
       // Check if data has 'status' or 'completed' field (migration not run yet)
       tareas = (data || []).map(function(t, idx) {
         var status = t.status || 'pending';
@@ -133,6 +144,11 @@
       render();
     } catch (e) {
       console.warn('Error al cargar tareas:', e);
+      window.showWidgetError('task-list', {
+        message: 'Error de conexion. Verifica tu internet.',
+        retry: cargarTareas,
+        skeletons: ['skel-tasks-list', 'skel-tasks-kanban']
+      });
     }
   }
 

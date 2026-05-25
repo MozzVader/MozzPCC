@@ -220,6 +220,65 @@
     }, 200);
   };
 
+  /**
+   * Widget error/retry helper
+   * Muestra un error user-friendly con botón de reintentar dentro de un contenedor.
+   * @param {string} containerId - ID del contenedor donde mostrar el error
+   * @param {object} opts
+   * @param {string} opts.message - Mensaje de error
+   * @param {Function} [opts.retry] - Callback al presionar "Reintentar"
+   * @param {string[]} [opts.skeletons] - IDs de skeletons a ocultar
+   */
+  window.showWidgetError = function(containerId, opts) {
+    var el = document.getElementById(containerId);
+    if (!el) return;
+
+    // Clear previous error if any
+    clearWidgetError(containerId);
+
+    // Hide skeletons
+    if (opts.skeletons) {
+      for (var i = 0; i < opts.skeletons.length; i++) {
+        window.hideSkeleton(opts.skeletons[i]);
+      }
+    }
+
+    var errorDiv = document.createElement('div');
+    errorDiv.className = 'widget-error';
+    errorDiv.id = containerId + '-error';
+
+    var icon = document.createElement('i');
+    icon.className = 'fa-solid fa-triangle-exclamation';
+
+    var msg = document.createElement('span');
+    msg.className = 'widget-error-msg';
+    msg.textContent = opts.message || 'Error de conexión';
+
+    errorDiv.appendChild(icon);
+    errorDiv.appendChild(msg);
+
+    if (opts.retry) {
+      var btn = document.createElement('button');
+      btn.className = 'widget-error-retry';
+      btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Reintentar';
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        clearWidgetError(containerId);
+        opts.retry();
+      });
+      errorDiv.appendChild(btn);
+    }
+
+    el.appendChild(errorDiv);
+  };
+
+  function clearWidgetError(containerId) {
+    var old = document.getElementById(containerId + '-error');
+    if (old) old.remove();
+  }
+
+  window.clearWidgetError = clearWidgetError;
+
   // Mostrar skeletons en auth:ready (los widgets los ocultan al cargar)
   window.addEventListener('auth:ready', function() {
     // Los skeletons ya son visibles por default (display normal).

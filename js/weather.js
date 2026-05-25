@@ -100,7 +100,7 @@
       var data = await res.json();
 
       if (data.error) {
-        setEmpty();
+        setEmpty('api');
         return;
       }
 
@@ -122,7 +122,7 @@
       renderForecast(daily);
 
     } catch (e) {
-      setEmpty();
+      setEmpty('api');
     }
   }
 
@@ -160,10 +160,16 @@
     if (elForecast) elForecast.innerHTML = '';
   }
 
-  function setEmpty() {
+  function setEmpty(reason) {
     elIcon.innerHTML = '<i class="fa-solid fa-cloud-sun"></i>';
     elTemp.textContent = '--°';
-    elDesc.textContent = city ? 'Sin datos' : 'Configura tu ciudad';
+    if (reason === 'api') {
+      elDesc.textContent = 'No se pudo obtener el clima';
+    } else if (reason === 'geo') {
+      elDesc.textContent = 'No se encontro la ciudad';
+    } else {
+      elDesc.textContent = city ? 'Sin datos' : 'Configura tu ciudad';
+    }
     elLocation.innerHTML = '<i class="fa-solid fa-location-dot"></i> ' + (city || '--');
     elFeels.textContent = 'Sensacion --°';
     elHilo.innerHTML = '<i class="fa-solid fa-arrow-up"></i>--° <i class="fa-solid fa-arrow-down"></i>--°';

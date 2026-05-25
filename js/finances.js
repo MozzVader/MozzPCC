@@ -317,13 +317,24 @@
 
       if (error) {
         console.warn('[Finanzas] Error al cargar transacciones:', error);
+        window.showWidgetError('fin-list', {
+          message: 'No se pudieron cargar las transacciones',
+          retry: loadTransactions,
+          skeletons: ['skel-finances']
+        });
         return;
       }
 
+      window.clearWidgetError('fin-list');
       transactions = data || [];
       filterTransactions();
     } catch (e) {
       console.warn('[Finanzas] Error en loadTransactions:', e);
+      window.showWidgetError('fin-list', {
+        message: 'Error de conexion. Verifica tu internet.',
+        retry: loadTransactions,
+        skeletons: ['skel-finances']
+      });
     }
   }
 
