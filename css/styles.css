@@ -2431,6 +2431,11 @@ body::after {
 .snap-section-grid .widget-github {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+/* El header necesita overflow visible para los tooltips ::after */
+.widget-github .card-header {
   overflow: visible;
 }
 
