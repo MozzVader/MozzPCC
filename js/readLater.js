@@ -160,6 +160,7 @@
   }
 
   function render() {
+    hideSkeleton('skel-readlater');
     list.innerHTML = '';
 
     // Filtrar items

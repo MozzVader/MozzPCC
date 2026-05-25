@@ -253,8 +253,21 @@
           </div>
 
           <div class="task-content">
+            <!-- Skeleton: Lista -->
+            <div class="skeleton-container" id="skel-tasks-list">
+              <div class="skel-task-item"><span class="skeleton-circle skel-task-circle"></span><span class="skeleton-bar skel-task-text"></span><span class="skeleton-bar skel-task-badge"></span></div>
+              <div class="skel-task-item"><span class="skeleton-circle skel-task-circle"></span><span class="skeleton-bar skel-task-text" style="max-width:45%"></span><span class="skeleton-bar skel-task-badge" style="width:55px"></span></div>
+              <div class="skel-task-item"><span class="skeleton-circle skel-task-circle"></span><span class="skeleton-bar skel-task-text" style="max-width:70%"></span><span class="skeleton-bar skel-task-badge" style="width:80px"></span></div>
+              <div class="skel-task-item"><span class="skeleton-circle skel-task-circle"></span><span class="skeleton-bar skel-task-text" style="max-width:55%"></span><span class="skeleton-bar skel-task-badge" style="width:65px"></span></div>
+            </div>
             <div class="task-tab-content task-tab-lista active" id="task-tab-lista">
               <ul class="task-list" id="task-list"></ul>
+            </div>
+            <!-- Skeleton: Kanban -->
+            <div class="skeleton-container" id="skel-tasks-kanban" style="display:none; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+              <div class="skel-kanban-col"><div class="skeleton-bar skel-kanban-header"></div><div class="skel-kanban-card"><span class="skeleton-bar skel-kanban-text"></span><span class="skeleton-bar skel-kanban-pill"></span></div><div class="skel-kanban-card"><span class="skeleton-bar skel-kanban-text" style="width:65%"></span><span class="skeleton-bar skel-kanban-pill" style="width:45px"></span></div></div>
+              <div class="skel-kanban-col"><div class="skeleton-bar skel-kanban-header" style="width:70px"></div><div class="skel-kanban-card"><span class="skeleton-bar skel-kanban-text" style="width:90%"></span><span class="skeleton-bar skel-kanban-pill"></span></div><div class="skel-kanban-card"><span class="skeleton-bar skel-kanban-text" style="width:50%"></span><span class="skeleton-bar skel-kanban-pill" style="width:60px"></span></div></div>
+              <div class="skel-kanban-col"><div class="skeleton-bar skel-kanban-header" style="width:60px"></div><div class="skel-kanban-card"><span class="skeleton-bar skel-kanban-text" style="width:75%"></span><span class="skeleton-bar skel-kanban-pill" style="width:50px"></span></div></div>
             </div>
             <div class="task-tab-content task-tab-kanban" id="task-tab-kanban">
               <div class="task-kanban" id="task-kanban"></div>
@@ -353,6 +366,13 @@
               <div class="fin-grid">
                 <!-- Transactions list -->
                 <div class="fin-transactions-col">
+                  <div class="skeleton-container" id="skel-finances">
+                    <div class="skel-fin-item"><span class="skeleton-box skel-fin-icon"></span><div class="skel-fin-info"><span class="skeleton-bar skel-fin-desc"></span><span class="skeleton-bar skel-fin-date"></span></div><span class="skeleton-bar skel-fin-amount"></span></div>
+                    <div class="skel-fin-item"><span class="skeleton-box skel-fin-icon"></span><div class="skel-fin-info"><span class="skeleton-bar skel-fin-desc" style="width:45%"></span><span class="skeleton-bar skel-fin-date"></span></div><span class="skeleton-bar skel-fin-amount" style="width:80px"></span></div>
+                    <div class="skel-fin-item"><span class="skeleton-box skel-fin-icon"></span><div class="skel-fin-info"><span class="skeleton-bar skel-fin-desc" style="width:70%"></span><span class="skeleton-bar skel-fin-date"></span></div><span class="skeleton-bar skel-fin-amount" style="width:60px"></span></div>
+                    <div class="skel-fin-item"><span class="skeleton-box skel-fin-icon"></span><div class="skel-fin-info"><span class="skeleton-bar skel-fin-desc" style="width:55%"></span><span class="skeleton-bar skel-fin-date"></span></div><span class="skeleton-bar skel-fin-amount" style="width:75px"></span></div>
+                    <div class="skel-fin-item"><span class="skeleton-box skel-fin-icon"></span><div class="skel-fin-info"><span class="skeleton-bar skel-fin-desc" style="width:40%"></span><span class="skeleton-bar skel-fin-date"></span></div><span class="skeleton-bar skel-fin-amount" style="width:65px"></span></div>
+                  </div>
                   <ul class="fin-list" id="fin-list"></ul>
                 </div>
                 <!-- Donut chart only -->
@@ -428,9 +448,22 @@
           </div>
           <div class="tv-content">
             <div class="tv-tab-content tv-tab-agenda active" id="tv-tab-agenda">
+              <div class="skeleton-container" id="skel-tv-agenda">
+                <div class="skel-tv-ep"><span class="skeleton-box skel-tv-poster-lg"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-show"></span><span class="skeleton-bar skel-tv-meta"></span><span class="skeleton-bar skel-tv-date"></span></div></div>
+                <div class="skel-tv-ep"><span class="skeleton-box skel-tv-poster-lg"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-show" style="width:50%"></span><span class="skeleton-bar skel-tv-meta" style="width:70%"></span><span class="skeleton-bar skel-tv-date" style="width:35%"></span></div></div>
+                <div class="skel-tv-ep"><span class="skeleton-box skel-tv-poster-lg"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-show" style="width:75%"></span><span class="skeleton-bar skel-tv-meta"></span><span class="skeleton-bar skel-tv-date"></span></div></div>
+                <div class="skel-tv-ep"><span class="skeleton-box skel-tv-poster-lg"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-show" style="width:60%"></span><span class="skeleton-bar skel-tv-meta" style="width:90%"></span><span class="skeleton-bar skel-tv-date" style="width:45%"></span></div></div>
+              </div>
               <div class="tv-upcoming-list" id="tv-upcoming-list"></div>
             </div>
             <div class="tv-tab-content tv-tab-series" id="tv-tab-series">
+              <div class="skeleton-container" id="skel-tv-series">
+                <div class="skel-tv-series"><span class="skeleton-box skel-tv-poster-sm"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-name"></span><span class="skeleton-bar skel-tv-status"></span></div></div>
+                <div class="skel-tv-series"><span class="skeleton-box skel-tv-poster-sm"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-name" style="width:75%"></span><span class="skeleton-bar skel-tv-status" style="width:55%"></span></div></div>
+                <div class="skel-tv-series"><span class="skeleton-box skel-tv-poster-sm"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-name" style="width:50%"></span><span class="skeleton-bar skel-tv-status" style="width:40%"></span></div></div>
+                <div class="skel-tv-series"><span class="skeleton-box skel-tv-poster-sm"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-name" style="width:65%"></span><span class="skeleton-bar skel-tv-status"></span></div></div>
+                <div class="skel-tv-series"><span class="skeleton-box skel-tv-poster-sm"></span><div class="skel-tv-info"><span class="skeleton-bar skel-tv-name" style="width:55%"></span><span class="skeleton-bar skel-tv-status" style="width:50%"></span></div></div>
+              </div>
               <div class="tv-series-list" id="tv-series-list"></div>
             </div>
           </div>
@@ -524,6 +557,12 @@
             </button>
           </div>
 
+          <div class="skeleton-container" id="skel-notes" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px;">
+            <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title"></span><span class="skeleton-bar skel-note-line" style="width:90%"></span><span class="skeleton-bar skel-note-line" style="width:70%"></span><span class="skeleton-bar skel-note-line" style="width:45%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
+            <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title" style="width:55%"></span><span class="skeleton-bar skel-note-line" style="width:80%"></span><span class="skeleton-bar skel-note-line" style="width:60%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
+            <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title" style="width:75%"></span><span class="skeleton-bar skel-note-line" style="width:95%"></span><span class="skeleton-bar skel-note-line" style="width:50%"></span><span class="skeleton-bar skel-note-line" style="width:65%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
+            <div class="skel-note"><span class="skeleton-bar skel-note-bar"></span><span class="skeleton-bar skel-note-title" style="width:60%"></span><span class="skeleton-bar skel-note-line" style="width:85%"></span><span class="skeleton-bar skel-note-line" style="width:40%"></span><div class="skel-note-colors"><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span><span class="skeleton-circle skel-note-dot"></span></div></div>
+          </div>
           <div class="notes-grid" id="notes-grid"></div>
         </div>
       </div>
@@ -559,6 +598,13 @@
             </div>
           </div>
 
+          <div class="skeleton-container" id="skel-readlater">
+            <div class="skel-rl-item"><div><span class="skeleton-bar skel-rl-title"></span><span class="skeleton-bar skel-rl-url" style="display:block;margin-top:6px"></span></div></div>
+            <div class="skel-rl-item"><div><span class="skeleton-bar skel-rl-title" style="max-width:55%"></span><span class="skeleton-bar skel-rl-url" style="display:block;margin-top:6px;width:50%"></span></div></div>
+            <div class="skel-rl-item"><div><span class="skeleton-bar skel-rl-title" style="max-width:70%"></span><span class="skeleton-bar skel-rl-url" style="display:block;margin-top:6px"></span></div></div>
+            <div class="skel-rl-item"><div><span class="skeleton-bar skel-rl-title" style="max-width:45%"></span><span class="skeleton-bar skel-rl-url" style="display:block;margin-top:6px;width:35%"></span></div></div>
+            <div class="skel-rl-item"><div><span class="skeleton-bar skel-rl-title" style="max-width:60%"></span><span class="skeleton-bar skel-rl-url" style="display:block;margin-top:6px"></span></div></div>
+          </div>
           <ul class="read-later-list" id="rl-list"></ul>
         </div>
       </div>

@@ -193,6 +193,7 @@
     setTimeout(() => {
       authScreen.style.display = 'none';
       dashboardMain.style.display = 'block';
+      document.body.classList.add('dashboard-visible');
       isDashboardVisible = true;
       dashboardMain.classList.add('dashboard-fade-in');
       setTimeout(() => {
@@ -207,6 +208,30 @@
   }
 
   /**
+   * Skeleton loading helper
+   * Cada widget llama hideSkeleton(id) cuando sus datos están listos
+   */
+  window.hideSkeleton = function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.classList.add('fade-out');
+    setTimeout(function() {
+      el.setAttribute('data-loaded', 'true');
+    }, 200);
+  };
+
+  // Mostrar skeletons en auth:ready (los widgets los ocultan al cargar)
+  window.addEventListener('auth:ready', function() {
+    // Los skeletons ya son visibles por default (display normal).
+    // Solo necesitamos resetearlos por si el usuario hace logout+login.
+    var skels = document.querySelectorAll('.skeleton-container');
+    skels.forEach(function(s) {
+      s.removeAttribute('data-loaded');
+      s.classList.remove('fade-out');
+    });
+  });
+
+  /**
    * Maneja el cierre de sesión
    */
   async function handleLogout() {
@@ -216,6 +241,7 @@
       console.warn('Error al cerrar sesión:', e);
     }
     // Siempre limpiar UI, incluso si falla el signOut
+    document.body.classList.remove('dashboard-visible');
     window.dispatchEvent(new CustomEvent('auth:logout', { detail: {} }));
     showAuthScreen();
   }

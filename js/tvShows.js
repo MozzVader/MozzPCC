@@ -275,6 +275,8 @@
 
   // --- Render principal ---
   function render() {
+    hideSkeleton('skel-tv-agenda');
+    hideSkeleton('skel-tv-series');
     renderAgenda();
     renderSeries();
   }

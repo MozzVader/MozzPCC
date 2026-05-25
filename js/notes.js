@@ -231,6 +231,7 @@
    * Renderiza todas las notas
    */
   function renderizarNotas() {
+    hideSkeleton('skel-notes');
     notesGrid.innerHTML = '';
 
     if (notas.length === 0) {

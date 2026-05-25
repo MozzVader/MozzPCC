@@ -3942,6 +3942,174 @@ body::after {
 }
 
 /* ============================================
+   SKELETON LOADING STATES
+   ============================================ */
+
+/* Shimmer animation */
+@keyframes skeletonShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Base skeleton elements */
+.skeleton-bar {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.8s ease-in-out infinite;
+  border-radius: 4px;
+}
+.skeleton-circle {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.8s ease-in-out infinite;
+  border-radius: 50%;
+}
+.skeleton-box {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.8s ease-in-out infinite;
+  border-radius: var(--radius-xs, 6px);
+}
+
+/* Hide when data is ready */
+.skeleton-container[data-loaded="true"] { display: none; }
+
+/* Hide skeletons before auth (shown by auth:ready reset) */
+body:not(.dashboard-visible) .skeleton-container { display: none !important; }
+
+/* --- Tasks skeleton --- */
+.skel-task-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+.skel-task-circle { width: 20px; height: 20px; flex-shrink: 0; }
+.skel-task-text { height: 14px; flex: 1; max-width: 60%; }
+.skel-task-badge { height: 18px; width: 70px; flex-shrink: 0; }
+
+/* Kanban skeleton */
+.skel-kanban-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skel-kanban-header { height: 28px; width: 80px; margin-bottom: 4px; }
+.skel-kanban-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border, rgba(255,255,255,0.06));
+}
+.skel-kanban-text { height: 13px; width: 80%; }
+.skel-kanban-pill { height: 16px; width: 55px; }
+
+/* --- Finances skeleton --- */
+.skel-fin-summary-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.skel-fin-summary-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 8px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 6px;
+  border: 1px solid var(--border, rgba(255,255,255,0.06));
+}
+.skel-fin-label { height: 11px; width: 70%; }
+.skel-fin-value { height: 18px; width: 60%; }
+
+.skel-fin-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.skel-fin-icon { width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0; }
+.skel-fin-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.skel-fin-desc { height: 13px; width: 60%; }
+.skel-fin-date { height: 11px; width: 50px; }
+.skel-fin-amount { height: 14px; width: 70px; flex-shrink: 0; }
+
+/* --- Notes skeleton --- */
+.skel-note {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  min-height: 160px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  border: 1px solid var(--border, rgba(255,255,255,0.06));
+}
+.skel-note-bar { height: 3px; width: 100%; border-radius: 2px; }
+.skel-note-title { height: 14px; width: 70%; }
+.skel-note-line { height: 12px; }
+.skel-note-colors { display: flex; gap: 4px; margin-top: auto; }
+.skel-note-dot { width: 16px; height: 16px; }
+
+/* --- Read Later skeleton --- */
+.skel-rl-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+}
+.skel-rl-title { height: 14px; flex: 1; max-width: 70%; }
+.skel-rl-url { height: 11px; width: 40%; }
+
+/* --- TV Shows skeleton --- */
+.skel-tv-ep {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px;
+}
+.skel-tv-poster-lg { width: 52px; height: 75px; border-radius: 6px; flex-shrink: 0; }
+.skel-tv-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.skel-tv-show { height: 14px; width: 65%; }
+.skel-tv-meta { height: 13px; width: 85%; }
+.skel-tv-date { height: 12px; width: 40%; }
+
+.skel-tv-series {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+}
+.skel-tv-poster-sm { width: 40px; height: 56px; border-radius: 4px; flex-shrink: 0; }
+.skel-tv-name { height: 14px; width: 60%; }
+.skel-tv-status { height: 12px; width: 45%; }
+
+/* Skeleton fade-out transition when data arrives */
+.skeleton-container {
+  transition: opacity 0.2s ease;
+}
+.skeleton-container.fade-out {
+  opacity: 0;
+}
+
+/* ============================================
    LOADING SCREEN
    ============================================ */
 .app-loading {

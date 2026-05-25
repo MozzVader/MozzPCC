@@ -364,6 +364,7 @@
    * @param {Array} filtered
    */
   function renderTransactions(filtered) {
+    hideSkeleton('skel-finances');
     var list = document.getElementById('fin-list');
     var counter = document.getElementById('fin-counter');
     if (!list) return;

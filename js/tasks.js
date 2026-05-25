@@ -127,6 +127,8 @@
    * Renderiza según la tab activa
    */
   function render() {
+    hideSkeleton('skel-tasks-list');
+    hideSkeleton('skel-tasks-kanban');
     if (currentTab === 'lista') {
       renderLista();
     } else {
