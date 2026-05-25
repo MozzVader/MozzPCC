@@ -22,10 +22,7 @@
       sources: [
         { id: 'tn',       name: 'TN',           url: 'https://tn.com.ar/rss.xml', builtin: true },
         { id: 'clarin',   name: 'Clarin',       url: 'https://www.clarin.com/rss/', builtin: true },
-        { id: 'perfil',   name: 'Perfil',       url: 'https://www.perfil.com/feed', builtin: true },
-        { id: 'pagina12', name: 'Pagina/12',    url: 'https://www.pagina12.com.ar/rss/', builtin: true },
         { id: 'cronista', name: 'El Cronista',  url: 'https://www.cronista.com.ar/rss/', builtin: true },
-        { id: 'ambito',   name: 'Ambito',       url: 'https://www.ambito.com/rss/', builtin: true },
         { id: 'minutouno', name: 'Minuto Uno',  url: 'https://www.minutouno.com/rss.xml', builtin: true },
       ],
     },
