@@ -120,6 +120,33 @@
     var dots = document.querySelectorAll('.section-dot');
     if (!sections.length || !dots.length) return;
 
+    // --- URL anchors: update hash on section change, restore on load ---
+    var dashboard = document.getElementById('dashboard-scroll');
+    var updatingHash = false; // prevent scroll event feedback loop
+
+    function setSectionHash(id) {
+      if (updatingHash) return;
+      updatingHash = true;
+      var hash = '#' + id;
+      if (window.location.hash !== hash) {
+        history.replaceState(null, '', hash);
+      }
+      updatingHash = false;
+    }
+
+    // Restore section from hash on load
+    function restoreFromHash() {
+      var hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+      var target = document.getElementById(hash);
+      if (target && target.classList.contains('snap-section')) {
+        // Wait a tick for dashboard to be visible
+        setTimeout(function () {
+          target.scrollIntoView({ behavior: 'instant' });
+        }, 100);
+      }
+    }
+
     // IntersectionObserver: detecta qué sección está visible
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
@@ -128,10 +155,11 @@
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
           });
+          setSectionHash(id);
         }
       });
     }, {
-      root: document.getElementById('dashboard-scroll'),
+      root: dashboard,
       threshold: 0.6
     });
 
@@ -149,6 +177,29 @@
         }
       });
     });
+
+    // --- Back to Top button ---
+    var btt = document.getElementById('back-to-top');
+    if (btt && dashboard) {
+      // Show/hide based on scroll position
+      var bttObserver = new IntersectionObserver(function (entries) {
+        var clockVisible = entries[0].isIntersecting;
+        btt.classList.toggle('visible', !clockVisible);
+      }, { root: dashboard, threshold: 0.5 });
+
+      var clockSection = document.getElementById('section-clock');
+      if (clockSection) bttObserver.observe(clockSection);
+
+      btt.addEventListener('click', function () {
+        var target = document.getElementById('section-clock');
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Restore hash after a short delay (after dashboard is visible)
+    restoreFromHash();
   }
 
   // Inicializar dots cuando el dashboard sea visible

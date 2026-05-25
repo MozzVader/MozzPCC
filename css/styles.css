@@ -313,6 +313,43 @@ body::after {
   border-radius: 4px;
 }
 
+/* --- Back to Top --- */
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border-glass);
+  background: var(--bg-glass);
+  backdrop-filter: blur(12px);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease, border-color 0.2s, color 0.2s;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 2px 16px var(--shadow-glow);
+}
+
 /* --- Tarjeta glassmorphism --- */
 .card {
   background: var(--bg-glass);
@@ -3215,6 +3252,31 @@ body::after {
 
   .snap-section-grid .card {
     flex: none;
+  }
+
+  /* News/Sports stacked: allow natural height on mobile */
+  .snap-section-inner-stacked {
+    height: auto;
+    max-height: none;
+  }
+
+  .snap-section-inner-stacked .snap-section-grid {
+    overflow-y: visible;
+  }
+
+  /* News: hide thumbnails on mobile list view to prevent overflow */
+  .nw-thumb,
+  .nw-thumb-placeholder {
+    width: 40px;
+    height: 30px;
+  }
+
+  .nw-featured-img {
+    height: 80px;
+  }
+
+  .nw-featured-img-placeholder {
+    height: 60px;
   }
 
   /* Productividad: tareas sin límite en mobile */
