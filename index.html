@@ -573,15 +573,91 @@
       </div>
     </section>
 
-    <!-- ===== FOOTER (dentro del scroll) ===== -->
-    <footer class="footer">
-      <p>MozzPCC &mdash; Personal Command Center &copy; <span id="year"></span></p>
-      <p class="footer-credit">
-        <a href="https://github.com/MozzVader" target="_blank" rel="noopener noreferrer">
-          <i class="fa-brands fa-github"></i> MozzVader
-        </a>
-      </p>
-    </footer>
+    <!-- ===== SECCIÓN 8: NOTICIAS Y DEPORTES ===== -->
+    <section class="snap-section section-news-sports" id="section-news-sports" aria-label="Noticias y Deportes">
+      <div class="snap-section-inner snap-section-inner-stacked">
+        <div class="snap-section-grid">
+          <!-- Widget: Noticias -->
+          <div class="card widget-news" id="widget-news">
+            <div class="card-header">
+              <i class="fa-solid fa-newspaper"></i>
+              <h2>Noticias</h2>
+            </div>
+            <div class="nw-feed-select-wrap">
+              <span class="nw-feed-icon" id="nw-feed-icon"><i class="fa-solid fa-globe"></i></span>
+              <select class="nw-feed-select" id="nw-feed-select"></select>
+            </div>
+            <div class="nw-tabs">
+              <button class="nw-tab active" data-view="all">
+                <i class="fa-solid fa-list"></i> Todas
+              </button>
+              <button class="nw-tab" data-view="featured">
+                <i class="fa-solid fa-star"></i> Destacadas
+              </button>
+            </div>
+            <div class="nw-content" id="nw-content">
+              <div class="nw-list" id="nw-list">
+                <div class="nw-loading">
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                  <span>Cargando noticias...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Widget: Deportes -->
+          <div class="card widget-sports" id="widget-sports">
+            <div class="card-header">
+              <i class="fa-solid fa-futbol"></i>
+              <h2>Deportes</h2>
+            </div>
+            <div class="sp-league-select-wrap">
+              <span class="sp-league-flag" id="sp-league-flag"></span>
+              <select class="sp-league-select" id="sp-league-select"></select>
+            </div>
+            <div class="sp-tabs">
+              <button class="sp-tab active" data-tab="matches">
+                <i class="fa-solid fa-calendar-day"></i> Partidos
+              </button>
+              <button class="sp-tab" data-tab="standings">
+                <i class="fa-solid fa-list-ol"></i> Posiciones
+              </button>
+            </div>
+            <div class="sp-tab-content active" id="sp-tab-matches">
+              <div class="sp-date-nav">
+                <button id="sp-date-prev"><i class="fa-solid fa-chevron-left"></i></button>
+                <span class="sp-date-label" id="sp-date-label">Hoy</span>
+                <button id="sp-date-next"><i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+              <ul class="sp-match-list" id="sp-match-list">
+                <div class="sp-loading">
+                  <i class="fa-solid fa-spinner fa-spin"></i>
+                  <span>Cargando partidos...</span>
+                </div>
+              </ul>
+            </div>
+            <div class="sp-tab-content" id="sp-tab-standings">
+              <div class="sp-standings-list" id="sp-standings-list">
+                <div class="sp-standings-note">
+                  <i class="fa-solid fa-table-list"></i>
+                  <span>Las posiciones se cargaran con la API de ESPN</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer integrado en la última sección -->
+        <footer class="footer">
+          <p>MozzPCC &mdash; Personal Command Center &copy; <span id="year"></span></p>
+          <p class="footer-credit">
+            <a href="https://github.com/MozzVader" target="_blank" rel="noopener noreferrer">
+              <i class="fa-brands fa-github"></i> MozzVader
+            </a>
+          </p>
+        </footer>
+      </div>
+    </section>
 
     <!-- ===== INDICADORES DE SECCIÓN ===== -->
     <div class="section-indicators" id="section-indicators">
@@ -592,6 +668,7 @@
       <button class="section-dot" data-section="section-tv-shows" data-tooltip="Entretenimiento" aria-label="Entretenimiento"></button>
       <button class="section-dot" data-section="section-notes" data-tooltip="Notas" aria-label="Notas"></button>
       <button class="section-dot" data-section="section-read-later" data-tooltip="Ver Mas Tarde" aria-label="Ver Mas Tarde"></button>
+      <button class="section-dot" data-section="section-news-sports" data-tooltip="Noticias y Deportes" aria-label="Noticias y Deportes"></button>
     </div>
 
   </main>
@@ -848,6 +925,8 @@
   <script src="/MozzPCC/js/readLater.js"></script>
   <script src="/MozzPCC/js/tvShows.js"></script>
   <script src="/MozzPCC/js/finances.js"></script>
+  <script src="/MozzPCC/js/newsWidget.js"></script>
+  <script src="/MozzPCC/js/sportsWidget.js"></script>
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
