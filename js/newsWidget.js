@@ -33,9 +33,7 @@
     {
       id: 'ciencia', name: 'Ciencia', icon: 'fa-solid fa-flask',
       sources: [
-        { id: 'natgeo',     name: 'NatGeo',       url: 'https://www.nationalgeographic.com.es/rss', builtin: true },
         { id: 'sciencedaily', name: 'ScienceDaily', url: 'https://www.sciencedaily.com/rss/all.xml', builtin: true },
-        { id: 'wired-science', name: 'Wired Science', url: 'https://www.wired.com/feed/category/science/rss.xml', builtin: true },
         { id: 'arstechnica-science', name: 'Ars Technica Science', url: 'https://feeds.arstechnica.com/arstechnica/science', builtin: true },
       ],
     },
@@ -43,7 +41,7 @@
       id: 'deportes', name: 'Deportes', icon: 'fa-solid fa-futbol',
       sources: [
         { id: 'ole',     name: 'Ole',            url: 'https://www.ole.com.ar/rss/', builtin: true },
-        { id: 'espn-ar', name: 'ESPN Argentina',  url: 'https://www.espn.com.ar/rss/news', builtin: true },
+        { id: 'espn-ar', name: 'ESPN Argentina',  url: 'https://www.espn.com.ar/espn/rss/news', builtin: true },
         { id: 'mu-deportes', name: 'MinutoUno Deportes', url: 'https://www.minutouno.com/rss/pages/deportes.xml', builtin: true },
         { id: 'tycsports', name: 'TyC Sports',    url: 'https://www.tycsports.com/feed', builtin: true },
         { id: 'mundodeportivo', name: 'Mundo Deportivo', url: 'https://www.mundodeportivo.com/rss', builtin: true },
