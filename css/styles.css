@@ -1422,6 +1422,12 @@ body::after {
   max-height: 120px;
   width: 100%;
   box-sizing: border-box;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+.rl-icon-picker-wrap .icon-picker-item {
+  font-size: 0.7rem;
 }
 
 .read-later-input-row input:focus {
@@ -1772,6 +1778,12 @@ body::after {
 
 .rl-edit-form .rl-edit-icon-picker {
   max-height: 100px;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+}
+
+.rl-edit-form .rl-edit-icon-picker .icon-picker-item {
+  font-size: 0.7rem;
 }
 
 .rl-edit-actions {
