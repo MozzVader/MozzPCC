@@ -154,11 +154,49 @@
       tryScroll(15); // retry for up to 3 seconds
     }
 
+    // --- Transiciones animadas entre secciones ---
+    var currentSectionIndex = -1;
+    var sectionList = Array.from(sections);
+    var isTransitioning = false;
+
+    function getSectionIndex(el) {
+      return sectionList.indexOf(el);
+    }
+
+    function activateSection(section) {
+      // Remover clases de todas las secciones
+      sectionList.forEach(function (s) {
+        s.classList.remove('is-active', 'leaving-up', 'leaving-down');
+      });
+      // Activar la nueva sección
+      section.classList.add('is-active');
+    }
+
     // IntersectionObserver: detecta qué sección está visible
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
+        var idx = getSectionIndex(entry.target);
+
         if (entry.isIntersecting) {
           var id = entry.target.id;
+
+          // Dirección del scroll: comparar índices
+          var direction = idx > currentSectionIndex ? 'up' : 'down'; // up = scrolled down
+          var prevIdx = currentSectionIndex;
+
+          // Clase de salida para la sección anterior
+          if (prevIdx >= 0 && prevIdx !== idx) {
+            sectionList[prevIdx].classList.remove('is-active');
+            sectionList[prevIdx].classList.add(direction === 'up' ? 'leaving-up' : 'leaving-down');
+            // Limpiar clase de salida después de la transición
+            setTimeout(function () {
+              sectionList[prevIdx].classList.remove('leaving-up', 'leaving-down');
+            }, 500);
+          }
+
+          currentSectionIndex = idx;
+          activateSection(entry.target);
+
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
           });
@@ -169,6 +207,13 @@
       root: dashboard,
       threshold: 0.6
     });
+
+    // Activar la primera sección visible inmediatamente (sin animación)
+    var firstVisible = document.querySelector('.snap-section.is-active') || sectionList[0];
+    if (firstVisible) {
+      firstVisible.classList.add('is-active');
+      currentSectionIndex = getSectionIndex(firstVisible);
+    }
 
     sections.forEach(function (section) {
       observer.observe(section);
