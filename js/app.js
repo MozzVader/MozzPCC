@@ -158,6 +158,10 @@
     var sectionList = Array.from(sections);
     var currentSectionIndex = -1;
 
+    // Exponer para acceso global
+    window._sectionList = sectionList;
+    window._currentSectionIndex = function () { return currentSectionIndex; };
+
     function getSectionIndex(el) {
       return sectionList.indexOf(el);
     }
@@ -186,51 +190,6 @@
 
     sections.forEach(function (section) {
       observer.observe(section);
-    });
-
-    // --- Keyboard Navigation: números 1-8 y flechas ---
-    document.addEventListener('keydown', function (e) {
-      // Ignorar si hay un input/textarea/select enfocado
-      var tag = (e.target.tagName || '').toLowerCase();
-      if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
-      // Ignorar si hay un modal abierto
-      var modalOpen = document.querySelector('.settings-overlay:not([style*="display: none"])');
-      if (modalOpen) return;
-
-      var num = parseInt(e.key, 10);
-
-      // Teclas numéricas: 1-8 saltan a la sección correspondiente
-      if (num >= 1 && num <= sectionList.length) {
-        e.preventDefault();
-        scrollToSection(num - 1);
-        return;
-      }
-
-      // Flecha arriba / abajo: sección anterior / siguiente
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        scrollToSection(Math.min(currentSectionIndex + 1, sectionList.length - 1));
-        return;
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        scrollToSection(Math.max(currentSectionIndex - 1, 0));
-        return;
-      }
-
-      // Home: ir al inicio
-      if (e.key === 'Home') {
-        e.preventDefault();
-        scrollToSection(0);
-        return;
-      }
-
-      // End: ir al final
-      if (e.key === 'End') {
-        e.preventDefault();
-        scrollToSection(sectionList.length - 1);
-        return;
-      }
     });
 
     // Click en dot → scroll a la sección correspondiente
@@ -268,12 +227,67 @@
     restoreFromHash();
   }
 
+  // --- Keyboard Navigation: números 1-8, flechas, Home/End, PgUp/PgDn ---
+  document.addEventListener('keydown', function (e) {
+    // Ignorar si hay un input/textarea/select enfocado
+    var tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+    // Ignorar si hay un modal abierto (checking style.display property)
+    // Nota: style.display devuelve '' si nunca fue modificado via JS (hereda del HTML)
+    // pero el HTML tiene style="display:none;" así que comprobamos ambos
+    var tipsModal = document.getElementById('tips-modal');
+    var settingsModal = document.getElementById('settings-modal');
+    if ((tipsModal && tipsModal.style.display === 'flex') ||
+        (settingsModal && settingsModal.style.display === 'flex')) return;
+
+    var sections = window._sectionList;
+    if (!sections || !sections.length) return;
+    var total = sections.length;
+    var current = window._currentSectionIndex();
+
+    // Teclas numéricas: 1-8 saltan a la sección correspondiente
+    var num = parseInt(e.key, 10);
+    if (num >= 1 && num <= total) {
+      e.preventDefault();
+      sections[num - 1].scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // Flecha abajo / PgDn: sección siguiente
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      sections[Math.min(current + 1, total - 1)].scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // Flecha arriba / PgUp: sección anterior
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      sections[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // Home: ir al inicio
+    if (e.key === 'Home') {
+      e.preventDefault();
+      sections[0].scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    // End: ir al final
+    if (e.key === 'End') {
+      e.preventDefault();
+      sections[total - 1].scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+  });
+
   // Exponer scrollToSection globalmente (para reutilizar desde otros módulos)
   window.navigateToSection = function (index) {
     if (typeof index !== 'number') return;
-    var sections = document.querySelectorAll('.snap-section');
-    if (index >= 0 && index < sections.length) {
-      sections[index].scrollIntoView({ behavior: 'smooth' });
+    var secs = document.querySelectorAll('.snap-section');
+    if (index >= 0 && index < secs.length) {
+      secs[index].scrollIntoView({ behavior: 'smooth' });
     }
   };
 
