@@ -510,6 +510,15 @@
       position: relative;
     }
 
+    .cta-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
     /* ─── FOOTER ─── */
     .footer {
       padding: 40px;
@@ -565,7 +574,7 @@
       <a href="#features">Features</a>
       <a href="#widgets">Widgets</a>
       <a href="https://github.com/MozzVader/MozzPCC" target="_blank"><i class="fab fa-github"></i></a>
-      <a href="#cta" class="btn-login">Iniciar sesion</a>
+      <a href="#cta" class="btn-login">Contacto</a>
     </nav>
   </header>
 
@@ -580,7 +589,7 @@
       <p>Un dashboard personal con snap-scroll que reune clima, tareas, finanzas, noticias, TV shows y mucho mas. Todo sincronizado en la nube, accesible desde cualquier dispositivo.</p>
       <div class="hero-actions">
         <a href="#cta" class="btn-primary">
-          <i class="fas fa-rocket"></i> Comenzar
+          <i class="fas fa-globe"></i> Mas informacion
         </a>
         <a href="#features" class="btn-ghost">
           <i class="fas fa-arrow-down"></i> Ver mas
@@ -712,12 +721,31 @@
 
   <!-- CTA -->
   <section class="cta-section" id="cta">
-    <h2>Listo para organizar <span class="gradient">tu vida</span>?</h2>
-    <p>Inicia sesion con tu cuenta de GitHub y tenes tu command center listo en segundos.</p>
-    <a href="app.html" class="btn-primary">
-      <i class="fab fa-github"></i> Iniciar sesion con GitHub
-    </a>
+    <h2>Te interesa <span class="gradient">MozzPCC</span>?</h2>
+    <p>Los registros estan cerrados temporalmente. Si queres saber mas o tenes alguna consulta, no dudes en contactarme.</p>
+    <div class="cta-actions">
+      <a href="https://mozzdev.pages.dev/" target="_blank" class="btn-primary">
+        <i class="fas fa-globe"></i> Mas informacion
+      </a>
+      <a href="#" id="contact-btn" class="btn-ghost" data-email="">
+        <i class="fas fa-envelope"></i> Contactame
+      </a>
+    </div>
   </section>
+
+  <!-- MAILTO OBFUSCATION -->
+  <script>
+    // Obfuscate email to prevent scraping
+    (function() {
+      var e = ['c','o','n','t','a','c','t','o','.','m','o','z','z','.','d','e','v','@','g','m','a','i','l','.','c','o','m'];
+      var addr = e.join('');
+      var btn = document.getElementById('contact-btn');
+      if (btn) {
+        btn.href = 'mailto:' + addr;
+        btn.removeAttribute('data-email');
+      }
+    })();
+  </script>
 
   <!-- FOOTER -->
   <footer class="footer">
