@@ -528,8 +528,15 @@
       var iconHtml = '';
       if (link.icon_type === 'image' && link.icon_value) {
         iconHtml = '<img src="' + escapeHtml(link.icon_value) + '" alt="">';
+      } else if (link.icon_type === 'favicon' && link.icon_value) {
+        try {
+          var domain = new URL(link.icon_value.startsWith('http') ? link.icon_value : 'https://' + link.icon_value).hostname;
+          iconHtml = '<img src="https://www.google.com/s2/favicons?domain=' + escapeHtml(domain) + '&sz=32" alt="">';
+        } catch (e) {
+          iconHtml = '<i class="fa-solid fa-globe"></i>';
+        }
       } else {
-        iconHtml = '<i class="' + escapeHtml(link.icon_value) + '"></i>';
+        iconHtml = '<i class="' + escapeHtml(link.icon_value || 'fa-solid fa-globe') + '"></i>';
       }
 
       item.innerHTML =
@@ -574,7 +581,13 @@
     qlUrlInput.value = link ? link.url : '';
 
     // Determinar tipo de icono
-    if (link && link.icon_type === 'image') {
+    if (link && link.icon_type === 'favicon') {
+      qlIconType = 'favicon';
+      qlImageInput.value = '';
+      qlImageRow.style.display = 'none';
+      qlFaRow.style.display = 'none';
+      qlTypeToggle.forEach(function (b) { b.classList.toggle('active', b.dataset.type === 'favicon'); });
+    } else if (link && link.icon_type === 'image') {
       qlIconType = 'image';
       qlImageInput.value = link.icon_value;
       qlImageRow.style.display = 'flex';
@@ -614,9 +627,17 @@
     }
 
     var iconType = qlIconType;
-    var iconValue = iconType === 'image' ? qlImageInput.value.trim() : qlIconInput.value;
+    var iconValue;
 
-    if (!iconValue) {
+    if (iconType === 'favicon') {
+      iconValue = url;
+    } else if (iconType === 'image') {
+      iconValue = qlImageInput.value.trim();
+    } else {
+      iconValue = qlIconInput.value;
+    }
+
+    if (!iconValue && iconType !== 'favicon') {
       iconType = 'fontawesome';
       iconValue = 'fa-solid fa-globe';
     }
@@ -650,7 +671,10 @@
       qlTypeToggle.forEach(function (b) { b.classList.remove('active'); });
       btn.classList.add('active');
 
-      if (qlIconType === 'image') {
+      if (qlIconType === 'favicon') {
+        qlImageRow.style.display = 'none';
+        qlFaRow.style.display = 'none';
+      } else if (qlIconType === 'image') {
         qlImageRow.style.display = 'flex';
         qlFaRow.style.display = 'none';
       } else {

@@ -5131,14 +5131,16 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 
 .icon-picker {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 6px;
   max-height: 180px;
   overflow-y: auto;
-  padding: 4px;
+  padding: 6px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius-xs);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .icon-picker::-webkit-scrollbar {
@@ -5666,7 +5668,7 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
   }
 
   .icon-picker {
-    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(9, 1fr);
   }
 
   .theme-palette-grid {
@@ -5676,7 +5678,7 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 
 @media (max-width: 480px) {
   .icon-picker {
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(8, 1fr);
   }
 
   .settings-form {

@@ -69,8 +69,15 @@
       var iconHtml = '';
       if (link.icon_type === 'image' && link.icon_value) {
         iconHtml = '<img src="' + escapeAttr(link.icon_value) + '" alt="" class="quick-link-img">';
+      } else if (link.icon_type === 'favicon' && link.icon_value) {
+        try {
+          var domain = new URL(link.icon_value.startsWith('http') ? link.icon_value : 'https://' + link.icon_value).hostname;
+          iconHtml = '<img src="https://www.google.com/s2/favicons?domain=' + escapeAttr(domain) + '&sz=32" alt="" class="quick-link-img">';
+        } catch (e) {
+          iconHtml = '<i class="fa-solid fa-globe"></i>';
+        }
       } else {
-        iconHtml = '<i class="' + escapeAttr(link.icon_value) + '"></i>';
+        iconHtml = '<i class="' + escapeAttr(link.icon_value || 'fa-solid fa-globe') + '"></i>';
       }
 
       a.innerHTML =
