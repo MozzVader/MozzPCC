@@ -145,95 +145,95 @@ Desarrollo integral del widget de noticias:
 
 ### 4.1 Widgets Existentes
 
-| # | Widget | Mejora | Descripcion | Complejidad | Prioridad |
-|---|---|---|---|---|---|
-| 1 | Reloj Mundial | Reordenar relojes con D&D | Permitir arrastrar las cards individuales de relojes para reordenarlos manualmente. Persistir el orden en Supabase. | Media | Media |
-| 2 | Reloj Mundial | Agregar/remover relojes desde UI | Boton para agregar nuevas ciudades con un buscador de timezone, sin necesidad de ir a settings. | Media | **Alta** |
-| 3 | Clima | Pronostico extendido (5-7 dias) | Mostrar una fila con los proximos 5-7 dias debajo del clima actual, con iconos y temperaturas min/max. | Media | Media |
-| 4 | Clima | Selector de ubicacion multiple | Permitir guardar varias ciudades y cambiar entre ellas con un mini selector o swipe. | Media | Baja |
-| 5 | Clima | Indicador de calidad del aire (AQI) | Mostrar indice AQI con color semantico (verde/amarillo/naranja/rojo). | Baja | Baja |
-| 6 | Dolar | Grafico mini de variacion (sparkline) | Agregar un sparkline de los ultimos 30 dias mostrando la tendencia de cada tipo de cambio. | Media | Media |
-| 7 | Dolar | Alertas de cotizacion | Notificacion cuando el dolar blue supera o baja de un valor umbral configurado. | Media | **Alta** |
-| 8 | Tasks | Fechas de vencimiento | Agregar datepicker a cada tarea para marcar fecha limite. Resaltar tareas vencidas. | Media | **Alta** |
-| 9 | Tasks | Tareas recurrentes | Opcion para marcar una tarea como recurrente (diaria, semanal, mensual). | Alta | Media |
-| 10 | Tasks | Etiquetas/categorias por color | Asignar una etiqueta de color a cada tarea (trabajo, personal, estudio) para filtrar. | Media | Media |
-| 11 | Tasks | Estadisticas de productividad | Mini grafico de tareas completadas por dia/semana, racha actual (streak). | Alta | Media |
-| 12 | Finanzas | Presupuesto mensual por categoria | Definir un tope de gasto mensual por categoria. Barra de progreso visual al acercarse al limite. | Alta | **Alta** |
-| 13 | Finanzas | Exportar datos a CSV/PDF | Boton para descargar el historial de transacciones filtrado en formato CSV o PDF. | Media | Media |
-| 14 | Finanzas | Soporte multi-moneda | Registrar transacciones en diferentes monedas (ARS, USD, EUR). Conversion automatica. | Alta | Media |
-| 15 | Finanzas | Recordatorios de gastos fijos | Agendar gastos recurrentes (alquiler, servicios, suscripciones) con alertas de vencimiento. | Media | **Alta** |
-| 16 | Finanzas | Transacciones split (dividir) | Dividir una transaccion en varias categorias (ej: supermercado con comida + limpieza). | Media | Baja |
-| 17 | Finanzas | Resumen anual comparativo | Pestana con comparacion mes a mes, gastos por categoria anual, tendencia de ingresos. | Alta | Media |
-| 18 | TV Shows | Chips colapsables (+N mas) | Mostrar las primeras 5-6 chips y un boton para expandir el resto. | Baja | **Alta** |
-| 19 | TV Shows | Rating y poster por serie | Mostrar calificacion (TMDB) y poster junto al nombre de cada serie en las chips. | Media | Baja |
-| 20 | TV Shows | Notificaciones de nuevo episodio | Toast notification cuando se estrena un episodio de una serie seguida. | Media | Media |
-| 21 | TV Shows | Temporadas vistas/no vistas | Marcar episodios como vistos con check. Contador de progreso por temporada. | Alta | Media |
-| 22 | Notas | Formato rico (bold, italic, listas) | Toolbar con negrita, cursiva, listas, headers en las notas. | Alta | Media |
-| 23 | Notas | Busqueda entre notas | Input que filtre notas por titulo y contenido en tiempo real. | Baja | **Alta** |
-| 24 | Notas | Etiquetas/colores por nota | Asignar un color o etiqueta a cada nota para organizacion visual. | Baja | Media |
-| 25 | Read Later | Auto-fetch de metadatos | Extraer automaticamente titulo, imagen OG y descripcion al guardar un enlace. | Media | Media |
-| 26 | Read Later | Indicador de progreso de lectura | Marcar articulos como leidos/parciales/no leidos con badge visual. | Baja | Baja |
-| 27 | Read Later | Filtros por categoria/etiqueta | Sistema de tags a los enlaces guardados para filtrar por tema. | Media | Media |
-| 28 | Quick Access | Favicon automatico para links | Obtener automaticamente el favicon de cada enlace usando Google Favicon API. | Baja | **Alta** |
-| 29 | Quick Access | Estadisticas de uso (top links) | Mostrar links mas clickeados con un ranking visual. | Baja | Baja |
-| 30 | GitHub | Wishlist de juegos | Mostrar wishlist del perfil con precios actuales y descuentos. | Media | Baja |
-| 31 | GitHub | Logros recientes | Mostrar ultimos logros desbloqueados con descripcion y rareza. | Media | Baja |
+| #      | Widget            | Mejora                                    | Descripcion                                                                                                             | Complejidad | Prioridad    |
+| ------ | ----------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------- | ------------ |
+| 1      | ~~Reloj Mundial~~ | ~~Reordenar relojes con D&D~~             | ~~Permitir arrastrar las cards individuales de relojes para reordenarlos manualmente. Persistir el orden en Supabase.~~ | ~~Media~~   | ~~Media~~    |
+| 2      | ~~Reloj Mundial~~ | ~~Agregar/remover relojes desde UI~~      | ~~Boton para agregar nuevas ciudades con un buscador de timezone, sin necesidad de ir a settings.~~                     | ~~Media~~   | ~~**Alta**~~ |
+| 3      | ~~Clima~~         | ~~Pronostico extendido (5-7 dias)~~       | ~~Mostrar una fila con los proximos 5-7 dias debajo del clima actual, con iconos y temperaturas min/max.~~              | ~~Media~~   | ~~Media~~    |
+| 4      | ~~Clima~~         | ~~Selector de ubicacion multiple~~        | ~~Permitir guardar varias ciudades y cambiar entre ellas con un mini selector o swipe.~~                                | ~~Media~~   | ~~Baja~~     |
+| 5      | ~~Clima~~         | ~~Indicador de calidad del aire (AQI)~~   | ~~Mostrar indice AQI con color semantico (verde/amarillo/naranja/rojo).~~                                               | ~~Baja~~    | ~~Baja~~     |
+| 6      | ~~Dolar~~         | ~~Grafico mini de variacion (sparkline)~~ | ~~Agregar un sparkline de los ultimos 30 dias mostrando la tendencia de cada tipo de cambio.~~                          | ~~Media~~   | ~~Media~~    |
+| 7      | ~~Dolar~~         | ~~Alertas de cotizacion~~                 | ~~Notificacion cuando el dolar blue supera o baja de un valor umbral configurado.~~                                     | ~~Media~~   | ~~**Alta**~~ |
+| 8      | Tasks             | Fechas de vencimiento                     | Agregar datepicker a cada tarea para marcar fecha limite. Resaltar tareas vencidas.                                     | Media       | **Alta**     |
+| 9      | ~~Tasks~~         | ~~Tareas recurrentes~~                    | ~~Opcion para marcar una tarea como recurrente (diaria, semanal, mensual).~~                                            | ~~Alta~~    | ~~Media~~    |
+| 10     | ~~Tasks~~         | ~~Etiquetas/categorias por color~~        | ~~Asignar una etiqueta de color a cada tarea (trabajo, personal, estudio) para filtrar.~~                               | ~~Media~~   | ~~Media~~    |
+| 11     | ~~Tasks~~         | ~~Estadisticas de productividad~~         | ~~Mini grafico de tareas completadas por dia/semana, racha actual (streak).~~                                           | ~~Alta~~    | ~~Media~~    |
+| 12     | ~~Finanzas~~      | ~~Presupuesto mensual por categoria~~     | ~~Definir un tope de gasto mensual por categoria. Barra de progreso visual al acercarse al limite.~~                    | ~~Alta~~    | ~~**Alta**~~ |
+| 13     | ~~Finanzas~~      | ~~Exportar datos a CSV/PDF~~              | ~~Boton para descargar el historial de transacciones filtrado en formato CSV o PDF.~~                                   | ~~Media~~   | ~~Media~~    |
+| 14     | ~~Finanzas~~      | ~~Soporte multi-moneda~~                  | ~~Registrar transacciones en diferentes monedas (ARS, USD, EUR). Conversion automatica.~~                               | ~~Alta~~    | ~~Media~~    |
+| 15     | ~~Finanzas~~      | ~~Recordatorios de gastos fijos~~         | ~~Agendar gastos recurrentes (alquiler, servicios, suscripciones) con alertas de vencimiento.~~                         | ~~Media~~   | ~~**Alta**~~ |
+| ==16== | ==Finanzas==      | ==Transacciones split (dividir)==         | ==Dividir una transaccion en varias categorias (ej: supermercado con comida + limpieza).==                              | ==Media==   | ==Baja==     |
+| 17     | ~~Finanzas~~      | ~~Resumen anual comparativo~~             | ~~Pestana con comparacion mes a mes, gastos por categoria anual, tendencia de ingresos.~~                               | ~~Alta~~    | ~~Media~~    |
+| 18     | ~~TV Shows~~      | ~~Chips colapsables (+N mas)~~            | ~~Mostrar las primeras 5-6 chips y un boton para expandir el resto.~~                                                   | ~~Baja~~    | ~~**Alta**~~ |
+| 19     | ~~TV Shows~~      | ~~Rating y poster por serie~~             | ~~Mostrar calificacion (TMDB) y poster junto al nombre de cada serie en las chips.~~                                    | ~~Media~~   | ~~Baja~~     |
+| 20     | ~~TV Shows~~      | ~~Notificaciones de nuevo episodio~~      | ~~Toast notification cuando se estrena un episodio de una serie seguida.~~                                              | ~~Media~~   | ~~Media~~    |
+| 21     | ~~TV Shows~~      | ~~Temporadas vistas/no vistas~~           | ~~Marcar episodios como vistos con check. Contador de progreso por temporada.~~                                         | ~~Alta~~    | ~~Media~~    |
+| 22     | ~~Notas~~         | ~~Formato rico (bold, italic, listas)~~   | ~~Toolbar con negrita, cursiva, listas, headers en las notas.~~                                                         | ~~Alta~~    | ~~Media~~    |
+| 23     | ~~Notas~~         | ~~Busqueda entre notas~~                  | ~~Input que filtre notas por titulo y contenido en tiempo real.~~                                                       | ~~Baja~~    | ~~**Alta**~~ |
+| 24     | ~~Notas~~         | ~~Etiquetas/colores por nota~~            | ~~Asignar un color o etiqueta a cada nota para organizacion visual.~~                                                   | ~~Baja~~    | ~~Media~~    |
+| ==25== | ==Read Later==    | ==Auto-fetch de metadatos==               | ==Extraer automaticamente titulo, imagen OG y descripcion al guardar un enlace.==                                       | ==Media==   | ==Media==    |
+| 26     | ~~Read Later~~    | ~~Indicador de progreso de lectura~~      | ~~Marcar articulos como leidos/parciales/no leidos con badge visual.~~                                                  | ~~Baja~~    | ~~Baja~~     |
+| 27     | ~~Read Later~~    | ~~Filtros por categoria/etiqueta~~        | ~~Sistema de tags a los enlaces guardados para filtrar por tema.~~                                                      | ~~Media~~   | ~~Media~~    |
+| 28     | Quick Access      | Favicon automatico para links             | Obtener automaticamente el favicon de cada enlace usando Google Favicon API.                                            | Baja        | **Alta**     |
+| 29     | ~~Quick Access~~      | ~~Estadisticas de uso (top links)~~           | ~~Mostrar links mas clickeados con un ranking visual.~~                                                                     | ~~Baja~~        | ~~Baja~~         |
+| 30     | ~~GitHub~~        | ~~Wishlist de juegos~~                    | ~~Mostrar wishlist del perfil con precios actuales y descuentos.~~                                                      | ~~Media~~   | ~~Baja~~     |
+| 31     | ~~GitHub~~        | ~~Logros recientes~~                      | ~~Mostrar ultimos logros desbloqueados con descripcion y rareza.~~                                                      | ~~Media~~   | ~~Baja~~     |
 
 ### 4.2 Nuevos Widgets
 
-| # | Widget | Mejora | Descripcion | Complejidad | Prioridad |
-|---|---|---|---|---|---|
-| 32 | Musica (Now Playing) | Integracion con Spotify/YT Music | Cancion actual con portada, artista, y controles de play/pause/skip. Requiere OAuth. | Alta | Media |
-| 33 | Calendario | Google Calendar sync | Calendario mensual y eventos del dia. Sync con Google Calendar API o CalDAV. | Alta | **Alta** |
-| 34 | Pomodoro Timer | Timer Pomodoro | Completar JS con timer 25/5, rondas, sonidos. Parte del CSS base ya existe. | Media | Media |
-| 35 | GitHub Activity | Commits y PRs recientes | Ultimos commits, PRs y issues de repos configurados del usuario. | Media | Baja |
-| 36 | Habit Tracker | Seguimiento de habitos diarios | Grid tipo contribution graph para marcar habitos (ejercicio, lectura, meditacion). | Alta | Media |
-| 37 | Crypto Tracker | Cotizacion de criptomonedas | Precios de BTC, ETH y criptos configurables usando CoinGecko API. | Media | Baja |
-| 38 | News/RSS Feed | Feed de noticias personalizables | Agregador RSS con fuentes configurables. Cards con titular, fuente y fecha. | Alta | Media |
-| 39 | Countdown | Cuenta regresiva a eventos | Configurar fechas importantes (cumpleanos, viajes, lanzamientos) con cuenta regresiva. | Baja | Media |
-| 40 | Quotes | Frase del dia | Frase inspiradora que cambie diariamente usando API gratuita (ZenQuotes). | Baja | Baja |
-| 41 | Breathing Exercise | Ejercicio de respiracion guiado | Animacion circular para ejercicios de respiracion (4-7-8, box breathing). | Media | Baja |
-| 42 | Password Generator | Generador de contrasenas | Generar contrasenas seguras con opciones de longitud y caracteres. | Baja | Baja |
-| 43 | System Monitor | Estado del servidor/dispositivo | Uptime, uso de CPU/RAM si se despliega en un servidor propio. | Alta | Baja |
+| #   | Widget                   | Mejora                               | Descripcion                                                                              | Complejidad | Prioridad |
+| --- | ------------------------ | ------------------------------------ | ---------------------------------------------------------------------------------------- | ----------- | --------- |
+| 32  | ~~Musica (Now Playing)~~ | ~~Integracion con Spotify/YT Music~~ | ~~Cancion actual con portada, artista, y controles de play/pause/skip. Requiere OAuth.~~ | ~~Alta~~    | ~~Media~~ |
+| 33  | Calendario               | Google Calendar sync                 | Calendario mensual y eventos del dia. Sync con Google Calendar API o CalDAV.             | Alta        | **Alta**  |
+| 34  | ~~Pomodoro Timer~~       | ~~Timer Pomodoro~~                   | ~~Completar JS con timer 25/5, rondas, sonidos. Parte del CSS base ya existe.~~          | ~~Media~~   | ~~Media~~ |
+| 35  | ~~GitHub Activity~~      | ~~Commits y PRs recientes~~          | ~~Ultimos commits, PRs y issues de repos configurados del usuario.~~                     | ~~Media~~   | ~~Baja~~  |
+| 36  | ~~Habit Tracker~~        | ~~Seguimiento de habitos diarios~~   | ~~Grid tipo contribution graph para marcar habitos (ejercicio, lectura, meditacion).~~   | ~~Alta~~    | ~~Media~~ |
+| 37  | ~~Crypto Tracker~~       | ~~Cotizacion de criptomonedas~~      | ~~Precios de BTC, ETH y criptos configurables usando CoinGecko API.~~                    | ~~Media~~   | ~~Baja~~  |
+| 38  | ~~News/RSS Feed~~        | ~~Feed de noticias personalizables~~ | ~~Agregador RSS con fuentes configurables. Cards con titular, fuente y fecha.~~          | ~~Alta~~    | ~~Media~~ |
+| 39  | Countdown                | Cuenta regresiva a eventos           | Configurar fechas importantes (cumpleanos, viajes, lanzamientos) con cuenta regresiva.   | Baja        | Media     |
+| 40  | ~~Quotes~~                   | ~~Frase del dia~~                        | ~~Frase inspiradora que cambie diariamente usando API gratuita (ZenQuotes).~~                | ~~Baja~~        | ~~Baja~~      |
+| 41  | ~~Breathing Exercise~~       | ~~Ejercicio de respiracion guiado~~      | ~~Animacion circular para ejercicios de respiracion (4-7-8, box breathing).~~                | ~~Media~~       | ~~Baja~~      |
+| 42  | ~~Password Generator~~       | ~~Generador de contrasenas~~             | ~~Generar contrasenas seguras con opciones de longitud y caracteres.~~                       | ~~Baja~~        | ~~Baja~~      |
+| 43  | ~~System Monitor~~           | ~~Estado del servidor/dispositivo~~      | ~~Uptime, uso de CPU/RAM si se despliega en un servidor propio.~~                            | ~~Alta~~        | ~~Baja~~      |
 
 ### 4.3 UX / UI
 
-| # | Area | Mejora | Descripcion | Complejidad | Prioridad |
-|---|---|---|---|---|---|
-| 44 | General | Drag & drop para reordenar secciones | Permitir reordenar las secciones snap del dashboard. Persistir en Supabase. | Alta | **Alta** |
-| 45 | General | Widget collapse/expand | Boton para colapsar o expandir widgets individuales dentro de cada seccion. | Baja | Media |
-| 46 | General | Buscador global (Command Palette) | Mejorar command palette para buscar entre transacciones, notas, links, series, tareas. | Media | **Alta** |
-| 47 | General | Transiciones animadas entre secciones | Animaciones suaves al hacer snap entre secciones (fade, slide o parallax sutil). | Media | Baja |
-| 48 | General | Indicador visual de seccion activa | Dots de navegacion lateral que indiquen seccion activa, clickeables. | Baja | Media |
-| 49 | General | Loading skeletons | Mostrar skeletons animados mientras cargan los datos en vez de spinners. | Media | Media |
-| 50 | General | Tooltips informativos | Tooltips en botones e iconos para mejorar discoverability de funcionalidades. | Baja | Baja |
-| 51 | General | Onboarding tutorial | Tour guiado la primera vez explicando cada seccion y widget. | Alta | Baja |
-| 52 | General | Tema claro/oscuro automatico | Detectar prefers-color-scheme y cambiar automaticamente el tema. | Media | Media |
-| 53 | General | Atajos de teclado globales | Overlay con atajos (Ctrl+K busqueda, 1-7 secciones, T nueva tarea). | Media | Media |
-| 54 | Dock | Gestion completa de items | Agregar, eliminar, reordenar items del dock directamente desde la UI. | Media | **Alta** |
-| 55 | Dock | Sub-menus en dock items | Hover sobre un item muestra mini-menu con sub-opciones o categorias. | Media | Baja |
-| 56 | Fondos | Selector de wallpapers dinamicos | Cargar wallpapers desde Unsplash por categoria con rotacion automatica. | Media | Media |
-| 57 | Fondos | Efectos blur/glass personalizable | Ajustar nivel de blur y opacidad del glassmorphism globalmente. | Baja | Baja |
+| #      | Area        | Mejora                                   | Descripcion                                                                                | Complejidad | Prioridad    |
+| ------ | ----------- | ---------------------------------------- | ------------------------------------------------------------------------------------------ | ----------- | ------------ |
+| 44     | ~~General~~ | ~~Drag & drop para reordenar secciones~~ | ~~Permitir reordenar las secciones snap del dashboard. Persistir en Supabase.~~            | ~~Alta~~    | ~~**Alta**~~ |
+| 45     | ~~General~~ | ~~Widget collapse/expand~~               | ~~Boton para colapsar o expandir widgets individuales dentro de cada seccion.~~            | ~~Baja~~    | ~~Media~~    |
+| ==46== | ==General== | ==Buscador global (Command Palette)==    | ==Mejorar command palette para buscar entre transacciones, notas, links, series, tareas.== | ==Media==   | ==**Alta**== |
+| 47     | General     | Transiciones animadas entre secciones    | Animaciones suaves al hacer snap entre secciones (fade, slide o parallax sutil).           | Media       | Baja         |
+| 48     | ~~General~~ | ~~Indicador visual de seccion activa~~   | ~~Dots de navegacion lateral que indiquen seccion activa, clickeables.~~                   | ~~Baja~~    | ~~Media~~    |
+| 49     | ~~General~~ | ~~Loading skeletons~~                    | ~~Mostrar skeletons animados mientras cargan los datos en vez de spinners.~~               | ~~Media~~   | ~~Media~~    |
+| 50     | ~~General~~ | ~~Tooltips informativos~~                | ~~Tooltips en botones e iconos para mejorar discoverability de funcionalidades.~~          | ~~Baja~~    | ~~Baja~~     |
+| ==51== | ==General== | ==Onboarding tutorial==                  | ==Tour guiado la primera vez explicando cada seccion y widget.==                           | ==Alta==    | ==Baja==     |
+| 52     | ~~General~~ | ~~Tema claro/oscuro automatico~~         | ~~Detectar prefers-color-scheme y cambiar automaticamente el tema.~~                       | ~~Media~~   | ~~Media~~    |
+| 53     | General     | Atajos de teclado globales               | Overlay con atajos (Ctrl+K busqueda, 1-7 secciones, T nueva tarea).                        | Media       | Media        |
+| 54     | ~~Dock~~        | ~~Gestion completa de items~~                | ~~Agregar, eliminar, reordenar items del dock directamente desde la UI.~~                      | ~~Media~~       | ~~**Alta**~~     |
+| 55     | ~~Dock~~        | ~~Sub-menus en dock items~~                  | ~~Hover sobre un item muestra mini-menu con sub-opciones o categorias.~~                       | ~~Media~~       | ~~Baja~~         |
+| 56     | Fondos      | Selector de wallpapers dinamicos         | Cargar wallpapers desde Unsplash por categoria con rotacion automatica.                    | Media       | Media        |
+| 57     | Fondos      | Efectos blur/glass personalizable        | Ajustar nivel de blur y opacidad del glassmorphism globalmente.                            | Baja        | Baja         |
 
 ### 4.4 Tecnico
 
-| # | Area | Mejora | Descripcion | Complejidad | Prioridad |
-|---|---|---|---|---|---|
-| 58 | Performance | Service Worker (PWA offline) | Cachear assets y permitir uso offline del dashboard. | Alta | **Alta** |
-| 59 | Performance | Lazy loading de widgets | Cargar solo widgets de la seccion visible. Los demas al navegar. | Media | **Alta** |
-| 60 | Performance | Image lazy loading + WebP | Convertir imagenes a WebP y usar loading="lazy" para velocidad. | Baja | Media |
-| 61 | Performance | Cache de API responses mejorado | Cacheo inteligente con ETags o localStorage con TTL por API. | Media | Media |
-| 62 | Datos | Import/Export de toda la data (backup) | Exportar/importar toda la configuracion y datos del dashboard como JSON. | Media | **Alta** |
-| 63 | Datos | Historial de cambios (audit log) | Registrar quien y cuando se modifico cada elemento. | Alta | Baja |
-| 64 | Datos | Sincronizacion multi-dispositivo | Supabase realtime para sincronizar cambios entre dispositivos. | Alta | Media |
-| 65 | Seguridad | PIN o biometria para acceso | Requerir PIN o huella antes de mostrar datos financieros sensibles. | Alta | Media |
-| 66 | Seguridad | Auto-lock por inactividad | Bloquear pantalla automaticamente despues de N minutos de inactividad. | Media | Media |
-| 67 | Mobile | PWA instalable en home screen | Manifest.json e iconos para instalar como app nativa. | Media | **Alta** |
-| 68 | Mobile | Touch gestures para navegacion | Swipe lateral para cambiar entre secciones en mobile. | Media | Media |
-| 69 | Mobile | Bottom navigation bar en mobile | Navegacion inferior con iconos de cada seccion para acceso rapido. | Media | Media |
-| 70 | Notificaciones | Sistema de notificaciones push | Para tareas vencidas, episodios nuevos, alertas del dolar. | Alta | Media |
-| 71 | Notificaciones | Toast notifications con acciones | Toasts con botones de accion (deshacer, marcar leido, posponer). | Media | Media |
-| 72 | Accesibilidad | Cumplimiento WCAG basico | Contraste minimo, aria-labels, navegacion por teclado, focus visible. | Media | Media |
+| #      | Area               | Mejora                                 | Descripcion                                                                | Complejidad | Prioridad    |
+| ------ | ------------------ | -------------------------------------- | -------------------------------------------------------------------------- | ----------- | ------------ |
+| 58     | Performance        | Service Worker (PWA offline)           | Cachear assets y permitir uso offline del dashboard.                       | Alta        | **Alta**     |
+| 59     | ~~Performance~~    | ~~Lazy loading de widgets~~            | ~~Cargar solo widgets de la seccion visible. Los demas al navegar.~~       | ~~Media~~   | ~~**Alta**~~ |
+| 60     | ~~Performance~~    | ~~Image lazy loading + WebP~~          | ~~Convertir imagenes a WebP y usar loading="lazy" para velocidad.~~        | ~~Baja~~    | ~~Media~~    |
+| 61     | Performance        | Cache de API responses mejorado        | Cacheo inteligente con ETags o localStorage con TTL por API.               | Media       | Media        |
+| 62     | Datos              | Import/Export de toda la data (backup) | Exportar/importar toda la configuracion y datos del dashboard como JSON.   | Media       | **Alta**     |
+| 63     | ~~Datos~~          | ~~Historial de cambios (audit log)~~   | ~~Registrar quien y cuando se modifico cada elemento.~~                    | ~~Alta~~    | ~~Baja~~     |
+| 64     | ~~Datos~~          | ~~Sincronizacion multi-dispositivo~~   | ~~Supabase realtime para sincronizar cambios entre dispositivos.~~         | ~~Alta~~    | ~~Media~~    |
+| ==65== | ==Seguridad==      | ==PIN o biometria para acceso==        | ==Requerir PIN o huella antes de mostrar datos financieros sensibles.==    | ==Alta==    | ==Media==    |
+| ==66== | ==Seguridad==      | ==Auto-lock por inactividad==          | ==Bloquear pantalla automaticamente despues de N minutos de inactividad.== | ==Media==   | ==Media==    |
+| 67     | Mobile             | PWA instalable en home screen          | Manifest.json e iconos para instalar como app nativa.                      | Media       | **Alta**     |
+| 68     | Mobile             | Touch gestures para navegacion         | Swipe lateral para cambiar entre secciones en mobile.                      | Media       | Media        |
+| 69     | Mobile             | Bottom navigation bar en mobile        | Navegacion inferior con iconos de cada seccion para acceso rapido.         | Media       | Media        |
+| 70     | ~~Notificaciones~~ | ~~Sistema de notificaciones push~~     | ~~Para tareas vencidas, episodios nuevos, alertas del dolar.~~             | ~~Alta~~    | ~~Media~~    |
+| 71     | ~~Notificaciones~~     | ~~Toast notifications con acciones~~       | ~~Toasts con botones de accion (deshacer, marcar leido, posponer).~~           | ~~Media~~       | ~~Media~~        |
+| 72     | Accesibilidad      | Cumplimiento WCAG basico               | Contraste minimo, aria-labels, navegacion por teclado, focus visible.      | Media       | Media        |
 
 ---
 
