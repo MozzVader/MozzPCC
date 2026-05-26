@@ -154,11 +154,25 @@
       tryScroll(15); // retry for up to 3 seconds
     }
 
+    // --- Estado de navegación (compartido con keyboard nav) ---
+    var sectionList = Array.from(sections);
+    var currentSectionIndex = -1;
+
+    function getSectionIndex(el) {
+      return sectionList.indexOf(el);
+    }
+
+    function scrollToSection(index) {
+      if (index < 0 || index >= sectionList.length) return;
+      sectionList[index].scrollIntoView({ behavior: 'smooth' });
+    }
+
     // IntersectionObserver: detecta qué sección está visible
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           var id = entry.target.id;
+          currentSectionIndex = getSectionIndex(entry.target);
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
           });
@@ -172,6 +186,51 @@
 
     sections.forEach(function (section) {
       observer.observe(section);
+    });
+
+    // --- Keyboard Navigation: números 1-8 y flechas ---
+    document.addEventListener('keydown', function (e) {
+      // Ignorar si hay un input/textarea/select enfocado
+      var tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
+      // Ignorar si hay un modal abierto
+      var modalOpen = document.querySelector('.settings-overlay:not([style*="display: none"])');
+      if (modalOpen) return;
+
+      var num = parseInt(e.key, 10);
+
+      // Teclas numéricas: 1-8 saltan a la sección correspondiente
+      if (num >= 1 && num <= sectionList.length) {
+        e.preventDefault();
+        scrollToSection(num - 1);
+        return;
+      }
+
+      // Flecha arriba / abajo: sección anterior / siguiente
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        scrollToSection(Math.min(currentSectionIndex + 1, sectionList.length - 1));
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        scrollToSection(Math.max(currentSectionIndex - 1, 0));
+        return;
+      }
+
+      // Home: ir al inicio
+      if (e.key === 'Home') {
+        e.preventDefault();
+        scrollToSection(0);
+        return;
+      }
+
+      // End: ir al final
+      if (e.key === 'End') {
+        e.preventDefault();
+        scrollToSection(sectionList.length - 1);
+        return;
+      }
     });
 
     // Click en dot → scroll a la sección correspondiente
@@ -208,6 +267,15 @@
     // Restore hash after a short delay (after dashboard is visible)
     restoreFromHash();
   }
+
+  // Exponer scrollToSection globalmente (para reutilizar desde otros módulos)
+  window.navigateToSection = function (index) {
+    if (typeof index !== 'number') return;
+    var sections = document.querySelectorAll('.snap-section');
+    if (index >= 0 && index < sections.length) {
+      sections[index].scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Inicializar dots cuando el dashboard sea visible
   window.addEventListener('auth:ready', function () {
