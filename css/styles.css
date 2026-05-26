@@ -1427,8 +1427,10 @@ body::after {
 }
 
 .rl-icon-picker-wrap .icon-picker-item {
-  font-size: 1rem;
-  padding: 2px;
+  aspect-ratio: unset;
+  height: 28px;
+  font-size: 14px;
+  padding: 0;
 }
 
 .read-later-input-row input:focus {
