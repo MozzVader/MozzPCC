@@ -133,7 +133,7 @@ CREATE TABLE IF NOT EXISTS user_quick_links (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   name TEXT NOT NULL,
   url TEXT NOT NULL,
-  icon_type TEXT NOT NULL DEFAULT 'fontawesome' CHECK (icon_type IN ('fontawesome', 'image')),
+  icon_type TEXT NOT NULL DEFAULT 'fontawesome' CHECK (icon_type IN ('fontawesome', 'image', 'favicon')),
   icon_value TEXT NOT NULL DEFAULT 'fa-solid fa-globe',
   position INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT now()
