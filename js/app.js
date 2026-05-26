@@ -157,19 +157,10 @@
     // --- Transiciones animadas entre secciones ---
     var currentSectionIndex = -1;
     var sectionList = Array.from(sections);
-    var isTransitioning = false;
+    var transitionsEnabled = true;
 
     function getSectionIndex(el) {
       return sectionList.indexOf(el);
-    }
-
-    function activateSection(section) {
-      // Remover clases de todas las secciones
-      sectionList.forEach(function (s) {
-        s.classList.remove('is-active', 'leaving-up', 'leaving-down');
-      });
-      // Activar la nueva sección
-      section.classList.add('is-active');
     }
 
     // IntersectionObserver: detecta qué sección está visible
@@ -179,23 +170,34 @@
 
         if (entry.isIntersecting) {
           var id = entry.target.id;
-
-          // Dirección del scroll: comparar índices
-          var direction = idx > currentSectionIndex ? 'up' : 'down'; // up = scrolled down
           var prevIdx = currentSectionIndex;
 
-          // Clase de salida para la sección anterior
-          if (prevIdx >= 0 && prevIdx !== idx) {
-            sectionList[prevIdx].classList.remove('is-active');
-            sectionList[prevIdx].classList.add(direction === 'up' ? 'leaving-up' : 'leaving-down');
-            // Limpiar clase de salida después de la transición
+          if (prevIdx >= 0 && prevIdx !== idx && transitionsEnabled) {
+            // Dirección del scroll
+            var direction = idx > prevIdx ? 'up' : 'down';
+            var prevSection = sectionList[prevIdx];
+
+            // Sección anterior: animación de salida
+            prevSection.classList.remove('is-active');
+            prevSection.classList.add(direction === 'up' ? 'leaving-up' : 'leaving-down');
+
+            // Limpiar clase de salida DESPUÉS de que termine la transición CSS
             setTimeout(function () {
-              sectionList[prevIdx].classList.remove('leaving-up', 'leaving-down');
+              prevSection.classList.remove('leaving-up', 'leaving-down');
             }, 500);
           }
 
+          // Sección nueva: activar con animación de entrada
+          entry.target.classList.add('is-active');
+
+          // Desactivar otras secciones que no sean la anterior ni la nueva
+          sectionList.forEach(function (s) {
+            if (s !== entry.target && s !== sectionList[prevIdx]) {
+              s.classList.remove('is-active', 'leaving-up', 'leaving-down');
+            }
+          });
+
           currentSectionIndex = idx;
-          activateSection(entry.target);
 
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
@@ -205,15 +207,22 @@
       });
     }, {
       root: dashboard,
-      threshold: 0.6
+      threshold: 0.5
     });
 
-    // Activar la primera sección visible inmediatamente (sin animación)
-    var firstVisible = document.querySelector('.snap-section.is-active') || sectionList[0];
-    if (firstVisible) {
-      firstVisible.classList.add('is-active');
-      currentSectionIndex = getSectionIndex(firstVisible);
+    // Activar la primera sección SIN transición (evitar flash invisible al cargar)
+    transitionsEnabled = false;
+    var firstSection = sectionList[0];
+    if (firstSection) {
+      firstSection.classList.add('is-active');
+      currentSectionIndex = 0;
     }
+    // Re-habilitar transiciones después de un frame (para que el primer .is-active no anime)
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        transitionsEnabled = true;
+      });
+    });
 
     sections.forEach(function (section) {
       observer.observe(section);
