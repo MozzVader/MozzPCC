@@ -1427,7 +1427,8 @@ body::after {
 }
 
 .rl-icon-picker-wrap .icon-picker-item {
-  font-size: 0.7rem;
+  font-size: 1rem;
+  padding: 2px;
 }
 
 .read-later-input-row input:focus {
@@ -1783,7 +1784,8 @@ body::after {
 }
 
 .rl-edit-form .rl-edit-icon-picker .icon-picker-item {
-  font-size: 0.7rem;
+  font-size: 1rem;
+  padding: 2px;
 }
 
 .rl-edit-actions {
