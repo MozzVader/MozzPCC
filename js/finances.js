@@ -71,16 +71,17 @@
     { name: 'Transporte', icon: 'fa-solid fa-car', color: '#f97316', type: 'gasto', order: 1 },
     { name: 'Entretenimiento', icon: 'fa-solid fa-gamepad', color: '#a855f7', type: 'gasto', order: 2 },
     { name: 'Salud', icon: 'fa-solid fa-heart-pulse', color: '#ec4899', type: 'gasto', order: 3 },
-    { name: 'Educacion', icon: 'fa-solid fa-graduation-cap', color: '#3b82f6', type: 'gasto', order: 4 },
-    { name: 'Supermercado', icon: 'fa-solid fa-cart-shopping', color: '#22c55e', type: 'gasto', order: 5 },
-    { name: 'Vivienda', icon: 'fa-solid fa-house', color: '#14b8a6', type: 'gasto', order: 6 },
-    { name: 'Servicios', icon: 'fa-solid fa-file-invoice-dollar', color: '#eab308', type: 'gasto', order: 7 },
-    { name: 'Otros', icon: 'fa-solid fa-ellipsis', color: '#6b7280', type: 'gasto', order: 8 },
+    { name: 'Educacion', icon: 'fa-solid fa-graduation-cap', color: '#eab308', type: 'gasto', order: 4 },
+    { name: 'Supermercado', icon: 'fa-solid fa-cart-shopping', color: '#92400e', type: 'gasto', order: 5 },
+    { name: 'Vivienda', icon: 'fa-solid fa-house', color: '#f59e0b', type: 'gasto', order: 6 },
+    { name: 'Servicios', icon: 'fa-solid fa-file-invoice-dollar', color: '#d946ef', type: 'gasto', order: 7 },
+    { name: 'Delivery', icon: 'fa-solid fa-motorcycle', color: '#fb923c', type: 'gasto', order: 8 },
+    { name: 'Otros', icon: 'fa-solid fa-ellipsis', color: '#6b7280', type: 'gasto', order: 9 },
     // INGRESOS
-    { name: 'Sueldo', icon: 'fa-solid fa-wallet', color: '#22c55e', type: 'ingreso', order: 9 },
-    { name: 'Freelance', icon: 'fa-solid fa-laptop-code', color: '#3b82f6', type: 'ingreso', order: 10 },
-    { name: 'Inversiones', icon: 'fa-solid fa-chart-line', color: '#a855f7', type: 'ingreso', order: 11 },
-    { name: 'Otros', icon: 'fa-solid fa-ellipsis', color: '#6b7280', type: 'ingreso', order: 12 }
+    { name: 'Sueldo', icon: 'fa-solid fa-wallet', color: '#22c55e', type: 'ingreso', order: 10 },
+    { name: 'Freelance', icon: 'fa-solid fa-laptop-code', color: '#06b6d4', type: 'ingreso', order: 11 },
+    { name: 'Inversiones', icon: 'fa-solid fa-chart-line', color: '#3b82f6', type: 'ingreso', order: 12 },
+    { name: 'Otros', icon: 'fa-solid fa-coins', color: '#94a3b8', type: 'ingreso', order: 13 }
   ];
 
   // =========================================================================
