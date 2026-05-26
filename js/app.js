@@ -154,55 +154,11 @@
       tryScroll(15); // retry for up to 3 seconds
     }
 
-    // --- Transiciones animadas entre secciones ---
-    var currentSectionIndex = -1;
-    var sectionList = Array.from(sections);
-    var isAnimating = false;
-
-    function getSectionIndex(el) {
-      return sectionList.indexOf(el);
-    }
-
-    // Limpiar clase de entrada cuando termina la animación CSS
-    sectionList.forEach(function (section) {
-      section.addEventListener('animationend', function () {
-        section.classList.remove('is-entering', 'from-above');
-        isAnimating = false;
-      });
-    });
-
-    function animateSection(section, fromAbove) {
-      // Remover clases previas de cualquier sección
-      sectionList.forEach(function (s) {
-        s.classList.remove('is-entering', 'from-above');
-      });
-      // Forzar reflow para reiniciar la animación si es la misma sección
-      void section.offsetWidth;
-      // Agregar clases de entrada
-      if (fromAbove) {
-        section.classList.add('is-entering', 'from-above');
-      } else {
-        section.classList.add('is-entering');
-      }
-    }
-
     // IntersectionObserver: detecta qué sección está visible
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        var idx = getSectionIndex(entry.target);
-
         if (entry.isIntersecting) {
           var id = entry.target.id;
-          var prevIdx = currentSectionIndex;
-          var fromAbove = idx < prevIdx;
-
-          currentSectionIndex = idx;
-
-          // Animar entrada de la nueva sección (no la primera vez)
-          if (prevIdx >= 0 && prevIdx !== idx) {
-            animateSection(entry.target, fromAbove);
-          }
-
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
           });
@@ -211,7 +167,7 @@
       });
     }, {
       root: dashboard,
-      threshold: 0.5
+      threshold: 0.6
     });
 
     sections.forEach(function (section) {
