@@ -1659,4 +1659,17 @@
     cleanup();
   });
 
+  // =============================================
+  // API PUBLICA (para commandPalette.js)
+  // =============================================
+
+  window.Finanzas = {
+    getTransactions: function () {
+      return transactions.slice();
+    },
+    getCategories: function () {
+      return categories.slice();
+    }
+  };
+
 })();

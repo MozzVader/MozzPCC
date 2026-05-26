@@ -1,7 +1,7 @@
 /**
  * commandPalette.js — Command Palette (Ctrl+K / Cmd+K)
- * Busca secciones, accesos rapidos, tareas, notas y acciones rápidas
- * Se integra con los datos existentes en memoria
+ * Busca secciones, accesos rapidos, tareas, notas, finanzas,
+ * links guardados, series y ejecuta comandos de busqueda web
  */
 
 (function () {
@@ -14,8 +14,78 @@
 
   // --- Estado ---
   var isOpen = false;
-  var items = [];       // Items renderizados en la lista
-  var selectedIndex = 0; // Índice del item seleccionado
+  var items = [];
+  var selectedIndex = 0;
+
+  // =============================================
+  // COMANDOS DE BUSQUEDA WEB
+  // =============================================
+
+  var WEB_COMMANDS = [
+    { prefix: '/yt',  label: 'YouTube',    icon: 'fa-brands fa-youtube',     color: '#ff0000', url: 'https://www.youtube.com/results?search_query=' },
+    { prefix: '/g',   label: 'Google',     icon: 'fa-brands fa-google',      color: '#4285f4', url: 'https://www.google.com/search?q=' },
+    { prefix: '/w',   label: 'Wikipedia',  icon: 'fa-brands fa-wikipedia-w', color: '#636466', url: 'https://es.wikipedia.org/w/index.php?search=' },
+    { prefix: '/tw',  label: 'X / Twitter',icon: 'fa-brands fa-x-twitter',   color: '#e7e9ea', url: 'https://x.com/search?q=' },
+    { prefix: '/r',   label: 'Reddit',     icon: 'fa-brands fa-reddit-alien',color: '#ff4500', url: 'https://www.reddit.com/search/?q=' },
+    { prefix: '/gh',  label: 'GitHub',     icon: 'fa-brands fa-github',      color: '#f0f6fc', url: 'https://github.com/search?q=' },
+    { prefix: '/d',   label: 'DuckDuckGo', icon: 'fa-solid fa-magnifying-glass', color: '#de5833', url: 'https://duckduckgo.com/?q=' }
+  ];
+
+  /**
+   * Detecta si el query es un comando de busqueda web
+   * Retorna { command, query } o null
+   */
+  function parseWebCommand(raw) {
+    var trimmed = raw.trim();
+    for (var i = 0; i < WEB_COMMANDS.length; i++) {
+      var cmd = WEB_COMMANDS[i];
+      if (trimmed.toLowerCase().indexOf(cmd.prefix) === 0) {
+        var query = trimmed.substring(cmd.prefix.length).trim();
+        return { command: cmd, query: query };
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Construye los items para busqueda web (sugerencias de comandos)
+   */
+  function getWebSuggestions(query) {
+    var q = query.toLowerCase().trim();
+    if (!q) return [];
+
+    return WEB_COMMANDS.map(function (cmd) {
+      var fullQuery = cmd.prefix + ' ' + q;
+      return {
+        id: 'web-' + cmd.prefix,
+        group: 'Busqueda Web',
+        icon: cmd.icon,
+        label: cmd.label,
+        hint: 'Buscar "' + q + '" en ' + cmd.label,
+        shortcut: cmd.prefix,
+        action: function () {
+          window.open(cmd.url + encodeURIComponent(q), '_blank', 'noopener');
+        }
+      };
+    });
+  }
+
+  /**
+   * Construye un item de busqueda web ya confirmado
+   */
+  function getWebResult(command, query) {
+    return {
+      id: 'web-exec-' + command.prefix,
+      group: 'Busqueda Web',
+      icon: command.icon,
+      label: 'Buscar en ' + command.label,
+      hint: query,
+      shortcut: 'Enter para abrir',
+      action: function () {
+        window.open(command.url + encodeURIComponent(query), '_blank', 'noopener');
+      }
+    };
+  }
 
   // =============================================
   // FUENTES DE DATOS
@@ -29,7 +99,7 @@
       { id: 'sec-product',  group: 'Secciones', icon: 'fa-solid fa-bolt',         label: 'Productividad', hint: 'Lista de tareas',         action: function () { scrollTo('section-productivity'); } },
       { id: 'sec-finances', group: 'Secciones', icon: 'fa-solid fa-wallet',        label: 'Finanzas',      hint: 'Finanzas personales',    action: function () { scrollTo('section-finances'); } },
       { id: 'sec-tv',       group: 'Secciones', icon: 'fa-solid fa-tv',            label: 'Entretenimiento', hint: 'TV Shows y GitHub',      action: function () { scrollTo('section-tv-shows'); } },
-      { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rápidas',          action: function () { scrollTo('section-notes'); } },
+      { id: 'sec-notes',    group: 'Secciones', icon: 'fa-solid fa-note-sticky',   label: 'Notas',         hint: 'Notas rapidas',          action: function () { scrollTo('section-notes'); } },
       { id: 'sec-rl',       group: 'Secciones', icon: 'fa-solid fa-bookmark',    label: 'Ver Mas Tarde', hint: 'Links guardados',        action: function () { scrollTo('section-read-later'); } }
     ];
   }
@@ -50,7 +120,7 @@
     });
   }
 
-  /** Acciones rápidas */
+  /** Acciones rapidas */
   function getActions() {
     return [
       { id: 'act-newtask',  group: 'Acciones', icon: 'fa-solid fa-plus',        label: 'Nueva tarea',          hint: 'Agregar tarea',    shortcut: '',    action: function () { focusElement('task-input'); } },
@@ -85,7 +155,7 @@
     return tasks;
   }
 
-  /** Títulos de notas */
+  /** Titulos de notas */
   function getNotes() {
     var grid = document.getElementById('notes-grid');
     if (!grid) return [];
@@ -106,19 +176,116 @@
     return notes;
   }
 
+  /** Transacciones de finanzas (via window.Finanzas) */
+  function getFinances() {
+    if (typeof window.Finanzas === 'undefined') return [];
+    var transactions = window.Finanzas.getTransactions();
+    var categories = window.Finanzas.getCategories();
+
+    return transactions.slice(0, 10).map(function (t) {
+      var cat = null;
+      for (var i = 0; i < categories.length; i++) {
+        if (categories[i].id === t.category_id) { cat = categories[i]; break; }
+      }
+      var desc = t.description || (cat ? cat.name : 'Sin descripcion');
+      var prefix = t.type === 'ingreso' ? '+' : '-';
+      var amount = prefix + parseFloat(t.amount || 0).toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+      return {
+        id: 'fin-' + t.id,
+        group: 'Finanzas',
+        icon: cat ? cat.icon : 'fa-solid fa-receipt',
+        label: desc.length > 35 ? desc.substring(0, 35) + '...' : desc,
+        hint: amount + (t.date ? ' · ' + t.date.substring(5) : ''),
+        action: function () { scrollTo('section-finances'); }
+      };
+    });
+  }
+
+  /** Links guardados en Ver Mas Tarde (via window.ReadLater) */
+  function getReadLater() {
+    if (typeof window.ReadLater === 'undefined') return [];
+    var rlItems = window.ReadLater.getAll();
+
+    return rlItems.map(function (item) {
+      return {
+        id: 'rl-' + item.id,
+        group: 'Ver Mas Tarde',
+        icon: item.icon || 'fa-solid fa-bookmark',
+        label: item.title.length > 40 ? item.title.substring(0, 40) + '...' : item.title,
+        hint: extractDomain(item.url),
+        action: function () { window.open(item.url, '_blank', 'noopener'); }
+      };
+    });
+  }
+
+  /** Series seguidas (via window.TVShows) */
+  function getTVShows() {
+    if (typeof window.TVShows === 'undefined') return [];
+    var shows = window.TVShows.getShows();
+
+    return shows.map(function (show) {
+      var statusLabel = show.status === 'Running' ? 'En emision' :
+                        show.status === 'Ended' ? 'Finalizada' :
+                        show.status || '';
+      return {
+        id: 'tv-' + show.id,
+        group: 'Series',
+        icon: 'fa-solid fa-tv',
+        label: show.title,
+        hint: statusLabel,
+        action: function () {
+          if (show.tvmaze_id) {
+            window.open('https://www.tvmaze.com/shows/' + show.tvmaze_id, '_blank');
+          }
+        }
+      };
+    });
+  }
+
   // =============================================
   // BÚSQUEDA
   // =============================================
 
   function search(query) {
-    var q = query.toLowerCase().trim();
+    var raw = query.trim();
+    var q = raw.toLowerCase();
 
+    // Si el query empieza con /, es un comando web
+    var webCmd = parseWebCommand(raw);
+    if (webCmd) {
+      // Si ya tiene texto despues del comando, mostrar el resultado ejecutable
+      if (webCmd.query) {
+        var results = [getWebResult(webCmd.command, webCmd.query)];
+        // Tambien sugerir otros motores con el mismo query
+        results = results.concat(getWebSuggestions(webCmd.query));
+        return results;
+      }
+      // Si solo escribio "/yt" sin query, mostrar todos los comandos disponibles
+      return getWebSuggestions('');
+    }
+
+    // Si el query no es vacio, agregar sugerencias web al final
     var allItems = []
       .concat(getSections())
       .concat(getQuickLinks())
       .concat(getActions())
       .concat(getTasks())
-      .concat(getNotes());
+      .concat(getNotes())
+      .concat(getFinances())
+      .concat(getReadLater())
+      .concat(getTVShows());
+
+    // Agregar sugerencias de busqueda web si hay texto
+    if (q) {
+      var webSuggestions = getWebSuggestions(raw);
+      if (webSuggestions.length > 0) {
+        allItems = allItems.concat(webSuggestions);
+      }
+    }
 
     if (!q) return allItems;
 
@@ -169,7 +336,7 @@
 
       var selected = index === 0 ? ' selected' : '';
       var shortcutHtml = item.shortcut
-        ? '<span class="cmd-item-shortcut">' + item.shortcut + '</span>'
+        ? '<span class="cmd-item-shortcut">' + escapeHtml(item.shortcut) + '</span>'
         : '';
 
       html += '<div class="cmd-item' + selected + '" data-index="' + index + '">' +
@@ -276,6 +443,21 @@
   function clickElement(id) {
     var el = document.getElementById(id);
     if (el) el.click();
+  }
+
+  function extractDomain(url) {
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch (e) {
+      return url;
+    }
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(text));
+    return div.innerHTML;
   }
 
   // =============================================

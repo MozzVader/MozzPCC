@@ -759,4 +759,15 @@
   window.addEventListener('auth:logout', function () {
     cleanup();
   });
+
+  // =============================================
+  // API PUBLICA (para commandPalette.js)
+  // =============================================
+
+  window.ReadLater = {
+    getAll: function () {
+      return items.slice();
+    }
+  };
+
 })();

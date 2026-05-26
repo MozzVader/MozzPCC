@@ -484,4 +484,18 @@
   window.addEventListener('auth:logout', function () {
     cleanup();
   });
+
+  // =============================================
+  // API PUBLICA (para commandPalette.js)
+  // =============================================
+
+  window.TVShows = {
+    getShows: function () {
+      return shows.slice();
+    },
+    getUpcoming: function () {
+      return upcomingEpisodes.slice();
+    }
+  };
+
 })();
