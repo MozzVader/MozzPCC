@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MozzPCC — Personal Command Center</title>
+  <meta name="description" content="Tu centro de comando personal: reloj, clima, tareas, finanzas, TV shows, accesos rapidos y mucho mas. Todo en un solo lugar.">
+  <meta name="theme-color" content="#0a0a1a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="/MozzPCC/assets/favicon-32x32.png">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-primary: #0a0a1a;
+      --bg-secondary: #111128;
+      --bg-glass: rgba(37, 37, 37, 0.3);
+      --border-glass: rgba(255, 255, 255, 0.1);
+      --border-glass-hover: rgba(255, 255, 255, 0.2);
+      --accent: #00d4ff;
+      --accent-dim: rgba(0, 212, 255, 0.15);
+      --accent-glow: rgba(0, 212, 255, 0.4);
+      --accent-secondary: #7c3aed;
+      --bg-glow-a: rgba(124, 58, 237, 0.15);
+      --bg-glow-b: rgba(0, 212, 255, 0.1);
+      --text-primary: #f0f0f5;
+      --text-secondary: #a0a0b8;
+      --text-muted: #6b6b80;
+      --radius: 10px;
+      --radius-sm: 8px;
+      --radius-xs: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: rgba(10, 10, 26, 0.7);
+      border-bottom: 1px solid var(--border-glass);
+      transition: all 0.3s ease;
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .header-logo img {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+
+    .header-logo span {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-logo span em {
+      color: var(--accent);
+      font-style: normal;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .header-nav a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .header-nav a:hover { color: var(--text-primary); }
+
+    .btn-login {
+      padding: 8px 20px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: var(--radius-xs);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-login:hover {
+      box-shadow: 0 0 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--bg-glow-a) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -300px;
+      right: -200px;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--bg-glow-b) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: var(--accent-dim);
+      border: 1px solid var(--border-glass);
+      border-radius: 50px;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .hero-badge i { font-size: 0.7rem; }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 14px 32px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+
+    .btn-ghost {
+      padding: 14px 32px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text-primary);
+      border-color: var(--border-glass-hover);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* ─── SECTIONS (skew / diagonal) ─── */
+    .section {
+      position: relative;
+      padding: 100px 40px;
+      overflow: hidden;
+    }
+
+    .section-dark {
+      background: var(--bg-secondary);
+    }
+
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .section-label i { font-size: 0.7rem; }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-bottom: 48px;
+      line-height: 1.7;
+    }
+
+    /* ─── DIAGONAL SEPARATOR ─── */
+    .diagonal {
+      position: relative;
+      height: 80px;
+      overflow: hidden;
+    }
+
+    .diagonal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -5%;
+      width: 110%;
+      height: 100%;
+      background: var(--bg-primary);
+      transform: skewY(-2deg);
+      transform-origin: top left;
+    }
+
+    .diagonal.inv::before {
+      background: var(--bg-secondary);
+    }
+
+    /* ─── FEATURE ROW (alternating) ─── */
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-bottom: 100px;
+    }
+
+    .feature-row.reverse .feature-text { order: 2; }
+    .feature-row.reverse .feature-img { order: 1; }
+
+    .feature-text h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+
+    .feature-text p {
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+    }
+
+    .feature-list li i {
+      color: var(--accent);
+      font-size: 0.8rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .feature-img {
+      position: relative;
+      border-radius: var(--radius);
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+    }
+
+    .feature-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .feature-img .placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .feature-img .placeholder i {
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    /* ─── WIDGETS GRID ─── */
+    .widgets-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .widget-card {
+      background: var(--bg-glass);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius);
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    .widget-card:hover {
+      border-color: var(--border-glass-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+
+    .widget-card .icon-wrap {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      font-size: 1.1rem;
+      margin-bottom: 16px;
+    }
+
+    .widget-card h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .widget-card p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .wc-cyan { background: var(--accent-dim); color: var(--accent); }
+    .wc-purple { background: var(--bg-glow-a); color: var(--accent-secondary); }
+    .wc-green { background: rgba(52, 211, 153, 0.12); color: #34d399; }
+    .wc-yellow { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+    .wc-pink { background: rgba(244, 114, 182, 0.12); color: #f472b6; }
+    .wc-blue { background: rgba(96, 165, 250, 0.12); color: #60a5fa; }
+
+    /* ─── CTA SECTION ─── */
+    .cta-section {
+      text-align: center;
+      padding: 120px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-dim) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+
+    .cta-section p {
+      font-size: 1.1rem;
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto 36px;
+      position: relative;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      padding: 40px;
+      border-top: 1px solid var(--border-glass);
+      text-align: center;
+    }
+
+    .footer p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover { text-decoration: underline; }
+
+    /* ─── MOBILE ─── */
+    @media (max-width: 768px) {
+      .header { padding: 12px 20px; }
+      .header-nav a { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      .hero h1 { font-size: 2rem; }
+      .section { padding: 60px 20px; }
+      .feature-row {
+        grid-template-columns: 1fr;
+        gap: 32px;
+        margin-bottom: 60px;
+      }
+      .feature-row.reverse .feature-text { order: 1; }
+      .feature-row.reverse .feature-img { order: 2; }
+      .widgets-grid { grid-template-columns: 1fr; }
+      .cta-section { padding: 80px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <a href="#" class="header-logo">
+      <img src="/MozzPCC/assets/logo.png" alt="MozzPCC">
+      <span>Mozz<em>PCC</em></span>
+    </a>
+    <nav class="header-nav">
+      <a href="#features">Features</a>
+      <a href="#widgets">Widgets</a>
+      <a href="https://github.com/MozzVader/MozzPCC" target="_blank"><i class="fab fa-github"></i></a>
+      <a href="#cta" class="btn-login">Iniciar sesion</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-bolt"></i>
+        Personal Command Center
+      </div>
+      <h1>Tu vida digital<br>en un <span class="gradient">solo lugar</span></h1>
+      <p>Un dashboard personal con snap-scroll que reune clima, tareas, finanzas, noticias, TV shows y mucho mas. Todo sincronizado en la nube, accesible desde cualquier dispositivo.</p>
+      <div class="hero-actions">
+        <a href="#cta" class="btn-primary">
+          <i class="fas fa-rocket"></i> Comenzar
+        </a>
+        <a href="#features" class="btn-ghost">
+          <i class="fas fa-arrow-down"></i> Ver mas
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIAGONAL -->
+  <div class="diagonal inv"></div>
+
+  <!-- FEATURES -->
+  <section class="section section-dark" id="features">
+    <div class="section-inner">
+
+      <!-- Feature 1: Snap Scroll -->
+      <div class="feature-row">
+        <div class="feature-text">
+          <div class="section-label"><i class="fas fa-layer-group"></i> Navegacion</div>
+          <h3>Snap-Scroll intuitivo</h3>
+          <p>Navega entre secciones con un simple scroll. Cada widget tiene su propio espacio, como diapositivas, con indicadores de posicion y atajos de teclado.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> Navegacion por puntos laterales</li>
+            <li><i class="fas fa-check"></i> Atajos de teclado (flechas, Esc)</li>
+            <li><i class="fas fa-check"></i> Transiciones fluidas entre secciones</li>
+          </ul>
+        </div>
+        <div class="feature-img">
+          <div class="placeholder">
+            <i class="fas fa-layer-group"></i>
+            Screenshot: snap-scroll navigation
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 2: Finanzas -->
+      <div class="feature-row reverse">
+        <div class="feature-text">
+          <div class="section-label"><i class="fas fa-chart-pie"></i> Finanzas</div>
+          <h3>Control total de tus gastos</h3>
+          <p>Registra ingresos y gastos por categoria, visualiza graficos de distribucion y evolucion mensual, y exporta todo a Excel cuando lo necesites.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> Categorias con colores personalizadas</li>
+            <li><i class="fas fa-check"></i> Graficos interactivos de distribucion</li>
+            <li><i class="fas fa-check"></i> Exportacion a XLSX con filtros</li>
+          </ul>
+        </div>
+        <div class="feature-img">
+          <div class="placeholder">
+            <i class="fas fa-chart-pie"></i>
+            Screenshot: finanzas widget
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Tareas -->
+      <div class="feature-row">
+        <div class="feature-text">
+          <div class="section-label"><i class="fas fa-list-check"></i> Productividad</div>
+          <h3>Tareas con Kanban integrado</h3>
+          <p>Organiza tus tareas con estados (pendiente, en progreso, hecha), prioridades y drag-and-drop para reordenar. Todo guardado automaticamente en Supabase.</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check"></i> Tablas Kanban por estado</li>
+            <li><i class="fas fa-check"></i> Drag-and-drop para reordenar</li>
+            <li><i class="fas fa-check"></i> Filtros por prioridad y estado</li>
+          </ul>
+        </div>
+        <div class="feature-img">
+          <div class="placeholder">
+            <i class="fas fa-list-check"></i>
+            Screenshot: tareas kanban
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- DIAGONAL -->
+  <div class="diagonal"></div>
+
+  <!-- WIDGETS GRID -->
+  <section class="section" id="widgets">
+    <div class="section-inner">
+      <div class="section-label"><i class="fas fa-th-large"></i> Widgets</div>
+      <h2 class="section-title">Todo lo que necesitas, un scroll de distancia</h2>
+      <p class="section-desc">Mas de 15 widgets integrados que cubren clima, finanzas, entretenimiento, productividad y mas. Cada uno disenado para ser funcional y visual.</p>
+
+      <div class="widgets-grid">
+        <div class="widget-card">
+          <div class="icon-wrap wc-cyan"><i class="fas fa-clock"></i></div>
+          <h4>World Clock</h4>
+          <p>Relojes de multiples ciudades del mundo con indicador de dia/noche.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-green"><i class="fas fa-cloud-sun"></i></div>
+          <h4>Clima</h4>
+          <p>Pronostico actual y extendido a 7 dias con datos de Open-Meteo.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-yellow"><i class="fas fa-dollar-sign"></i></div>
+          <h4>Dolar</h4>
+          <p>Cotizaciones del dolar blue, MEP, CCL y mas en tiempo real.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-pink"><i class="fas fa-tv"></i></div>
+          <h4>TV Shows</h4>
+          <p>Segui tus series favoritas con agenda de estrenos y notificaciones.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-purple"><i class="fas fa-bookmark"></i></div>
+          <h4>Read Later</h4>
+          <p>Guarda links para leer despues con iconos, tags y drag-and-drop.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-blue"><i class="fas fa-newspaper"></i></div>
+          <h4>Noticias</h4>
+          <p>Feeds RSS de medios argentinos e internacionales, personalizables.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-green"><i class="fas fa-sticky-note"></i></div>
+          <h4>Notas</h4>
+          <p>Notas rapidas con soporte Markdown, cambio de color y persistencia.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-yellow"><i class="fab fa-github"></i></div>
+          <h4>GitHub</h4>
+          <p>Perfil, repositorios y actividad de trending en un vistazo.</p>
+        </div>
+        <div class="widget-card">
+          <div class="icon-wrap wc-cyan"><i class="fas fa-link"></i></div>
+          <h4>Quick Access</h4>
+          <p>Accesos rapidos con iconos, favicons o imagenes personalizadas.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="cta">
+    <h2>Listo para organizar <span class="gradient">tu vida</span>?</h2>
+    <p>Inicia sesion con tu cuenta de GitHub y tenes tu command center listo en segundos.</p>
+    <a href="app.html" class="btn-primary">
+      <i class="fab fa-github"></i> Iniciar sesion con GitHub
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>Hecho con <i class="fas fa-heart" style="color:var(--accent)"></i> por <a href="https://github.com/MozzVader" target="_blank">MozzVader</a> &mdash; MozzPCC &copy; 2025</p>
+  </footer>
+
+</body>
+</html>
