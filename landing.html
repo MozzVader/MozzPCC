@@ -106,7 +106,7 @@
     .btn-login {
       padding: 8px 20px;
       background: var(--accent);
-      color: var(--bg-primary);
+      color: #0a0a1a;
       border: none;
       border-radius: var(--radius-xs);
       font-family: inherit;
@@ -512,6 +512,11 @@
 
     .footer a:hover { text-decoration: underline; }
 
+    .footer-links { font-size: 0.85rem; color: var(--text-muted); }
+    .footer-links a { color: var(--text-secondary); font-size: 0.85rem; }
+    .footer-links a:hover { color: var(--accent); text-decoration: none; }
+    .footer-sep { margin: 0 8px; color: var(--text-muted); opacity: 0.5; }
+
     /* ─── MOBILE ─── */
     @media (max-width: 768px) {
       .header { padding: 12px 20px; }
@@ -708,7 +713,16 @@
 
   <!-- FOOTER -->
   <footer class="footer">
-    <p>Hecho con <i class="fas fa-heart" style="color:var(--accent)"></i> por <a href="https://github.com/MozzVader" target="_blank">MozzVader</a> &mdash; MozzPCC &copy; 2025</p>
+    <p>Hecho con <i class="fas fa-heart" style="color:var(--accent)"></i> por <a href="https://github.com/MozzVader" target="_blank">MozzVader</a> &mdash; MozzPCC &copy; 2026</p>
+    <p class="footer-links" style="margin-top:8px">
+      <a href="https://github.com/mozzvader/MozzPCC" target="_blank" rel="noopener noreferrer">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+      <span class="footer-sep">|</span>
+      <a href="https://cafecito.app/mozz_vader" target="_blank" rel="noopener noreferrer">
+        <i class="fa-solid fa-mug-hot"></i> Cafecito
+      </a>
+    </p>
   </footer>
 
 </body>
