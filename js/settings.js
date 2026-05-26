@@ -8,57 +8,7 @@
 (function () {
   'use strict';
 
-  // --- Iconos disponibles ---
-  var BRAND_ICONS = [
-    'fa-brands fa-github',
-    'fa-brands fa-youtube',
-    'fa-brands fa-twitter',
-    'fa-brands fa-discord',
-    'fa-brands fa-spotify',
-    'fa-brands fa-linkedin',
-    'fa-brands fa-reddit',
-    'fa-brands fa-twitch',
-    'fa-brands fa-instagram',
-    'fa-brands fa-telegram',
-    'fa-brands fa-whatsapp',
-    'fa-brands fa-tiktok',
-    'fa-brands fa-dribbble',
-    'fa-brands fa-figma',
-    'fa-brands fa-stack-overflow'
-  ];
-
-  var GENERIC_ICONS = [
-    'fa-solid fa-house',
-    'fa-solid fa-star',
-    'fa-solid fa-heart',
-    'fa-solid fa-book',
-    'fa-solid fa-code',
-    'fa-solid fa-chart-line',
-    'fa-solid fa-envelope',
-    'fa-solid fa-calendar',
-    'fa-solid fa-newspaper',
-    'fa-solid fa-gamepad',
-    'fa-solid fa-music',
-    'fa-solid fa-graduation-cap',
-    'fa-solid fa-briefcase',
-    'fa-solid fa-camera',
-    'fa-solid fa-palette',
-    'fa-solid fa-globe',
-    'fa-solid fa-robot',
-    'fa-solid fa-bolt',
-    'fa-solid fa-folder',
-    'fa-solid fa-bell',
-    'fa-solid fa-bookmark',
-    'fa-solid fa-cloud',
-    'fa-solid fa-compass',
-    'fa-solid fa-magnifying-glass',
-    'fa-solid fa-link',
-    'fa-solid fa-shield',
-    'fa-solid fa-wrench',
-    'fa-solid fa-rocket'
-  ];
-
-  var ALL_ICONS = BRAND_ICONS.concat(GENERIC_ICONS);
+  // Iconos disponibles — importados desde utils.js (ALL_ICONS)
 
   // --- Elementos del DOM ---
   var settingsBtn = document.getElementById('settings-btn');
@@ -456,24 +406,12 @@
   }
 
   // --- Icon Picker ---
+  // buildIconPicker ahora vive en utils.js (global)
+  // Wrapper local que pasa el callback para actualizar hiddenInput
   function buildIconPicker(container, hiddenInput, selectedIcon) {
-    container.innerHTML = '';
-    ALL_ICONS.forEach(function (iconClass) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'icon-picker-item' + (iconClass === selectedIcon ? ' selected' : '');
-      btn.dataset.icon = iconClass;
-      btn.innerHTML = '<i class="' + iconClass + '"></i>';
-      btn.title = iconClass.split(' ').pop();
-      btn.addEventListener('click', function () {
-        container.querySelectorAll('.icon-picker-item').forEach(function (b) {
-          b.classList.remove('selected');
-        });
-        btn.classList.add('selected');
-        hiddenInput.value = iconClass;
-      });
-      container.appendChild(btn);
-    });
+    window.buildIconPicker(container, function (iconClass) {
+      hiddenInput.value = iconClass;
+    }, selectedIcon);
   }
 
   // --- Modal open/close ---

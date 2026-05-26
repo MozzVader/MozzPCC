@@ -1,7 +1,7 @@
 /**
  * readLater.js — Ver Mas Tarde
  * CRUD de links guardados con persistencia en Supabase
- * Tags de colores opcionales + filtros
+ * Tags de colores opcionales + filtros + iconos
  * Drag & Drop para reordenar items (pointer events)
  */
 
@@ -15,14 +15,19 @@
   var counter = document.getElementById('rl-counter');
   var tagPicker = document.getElementById('rl-tag-picker');
   var filtersContainer = document.getElementById('rl-filters');
+  var iconPreview = document.getElementById('rl-icon-preview');
+  var iconPickerWrap = document.getElementById('rl-icon-picker-wrap');
+  var iconPickerEl = document.getElementById('rl-icon-picker');
 
   var items = [];
   var userId = null;
   var selectedTagColor = null; // null = sin tag
+  var selectedIcon = 'fa-solid fa-bookmark';
   var activeFilter = null;    // null = todos
   var initialized = false;
 
   var TAG_COLORS = ['yellow', 'green', 'pink', 'blue', 'purple'];
+  var DEFAULT_ICON = 'fa-solid fa-bookmark';
 
   // --- Drag & Drop state ---
   var dragElement = null;
@@ -34,17 +39,11 @@
   // =============================================
 
   function buildTagPicker() {
-    // Limpiar dots existentes (excepto el label)
     tagPicker.querySelectorAll('.rl-tag-dot').forEach(function (d) { d.remove(); });
 
-    // "None" dot
-    var noneDot = createTagDot('none', null);
-    tagPicker.appendChild(noneDot);
-
-    // Color dots
+    tagPicker.appendChild(createTagDot('none', null));
     TAG_COLORS.forEach(function (color) {
-      var dot = createTagDot(color, color);
-      tagPicker.appendChild(dot);
+      tagPicker.appendChild(createTagDot(color, color));
     });
   }
 
@@ -55,9 +54,7 @@
     dot.dataset.color = colorName;
     dot.setAttribute('aria-label', 'Tag ' + colorName);
 
-    if (selectedTagColor === colorValue) {
-      dot.classList.add('active');
-    }
+    if (selectedTagColor === colorValue) dot.classList.add('active');
 
     dot.addEventListener('click', function () {
       selectedTagColor = (selectedTagColor === colorValue) ? null : colorValue;
@@ -70,13 +67,36 @@
   }
 
   // =============================================
+  // ICON PICKER (toggle al hacer click en preview)
+  // =============================================
+
+  var iconPickerOpen = false;
+
+  function toggleIconPicker() {
+    iconPickerOpen = !iconPickerOpen;
+    if (iconPickerOpen) {
+      iconPickerWrap.style.display = 'block';
+      buildIconPicker(iconPickerEl, function (iconClass) {
+        selectedIcon = iconClass;
+        iconPreview.innerHTML = '<i class="' + iconClass + '"></i>';
+      }, selectedIcon);
+    } else {
+      iconPickerWrap.style.display = 'none';
+    }
+  }
+
+  function closeIconPicker() {
+    iconPickerOpen = false;
+    iconPickerWrap.style.display = 'none';
+  }
+
+  // =============================================
   // FILTER CHIPS
   // =============================================
 
   function renderFilters() {
     filtersContainer.innerHTML = '';
 
-    // Contar items por color
     var colorCounts = {};
     var hasTagged = false;
     items.forEach(function (item) {
@@ -88,7 +108,6 @@
 
     if (!hasTagged) return;
 
-    // "Todos" chip
     var allChip = document.createElement('button');
     allChip.className = 'rl-filter-chip' + (activeFilter === null ? ' active' : '');
     allChip.textContent = 'Todos';
@@ -98,7 +117,6 @@
     });
     filtersContainer.appendChild(allChip);
 
-    // Color chips (solo los colores que tienen items)
     TAG_COLORS.forEach(function (color) {
       var count = colorCounts[color];
       if (!count) return;
@@ -150,6 +168,7 @@
           title: r.title,
           url: r.url,
           tag_color: r.tag_color || null,
+          icon: r.icon || DEFAULT_ICON,
           order_index: r.order_index || 0,
           created_at: r.created_at
         };
@@ -170,7 +189,6 @@
     hideSkeleton('skel-readlater');
     list.innerHTML = '';
 
-    // Filtrar items
     var filteredItems = items;
     if (activeFilter) {
       filteredItems = items.filter(function (i) { return i.tag_color === activeFilter; });
@@ -200,25 +218,25 @@
     li.className = 'read-later-item';
     li.dataset.id = item.id;
     li.dataset.index = index;
-    if (item.tag_color) {
-      li.dataset.tag = item.tag_color;
-    }
+    if (item.tag_color) li.dataset.tag = item.tag_color;
 
-    // Tag color button (cycle colors on click)
-    var tagBtn = document.createElement('button');
-    tagBtn.className = 'rl-item-tag';
-    tagBtn.setAttribute('aria-label', 'Cambiar tag');
-    var tagDot = document.createElement('span');
-    tagDot.className = 'rl-item-tag-dot';
-    tagDot.dataset.color = item.tag_color || 'none';
-    tagBtn.appendChild(tagDot);
-    tagBtn.addEventListener('click', function (e) {
+    // Icon (always visible, colored by tag, cycles tag color on click)
+    var iconBtn = document.createElement('button');
+    iconBtn.className = 'rl-item-icon';
+    iconBtn.setAttribute('aria-label', 'Cambiar tag');
+    var iconEl = document.createElement('i');
+    iconEl.className = item.icon || DEFAULT_ICON;
+    if (item.tag_color) {
+      iconEl.style.color = 'var(--note-' + item.tag_color + ')';
+    }
+    iconBtn.appendChild(iconEl);
+    iconBtn.addEventListener('click', function (e) {
       e.preventDefault();
       e.stopPropagation();
       cycleTagColor(item);
     });
 
-    // Grip handle
+    // Grip handle (hover)
     var grip = document.createElement('button');
     grip.className = 'rl-grip';
     grip.setAttribute('aria-label', 'Arrastrar para reordenar');
@@ -228,6 +246,7 @@
       startDrag(e, item, li);
     });
 
+    // Link
     var link = document.createElement('a');
     link.className = 'read-later-link';
     link.href = item.url;
@@ -245,6 +264,18 @@
     link.appendChild(titleSpan);
     link.appendChild(urlSpan);
 
+    // Edit button (hover)
+    var editBtn = document.createElement('button');
+    editBtn.className = 'rl-edit';
+    editBtn.setAttribute('aria-label', 'Editar');
+    editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+    editBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openInlineEdit(item, li);
+    });
+
+    // Delete button (hover)
     var deleteBtn = document.createElement('button');
     deleteBtn.className = 'rl-delete';
     deleteBtn.setAttribute('aria-label', 'Eliminar');
@@ -255,30 +286,151 @@
       deleteItem(item.id);
     });
 
-    li.appendChild(tagBtn);
+    li.appendChild(iconBtn);
     li.appendChild(grip);
     li.appendChild(link);
+    li.appendChild(editBtn);
     li.appendChild(deleteBtn);
 
     return li;
   }
 
-  // --- Cycle tag color: none → yellow → green → pink → blue → purple → none ---
+  // =============================================
+  // INLINE EDIT
+  // =============================================
+
+  function openInlineEdit(item, li) {
+    // Prevent double-editing
+    if (li.querySelector('.rl-edit-form')) return;
+
+    li.classList.add('rl-editing');
+
+    var editForm = document.createElement('div');
+    editForm.className = 'rl-edit-form';
+
+    // Title input
+    var titleEdit = document.createElement('input');
+    titleEdit.type = 'text';
+    titleEdit.className = 'rl-edit-input';
+    titleEdit.value = item.title;
+    titleEdit.maxLength = 120;
+    titleEdit.placeholder = 'Descripcion...';
+
+    // URL display (readonly)
+    var urlEdit = document.createElement('input');
+    urlEdit.type = 'url';
+    urlEdit.className = 'rl-edit-input';
+    urlEdit.value = item.url;
+    urlEdit.readOnly = true;
+
+    // Icon picker for edit
+    var editIconPicker = document.createElement('div');
+    editIconPicker.className = 'icon-picker rl-edit-icon-picker';
+
+    // Action buttons
+    var actions = document.createElement('div');
+    actions.className = 'rl-edit-actions';
+
+    var saveBtn = document.createElement('button');
+    saveBtn.type = 'button';
+    saveBtn.className = 'rl-edit-save';
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+    saveBtn.setAttribute('aria-label', 'Guardar');
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.type = 'button';
+    cancelBtn.className = 'rl-edit-cancel';
+    cancelBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+    cancelBtn.setAttribute('aria-label', 'Cancelar');
+
+    actions.appendChild(saveBtn);
+    actions.appendChild(cancelBtn);
+    editForm.appendChild(titleEdit);
+    editForm.appendChild(urlEdit);
+    editForm.appendChild(editIconPicker);
+    editForm.appendChild(actions);
+
+    // Hide the link, show edit form
+    var linkEl = li.querySelector('.read-later-link');
+    var editBtnEl = li.querySelector('.rl-edit');
+    if (linkEl) linkEl.style.display = 'none';
+    if (editBtnEl) editBtnEl.style.display = 'none';
+
+    li.appendChild(editForm);
+    titleEdit.focus();
+    titleEdit.select();
+
+    // Build icon picker with current icon selected
+    var currentIcon = item.icon || DEFAULT_ICON;
+    buildIconPicker(editIconPicker, function (iconClass) {
+      currentIcon = iconClass;
+    }, currentIcon);
+
+    // Cancel
+    function cancelEdit() {
+      if (linkEl) linkEl.style.display = '';
+      if (editBtnEl) editBtnEl.style.display = '';
+      if (editForm.parentNode) editForm.remove();
+      li.classList.remove('rl-editing');
+    }
+
+    // Save
+    async function saveEdit() {
+      var newTitle = titleEdit.value.trim();
+      if (!newTitle) {
+        titleEdit.focus();
+        return;
+      }
+
+      var client = getSupabase();
+      if (client) {
+        try {
+          var result = await client
+            .from('read_later_items')
+            .update({ title: newTitle, icon: currentIcon })
+            .eq('id', item.id);
+
+          if (!result.error) {
+            item.title = newTitle;
+            item.icon = currentIcon;
+          }
+        } catch (e) {
+          console.warn('MozzPCC: Error editando item:', e);
+        }
+      }
+
+      cancelEdit();
+      render();
+    }
+
+    cancelBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      cancelEdit();
+    });
+    saveBtn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      saveEdit();
+    });
+    titleEdit.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); saveEdit(); }
+      if (e.key === 'Escape') { e.preventDefault(); cancelEdit(); }
+      e.stopPropagation();
+    });
+    urlEdit.addEventListener('keydown', function (e) { e.stopPropagation(); });
+  }
+
+  // --- Cycle tag color ---
   async function cycleTagColor(item) {
     var current = item.tag_color;
-    var nextIndex = current
-      ? TAG_COLORS.indexOf(current)
-      : -1;
+    var nextIndex = current ? TAG_COLORS.indexOf(current) : -1;
 
     var nextColor = TAG_COLORS[(nextIndex + 1) % TAG_COLORS.length];
-    // Si ya era purple (último), volver a null
     if (nextIndex === TAG_COLORS.length - 1) {
       nextColor = null;
     }
 
     item.tag_color = nextColor;
 
-    // Actualizar en Supabase
     var client = getSupabase();
     if (client) {
       try {
@@ -305,7 +457,6 @@
   function updateCounter(filtered, total) {
     var span = counter.querySelector('span');
     if (span) span.textContent = filtered;
-    // Si hay filtro activo, mostrar filtered/total
     if (activeFilter && filtered !== total) {
       counter.innerHTML = '<span>' + filtered + '</span> / ' + total + ' links';
     } else {
@@ -342,7 +493,8 @@
           title: title,
           url: url,
           order_index: 0,
-          tag_color: selectedTagColor
+          tag_color: selectedTagColor,
+          icon: selectedIcon
         })
         .select()
         .single();
@@ -357,15 +509,18 @@
         title: result.data.title,
         url: result.data.url,
         tag_color: selectedTagColor,
+        icon: selectedIcon,
         order_index: 0,
         created_at: result.data.created_at
       });
 
       await saveOrder();
-
       render();
       titleInput.value = '';
       urlInput.value = '';
+      selectedIcon = DEFAULT_ICON;
+      iconPreview.innerHTML = '<i class="' + DEFAULT_ICON + '"></i>';
+      closeIconPicker();
       titleInput.focus();
     } catch (e) {
       console.warn('MozzPCC: Error agregando read later:', e);
@@ -380,22 +535,18 @@
     var client = getSupabase();
     if (!client || !userId) return;
 
-    // Guardar item para posible undo
     var itemEliminado = items.find(function (i) { return i.id === id; });
     var originalIndex = items.findIndex(function (i) { return i.id === id; });
 
-    // Optimistic update
     items = items.filter(function (i) { return i.id !== id; });
     await saveOrder();
     render();
 
-    // Mostrar toast con undo
     if (window.UndoToast) {
       window.UndoToast.show({
         message: 'Articulo eliminado',
         onUndo: function () {
           if (itemEliminado) {
-            // Restaurar en posición original
             items.splice(Math.min(originalIndex, items.length), 0, itemEliminado);
             saveOrder();
             render();
@@ -433,7 +584,7 @@
     }
   }
 
-  // --- Guardar orden en Supabase ---
+  // --- Guardar orden ---
   async function saveOrder() {
     var client = getSupabase();
     if (!client || !userId) return;
@@ -459,7 +610,6 @@
     dragging = true;
 
     dragElement = element;
-
     element.classList.add('dragging');
 
     placeholder = document.createElement('li');
@@ -561,13 +711,15 @@
     items = [];
     userId = null;
     selectedTagColor = null;
+    selectedIcon = DEFAULT_ICON;
     activeFilter = null;
     initialized = false;
     list.innerHTML = '';
     filtersContainer.innerHTML = '';
     titleInput.value = '';
     urlInput.value = '';
-    // Reset tag picker
+    iconPreview.innerHTML = '<i class="' + DEFAULT_ICON + '"></i>';
+    closeIconPicker();
     tagPicker.querySelectorAll('.rl-tag-dot').forEach(function (d) {
       d.classList.toggle('active', d.dataset.color === 'none');
     });
@@ -575,6 +727,7 @@
 
   // --- Events ---
   addBtn.addEventListener('click', addItem);
+  iconPreview.addEventListener('click', toggleIconPicker);
 
   titleInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
@@ -585,6 +738,13 @@
 
   urlInput.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') addItem();
+  });
+
+  // Close icon picker on outside click
+  document.addEventListener('click', function (e) {
+    if (iconPickerOpen && !iconPickerWrap.contains(e.target) && e.target !== iconPreview && !iconPreview.contains(e.target)) {
+      closeIconPicker();
+    }
   });
 
   window.addEventListener('auth:ready', function (e) {

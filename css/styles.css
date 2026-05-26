@@ -1377,7 +1377,7 @@ body::after {
 .read-later-input-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .read-later-input-row input {
@@ -1391,6 +1391,37 @@ body::after {
   font-size: 0.85rem;
   outline: none;
   transition: var(--transition);
+}
+
+/* Icon preview button in input row */
+.rl-icon-preview {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xs);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 0.95rem;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.rl-icon-preview:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* Icon picker wrap inline */
+.rl-icon-picker-wrap {
+  margin-bottom: 12px;
+  padding: 6px 0;
+}
+
+.rl-icon-picker-wrap .icon-picker {
+  max-height: 120px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .read-later-input-row input:focus {
@@ -1550,43 +1581,49 @@ body::after {
 
 .read-later-item:hover .rl-delete,
 .read-later-item:hover .rl-grip,
-.read-later-item:hover .rl-item-tag {
+.read-later-item:hover .rl-edit {
   opacity: 1;
 }
 
-/* Tag color indicator on item */
-.rl-item-tag {
+/* Icono del item (siempre visible, coloreado por tag) */
+.rl-item-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rl-item-icon:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: scale(1.1);
+}
+
+/* Edit button (hover) */
+.rl-edit {
   opacity: 0;
   background: none;
   border: none;
+  color: var(--text-muted);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
   transition: var(--transition-fast);
   flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: none;
+  font-size: 0.75rem;
 }
 
-.rl-item-tag:hover {
-  background: rgba(255, 255, 255, 0.06);
+.rl-edit:hover {
+  color: var(--accent);
+  background: rgba(0, 212, 255, 0.1);
 }
-
-.rl-item-tag-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.15);
-  transition: var(--transition-fast);
-}
-
-.rl-item-tag-dot[data-color="yellow"] { background: var(--note-yellow); border-color: var(--note-yellow); }
-.rl-item-tag-dot[data-color="green"] { background: var(--note-green); border-color: var(--note-green); }
-.rl-item-tag-dot[data-color="pink"] { background: var(--note-pink); border-color: var(--note-pink); }
-.rl-item-tag-dot[data-color="blue"] { background: var(--note-blue); border-color: var(--note-blue); }
-.rl-item-tag-dot[data-color="purple"] { background: var(--note-purple); border-color: var(--note-purple); }
 
 /* Left colored border for tagged items */
 .read-later-item[data-tag="yellow"] { border-left: 3px solid var(--note-yellow); }
@@ -1699,6 +1736,76 @@ body::after {
 .rl-delete:hover {
   color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
+}
+
+/* Inline edit form */
+.rl-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.rl-edit-form .rl-edit-input {
+  width: 100%;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xs);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.82rem;
+  outline: none;
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.rl-edit-form .rl-edit-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+.rl-edit-form .rl-edit-input[readonly] {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.rl-edit-form .rl-edit-icon-picker {
+  max-height: 100px;
+}
+
+.rl-edit-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.rl-edit-save,
+.rl-edit-cancel {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  transition: var(--transition-fast);
+}
+
+.rl-edit-save {
+  color: var(--accent);
+}
+
+.rl-edit-save:hover {
+  background: var(--accent-dim);
+}
+
+.rl-edit-cancel {
+  color: var(--text-muted);
+}
+
+.rl-edit-cancel:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
 }
 
 .read-later-empty {

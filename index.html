@@ -590,11 +590,19 @@
             </div>
 
             <div class="read-later-input-row">
+              <button type="button" class="rl-icon-preview" id="rl-icon-preview" title="Elegir icono" aria-label="Elegir icono">
+                <i class="fa-solid fa-bookmark"></i>
+              </button>
               <input type="text" id="rl-title-input" placeholder="Descripcion..." aria-label="Descripcion" maxlength="120">
               <input type="url" id="rl-url-input" placeholder="https://..." aria-label="URL" maxlength="500">
               <button class="btn-add" id="rl-add-btn" aria-label="Agregar link">
                 <i class="fa-solid fa-plus"></i>
               </button>
+            </div>
+
+            <!-- Icon picker (se muestra al hacer click en el preview) -->
+            <div class="rl-icon-picker-wrap" id="rl-icon-picker-wrap" style="display:none;">
+              <div class="icon-picker" id="rl-icon-picker"></div>
             </div>
 
             <div class="read-later-tag-picker" id="rl-tag-picker">
