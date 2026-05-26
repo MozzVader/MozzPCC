@@ -201,7 +201,8 @@
       if (contenido.getAttribute('data-editing') === 'true') return;
       contenido.setAttribute('data-editing', 'true');
       contenido.setAttribute('contenteditable', 'true');
-      contenido.textContent = nota.contenido || '';
+      // innerHTML con <br> para que los \n se muestren como saltos de línea
+      contenido.innerHTML = escapeHtml(nota.contenido || '').replace(/\n/g, '<br>');
       contenido.classList.add('note-editing');
       // Move cursor to end
       var range = document.createRange();

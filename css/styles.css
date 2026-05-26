@@ -2546,12 +2546,26 @@ body::after {
   border-radius: 4px;
   transition: var(--transition-fast);
   line-height: 1.5;
-  min-height: 60px;
+  height: 52px;
   cursor: text;
   overflow-wrap: break-word;
   word-break: break-word;
   overflow-y: auto;
-  max-height: 150px;
+}
+
+/* Scrollbar oscuro dentro de notas */
+.note-content::-webkit-scrollbar {
+  width: 4px;
+}
+.note-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.note-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+.note-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .note-content:focus,
