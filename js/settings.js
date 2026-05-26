@@ -479,6 +479,9 @@
   // --- Modal open/close ---
   function openSettings() {
     settingsModal.style.display = 'flex';
+    // Activar tab Apariencia por defecto
+    var defaultTab = document.querySelector('.settings-tab[data-tab="appearance"]');
+    if (defaultTab) defaultTab.click();
     renderPalettes();
   }
 
