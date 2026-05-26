@@ -214,6 +214,9 @@
 
     function exitEditMode() {
       if (contenido.getAttribute('data-editing') !== 'true') return;
+      // Leer con innerText para capturar los saltos de línea reales
+      nota.contenido = contenido.innerText;
+      guardarNotaDebounced(nota.id, { content: nota.contenido });
       contenido.setAttribute('data-editing', 'false');
       contenido.removeAttribute('contenteditable');
       contenido.classList.remove('note-editing');
@@ -231,7 +234,8 @@
     });
     contenido.addEventListener('blur', exitEditMode);
     contenido.addEventListener('input', () => {
-      nota.contenido = contenido.textContent;
+      // innerText preserva saltos de línea del contenteditable (texto no)
+      nota.contenido = contenido.innerText;
       guardarNotaDebounced(nota.id, { content: nota.contenido });
     });
 

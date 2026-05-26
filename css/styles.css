@@ -2550,7 +2550,8 @@ body::after {
   cursor: text;
   overflow-wrap: break-word;
   word-break: break-word;
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 150px;
 }
 
 .note-content:focus,
