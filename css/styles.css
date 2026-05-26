@@ -2538,7 +2538,6 @@ body::after {
 }
 
 .note-content {
-  flex: 1;
   font-size: 0.82rem;
   color: var(--text-secondary);
   outline: none;
