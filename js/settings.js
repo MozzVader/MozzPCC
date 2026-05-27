@@ -409,42 +409,27 @@
     if (!client || !userId) return;
 
     try {
+      // Nota: theme_skin se agregará al query cuando la columna exista en la DB
       var { data, error } = await client
         .from('user_preferences')
-        .select('theme, theme_skin, city')
+        .select('theme, city')
         .eq('user_id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        // Columna theme_skin puede no existir todavía — reintentar sin ella
-        if (error.code === '42P01' || error.message.includes('does not exist') || error.status === 400) {
-          console.warn('MozzPCC: Columna theme_skin no existe, cargando sin ella.');
-          var fallback = await client
-            .from('user_preferences')
-            .select('theme, city')
-            .eq('user_id', userId)
-            .maybeSingle();
-          if (!fallback.error && fallback.data) {
-            if (fallback.data.theme) applyTheme(fallback.data.theme);
-            if (fallback.data.city) {
-              var cityInput = document.getElementById('weather-city-input');
-              if (cityInput) cityInput.value = fallback.data.city;
-            }
-          }
-        }
+        // Tabla quizás no existe aún — usar defaults
+        console.warn('MozzPCC: Error cargando preferencias (theme):', error.message);
         return;
       }
 
       if (data) {
         if (data.theme) applyTheme(data.theme);
-        if (data.theme_skin) loadThemeCSS(data.theme_skin);
         if (data.city) {
           var cityInput = document.getElementById('weather-city-input');
           if (cityInput) cityInput.value = data.city;
         }
       }
     } catch (e) {
-      // Tabla quizás no existe aún — usar default
       console.warn('MozzPCC: Error cargando preferencias (theme):', e.message || e);
     }
   }
