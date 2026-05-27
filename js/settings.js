@@ -42,10 +42,21 @@
       name: 'Notion',
       desc: 'Claro y minimalista',
       icon: 'fa-solid fa-file-lines',
-      available: false,
+      available: true,
       preview: {
         bg: '#ffffff',
         bars: ['#f1f1ef', '#e8e8e6', '#ededec', '#f4f4f3']
+      }
+    },
+    {
+      id: 'linear',
+      name: 'Linear',
+      desc: 'Dark minimalista',
+      icon: 'fa-solid fa-bolt',
+      available: false,
+      preview: {
+        bg: '#0a0a0a',
+        bars: ['#1a1a1a', '#161616', '#1e1e1e', '#141414']
       }
     },
     {
@@ -79,6 +90,17 @@
       preview: {
         bg: '#0c0c0c',
         bars: ['#1a3a1a', '#1a2a1a', '#0f2f0f', '#142814']
+      }
+    },
+    {
+      id: 'zai',
+      name: 'Zai',
+      desc: 'Aurora Neural',
+      icon: 'fa-solid fa-wand-magic-sparkles',
+      available: false,
+      preview: {
+        bg: '#080812',
+        bars: ['#1a1035', '#0f1a30', '#15102a', '#0d1525']
       }
     }
   ];

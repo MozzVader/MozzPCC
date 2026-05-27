@@ -1,0 +1,122 @@
+/* ============================================
+   MozzPCC — Tema Notion (Claro / Minimalista)
+   ============================================
+   Inspirado en Notion: blanco cálido, bordes
+   sutiles, sin glow, sin blur, sin sombras oscuras.
+   Tipografía limpia con espaciado generoso.
+   ============================================ */
+
+[data-theme="notion"] {
+  /* --- Body --- */
+  --t-body-bg: #ffffff;
+  --t-body-secondary: #f7f7f5;
+  --t-body-pattern: transparent;
+  --t-body-glow-a: transparent;
+  --t-body-glow-b: transparent;
+  --t-body-glow-c: transparent;
+
+  /* --- Cards --- */
+  --t-card-bg: #ffffff;
+  --t-card-hover: #f7f7f5;
+  --t-card-border: #e8e8e6;
+  --t-card-border-hover: #d9d9d7;
+  --t-card-radius: 6px;
+  --t-card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --t-card-shine: none;
+  --t-card-chrome: none;
+  --t-card-padding-top: 0px;
+
+  /* --- Superficies --- */
+  --t-surface-1: rgba(0, 0, 0, 0.02);
+  --t-surface-2: rgba(0, 0, 0, 0.03);
+  --t-surface-3: rgba(0, 0, 0, 0.04);
+  --t-surface-4: rgba(0, 0, 0, 0.05);
+  --t-surface-5: rgba(0, 0, 0, 0.08);
+  --t-surface-tooltip: rgb(47 47 47 / 95%);
+  --t-surface-dropdown: #ffffff;
+  --t-surface-overlay: rgba(0, 0, 0, 0.3);
+  --t-surface-modal: #ffffff;
+  --t-surface-toast: #ffffff;
+  --t-surface-input: #ffffff;
+  --t-surface-input-focus: #ffffff;
+
+  /* --- Bordes --- */
+  --t-border-subtle: #ececea;
+  --t-border-default: #e8e8e6;
+  --t-border-strong: #d9d9d7;
+  --t-input-border: #e3e3e1;
+  --t-input-border-focus: var(--p-accent);
+
+  /* --- Sombras --- */
+  --t-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --t-shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --t-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --t-shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.1);
+  --t-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  /* --- Blur (minimal en tema claro) --- */
+  --t-blur-sm: 4px;
+  --t-blur-md: 8px;
+  --t-blur-lg: 12px;
+  --t-blur-xl: 16px;
+  --t-blur-2xl: 20px;
+  --t-blur-3xl: 24px;
+  --t-blur-card: 8px;
+
+  /* --- Tipografia --- */
+  --t-font: 'Inter', ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --t-font-mono: 'Inter', ui-monospace, monospace;
+
+  /* --- Radios (mas chicos, estilo Notion) --- */
+  --t-radius-xs: 4px;
+  --t-radius-sm: 5px;
+  --t-radius-md: 6px;
+  --t-radius-lg: 8px;
+  --t-radius-xl: 12px;
+
+  /* --- Colores semanticos (adaptados para claro) --- */
+  --t-danger: #eb5757;
+  --t-danger-dim: rgba(235, 87, 87, 0.06);
+  --t-danger-light: #eb5757;
+  --t-danger-hover: #d64545;
+  --t-success: #4dab6f;
+  --t-success-dim: rgba(77, 171, 111, 0.06);
+  --t-success-light: #4dab6f;
+  --t-success-hover: #3d9a5f;
+  --t-warning: #d4a72c;
+  --t-info: #529cca;
+
+  /* --- Texto (oscuro sobre claro) --- */
+  --t-text-primary: #37352f;
+  --t-text-secondary: #787774;
+  --t-text-muted: #b4b4b0;
+  --t-text-tooltip: #e2e8f0;
+  --t-text-on-accent: #ffffff;
+
+  /* --- Skeleton --- */
+  --t-skeleton-base: rgba(0, 0, 0, 0.04);
+  --t-skeleton-shine: rgba(0, 0, 0, 0.08);
+
+  /* ============================================
+   * LEGACY ALIASES
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
+}
