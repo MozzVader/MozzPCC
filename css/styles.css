@@ -56,34 +56,16 @@
   --transition-fast: all 0.15s ease;
 
   /* ============================================
-   * LEGACY ALIASES — Apuntan a nuevas variables
-   * Mantienen compatibilidad con código existente.
+   * LEGACY ALIASES (palette-only, safe in :root)
+   * Los aliases que referencian --t-* están en
+   * css/themes/default.css junto con las --t-*.
    * ============================================ */
-  --bg-primary: var(--t-body-bg);
-  --bg-secondary: var(--t-body-secondary);
-  --bg-glass: var(--t-card-bg);
-  --bg-glass-hover: var(--t-card-hover);
-  --border-glass: var(--t-card-border);
-  --border-glass-hover: var(--t-card-border-hover);
   --accent: var(--p-accent);
   --accent-dim: var(--p-accent-dim);
   --accent-glow: var(--p-accent-glow);
   --accent-secondary: var(--p-accent-secondary);
-  --bg-glow-a: var(--t-body-glow-a);
-  --bg-glow-b: var(--t-body-glow-b);
-  --bg-glow-c: var(--t-body-glow-c);
   --border-accent: var(--p-border-accent);
-  --text-primary: var(--t-text-primary);
-  --text-secondary: var(--t-text-secondary);
-  --text-muted: var(--t-text-muted);
-  --shadow-card: var(--t-card-shadow);
   --shadow-glow: var(--p-shadow-glow);
-  --radius: var(--t-radius-md);
-  --radius-sm: var(--t-radius-sm);
-  --radius-xs: var(--t-radius-xs);
-  --font: var(--t-font);
-  --border: var(--t-border-default);
-  --radius-lg: var(--t-radius-lg);
 }
 
 /* --- Reset y base --- */
@@ -3366,7 +3348,7 @@ body::after {
 }
 
 /* Barra de búsqueda Google */
-QUICKSEARCHPLACEHOLDER
+.quick-search-bar {
   display: flex;
   align-items: center;
   gap: 12px;

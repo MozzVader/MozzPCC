@@ -97,4 +97,30 @@
   /* --- Skeleton --- */
   --t-skeleton-base: rgba(255, 255, 255, 0.04);
   --t-skeleton-shine: rgba(255, 255, 255, 0.08);
+
+  /* ============================================
+   * LEGACY ALIASES — Definidos AQUÍ porque
+   * referencian --t-* que viven en este bloque.
+   * En :root no tendrían acceso a --t-*.
+   * Otros temas deben incluir estos mismos aliases.
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
 }
