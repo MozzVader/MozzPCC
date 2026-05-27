@@ -4717,19 +4717,21 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 
 /* Sync indicator dot */
 .sync-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: transparent;
   opacity: 0;
-  transition: opacity 0.3s ease, background 0.3s ease;
+  transition: opacity 0.3s ease, background 0.3s ease, transform 0.3s ease;
   flex-shrink: 0;
+  transform: scale(0.6);
 }
 
 .sync-dot.active {
   opacity: 1;
-  background: var(--t-success);
-  box-shadow: 0 0 6px var(--t-success-glow, rgba(34, 197, 94, 0.5));
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+  transform: scale(1);
 }
 
 /* ============================================
