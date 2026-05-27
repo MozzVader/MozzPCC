@@ -128,7 +128,8 @@
       { id: 'act-newtask',  group: 'Acciones', icon: 'fa-solid fa-plus',        label: 'Nueva tarea',          hint: 'Agregar tarea',    shortcut: '',    action: function () { focusElement('task-input'); } },
       { id: 'act-newnote',  group: 'Acciones', icon: 'fa-solid fa-note-sticky', label: 'Nueva nota',           hint: 'Crear nota',        shortcut: '',    action: function () { clickElement('new-note-btn'); } },
       { id: 'act-newrl',    group: 'Acciones', icon: 'fa-solid fa-bookmark',   label: 'Guardar link',         hint: 'Ver mas tarde',     shortcut: '',    action: function () { focusElement('rl-title-input'); } },
-      { id: 'act-settings', group: 'Acciones', icon: 'fa-solid fa-gear',        label: 'Configuracion',        hint: 'Abrir settings',    shortcut: '',    action: function () { clickElement('settings-btn'); } }
+      { id: 'act-settings', group: 'Acciones', icon: 'fa-solid fa-gear',        label: 'Configuracion',        hint: 'Abrir settings',    shortcut: '',    action: function () { clickElement('settings-btn'); } },
+      { id: 'act-countdown', group: 'Acciones', icon: 'fa-solid fa-hourglass-half', label: 'Configurar countdown', hint: 'Contador regresivo', shortcut: '', action: function () { openCountdownSettings(); } }
     ];
   }
 
@@ -447,6 +448,19 @@
   function clickElement(id) {
     var el = document.getElementById(id);
     if (el) el.click();
+  }
+
+  function openCountdownSettings() {
+    var settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) settingsBtn.click();
+    // Esperar a que se abra y cambiar al tab de apariencia
+    setTimeout(function () {
+      var appearanceTab = document.querySelector('.settings-tab[data-tab="appearance"]');
+      if (appearanceTab) appearanceTab.click();
+      // Scroll al section de countdown
+      var cdSection = document.getElementById('cd-settings-section');
+      if (cdSection) cdSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
   }
 
   function extractDomain(url) {

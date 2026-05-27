@@ -131,6 +131,45 @@
   <!-- Undo Toast Container -->
   <div id="undo-toast-container" class="undo-toast-container"></div>
 
+  <!-- ===== COUNTDOWN FLOTANTE ===== -->
+  <div id="countdown-float" class="countdown-float cd-safe" style="display:none;">
+    <div class="cd-header">
+      <span class="cd-dot"></span>
+      <span class="cd-event-name" id="cd-event-name"></span>
+      <button class="cd-close" id="cd-close" aria-label="Cerrar countdown">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="cd-body">
+      <div class="cd-unit">
+        <div class="cd-flip-card"><span class="cd-number" id="cd-days">--</span></div>
+        <span class="cd-label">DIAS</span>
+      </div>
+      <div class="cd-separator">:</div>
+      <div class="cd-unit">
+        <div class="cd-flip-card"><span class="cd-number" id="cd-hours">--</span></div>
+        <span class="cd-label">HORAS</span>
+      </div>
+      <div class="cd-separator">:</div>
+      <div class="cd-unit">
+        <div class="cd-flip-card"><span class="cd-number" id="cd-mins">--</span></div>
+        <span class="cd-label">MIN</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== COUNTDOWN CELEBRATION MODAL ===== -->
+  <div id="cd-celebration-modal" class="settings-overlay" style="display:none;">
+    <div class="cd-celebration">
+      <div class="cd-celebration-icon"><i class="fa-solid fa-champagne-glasses"></i></div>
+      <h2 class="cd-celebration-title" id="cd-celebration-title"></h2>
+      <p class="cd-celebration-sub">Llego el momento!</p>
+      <button id="cd-celebration-close" class="cd-celebration-btn">
+        <i class="fa-solid fa-check"></i> Entendido
+      </button>
+    </div>
+  </div>
+
   <!-- ===== BARRA DE USUARIO ===== -->
   <div id="user-info-bar" class="user-info-bar" style="display:none;">
     <div class="user-info-content">
@@ -960,6 +999,25 @@
             </select>
             <p id="autolock-status" class="weather-city-status"></p>
           </div>
+          <div class="appearance-section" id="cd-settings-section">
+            <h3><i class="fa-solid fa-hourglass-half" style="color:var(--accent);margin-right:6px;"></i> Countdown</h3>
+            <p class="appearance-hint">Contador regresivo flotante. Se muestra abajo a la izquierda con los dias, horas y minutos que faltan para un evento.</p>
+            <div class="cd-settings-form">
+              <div class="cd-settings-row">
+                <input type="text" id="cd-name-input" class="weather-city-input" placeholder="Ej: Cumple de Juan" maxlength="40">
+                <input type="datetime-local" id="cd-date-input" class="weather-city-input">
+              </div>
+              <div class="cd-settings-actions">
+                <button id="cd-save-btn" class="weather-city-save" style="flex:1;">
+                  <i class="fa-solid fa-check"></i> Guardar
+                </button>
+                <button id="cd-remove-btn" class="weather-city-save" style="flex:1;background:rgba(248,113,113,0.15);color:#fb7185;">
+                  <i class="fa-solid fa-trash-can"></i> Eliminar
+                </button>
+              </div>
+              <p id="cd-settings-status" class="weather-city-status"></p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1116,6 +1174,7 @@
   <script src="/MozzPCC/js/backup.js"></script>
   <script src="/MozzPCC/js/tips.js"></script>
   <script src="/MozzPCC/js/commandPalette.js"></script>
+  <script src="/MozzPCC/js/countdown.js"></script>
   <script src="/MozzPCC/js/cleanMode.js"></script>
   <script src="/MozzPCC/js/undoToast.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/twemoji@latest/dist/twemoji.min.js"></script>

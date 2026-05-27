@@ -7652,3 +7652,389 @@ body.clean-mode .clean-mode-hint {
   display: flex;
   gap: 8px;
 }
+
+/* ============================================
+   COUNTDOWN FLOTANTE (Flip Clock)
+   ============================================ */
+
+.countdown-float {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 800;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(15, 15, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.5s ease, box-shadow 0.5s ease;
+  cursor: default;
+  user-select: none;
+  animation: cdFloatIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cdFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --- Header --- */
+.cd-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-right: 4px;
+}
+
+.cd-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.5s ease;
+}
+
+.cd-event-name {
+  flex: 1;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  transition: color 0.5s ease;
+}
+
+.cd-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+  opacity: 0;
+}
+
+.countdown-float:hover .cd-close {
+  opacity: 1;
+}
+
+.cd-close:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Body (flip cards) --- */
+.cd-body {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cd-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.cd-flip-card {
+  position: relative;
+  width: 48px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.5s ease, background 0.5s ease;
+}
+
+/* Linea divisoria central (estilo flip clock) */
+.cd-flip-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 4px;
+  right: 4px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.cd-number {
+  font-family: 'Inter', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  line-height: 1;
+  z-index: 1;
+  letter-spacing: 1px;
+}
+
+.cd-label {
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color 0.5s ease;
+}
+
+.cd-separator {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color 0.5s ease;
+}
+
+/* --- Proximity states --- */
+
+/* Verde: >= 7 dias */
+.countdown-float.cd-safe {
+  border-color: rgba(52, 211, 153, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 12px rgba(52, 211, 153, 0.08);
+}
+.countdown-float.cd-safe .cd-dot { background: #34d399; box-shadow: 0 0 6px rgba(52, 211, 153, 0.5); }
+.countdown-float.cd-safe .cd-event-name { color: #34d399; }
+.countdown-float.cd-safe .cd-flip-card { border-color: rgba(52, 211, 153, 0.15); }
+.countdown-float.cd-safe .cd-label { color: rgba(52, 211, 153, 0.5); }
+.countdown-float.cd-safe .cd-separator { color: rgba(52, 211, 153, 0.4); }
+
+/* Amarillo: 1-7 dias */
+.countdown-float.cd-warning {
+  border-color: rgba(251, 191, 36, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 12px rgba(251, 191, 36, 0.1);
+}
+.countdown-float.cd-warning .cd-dot { background: #fbbf24; box-shadow: 0 0 6px rgba(251, 191, 36, 0.5); }
+.countdown-float.cd-warning .cd-event-name { color: #fbbf24; }
+.countdown-float.cd-warning .cd-flip-card { border-color: rgba(251, 191, 36, 0.15); }
+.countdown-float.cd-warning .cd-label { color: rgba(251, 191, 36, 0.5); }
+.countdown-float.cd-warning .cd-separator { color: rgba(251, 191, 36, 0.4); }
+
+/* Rojo: < 24h */
+.countdown-float.cd-urgent {
+  border-color: rgba(248, 113, 113, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 16px rgba(248, 113, 113, 0.12);
+}
+.countdown-float.cd-urgent .cd-dot { background: #f87171; box-shadow: 0 0 8px rgba(248, 113, 113, 0.6); }
+.countdown-float.cd-urgent .cd-event-name { color: #f87171; }
+.countdown-float.cd-urgent .cd-flip-card { border-color: rgba(248, 113, 113, 0.2); background: rgba(248, 113, 113, 0.04); }
+.countdown-float.cd-urgent .cd-label { color: rgba(248, 113, 113, 0.5); }
+.countdown-float.cd-urgent .cd-separator { color: rgba(248, 113, 113, 0.4); }
+
+/* Rojo pulsante: < 1h */
+.countdown-float.cd-imminent {
+  border-color: rgba(248, 113, 113, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(248, 113, 113, 0.15);
+  animation: cdFloatIn 0.4s cubic-bezier(0.4, 0, 0.2, 1), cdPulse 1.5s ease-in-out infinite;
+}
+.countdown-float.cd-imminent .cd-dot { background: #f87171; box-shadow: 0 0 10px rgba(248, 113, 113, 0.8); animation: cdDotPulse 1s ease-in-out infinite; }
+.countdown-float.cd-imminent .cd-event-name { color: #f87171; }
+.countdown-float.cd-imminent .cd-flip-card { border-color: rgba(248, 113, 113, 0.25); background: rgba(248, 113, 113, 0.06); }
+.countdown-float.cd-imminent .cd-label { color: rgba(248, 113, 113, 0.6); }
+.countdown-float.cd-imminent .cd-separator { color: rgba(248, 113, 113, 0.5); }
+
+@keyframes cdPulse {
+  0%, 100% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 20px rgba(248, 113, 113, 0.15); }
+  50% { box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 30px rgba(248, 113, 113, 0.25); }
+}
+
+@keyframes cdDotPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* --- Countdown settings form --- */
+.cd-settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cd-settings-row {
+  display: flex;
+  gap: 8px;
+}
+
+.cd-settings-row input {
+  flex: 1;
+}
+
+.cd-settings-row .weather-city-input[type="datetime-local"] {
+  flex: 0.8;
+}
+
+.cd-settings-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cd-settings-actions .weather-city-save {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+/* --- Celebration modal --- */
+.cd-celebration {
+  background: rgba(15, 15, 30, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 40px 48px;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  animation: cdCelebIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes cdCelebIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.cd-celebration-icon {
+  font-size: 3rem;
+  color: #fbbf24;
+  margin-bottom: 16px;
+  animation: cdCelebIconBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+@keyframes cdCelebIconBounce {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+
+.cd-celebration-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  word-break: break-word;
+}
+
+.cd-celebration-sub {
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+
+.cd-celebration-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: var(--accent);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-xs);
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cd-celebration-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+/* --- Responsive countdown --- */
+@media (max-width: 640px) {
+  .countdown-float {
+    bottom: 12px;
+    left: 12px;
+    padding: 8px 10px;
+    border-radius: 12px;
+  }
+
+  .cd-flip-card {
+    width: 38px;
+    height: 44px;
+    border-radius: 6px;
+  }
+
+  .cd-number {
+    font-size: 1.25rem;
+  }
+
+  .cd-label {
+    font-size: 0.4rem;
+    letter-spacing: 1px;
+  }
+
+  .cd-separator {
+    font-size: 1.1rem;
+    margin-bottom: 13px;
+  }
+
+  .cd-event-name {
+    max-width: 100px;
+    font-size: 0.6rem;
+  }
+
+  .cd-body {
+    gap: 4px;
+  }
+
+  .cd-celebration {
+    padding: 30px 24px;
+  }
+
+  .cd-celebration-icon {
+    font-size: 2.4rem;
+  }
+
+  .cd-celebration-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .cd-flip-card {
+    width: 34px;
+    height: 40px;
+  }
+
+  .cd-number {
+    font-size: 1.1rem;
+  }
+
+  .cd-separator {
+    font-size: 0.9rem;
+  }
+}
