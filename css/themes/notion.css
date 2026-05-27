@@ -26,15 +26,15 @@
   --t-card-chrome: none;
   --t-card-padding-top: 0px;
 
-  /* --- Superficies --- */
-  --t-surface-1: rgba(0, 0, 0, 0.02);
-  --t-surface-2: rgba(0, 0, 0, 0.03);
-  --t-surface-3: rgba(0, 0, 0, 0.04);
-  --t-surface-4: rgba(0, 0, 0, 0.05);
-  --t-surface-5: rgba(0, 0, 0, 0.08);
+  /* --- Superficies (colores solidos para tema claro — rgba transparente no funciona bien) --- */
+  --t-surface-1: #f5f5f3;
+  --t-surface-2: #efefed;
+  --t-surface-3: #ebebe9;
+  --t-surface-4: #e5e5e3;
+  --t-surface-5: #dedddd;
   --t-surface-tooltip: rgb(47 47 47 / 95%);
   --t-surface-dropdown: #ffffff;
-  --t-surface-overlay: rgba(0, 0, 0, 0.3);
+  --t-surface-overlay: rgba(0, 0, 0, 0.35);
   --t-surface-modal: #ffffff;
   --t-surface-toast: #ffffff;
   --t-surface-input: #ffffff;

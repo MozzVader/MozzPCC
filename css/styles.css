@@ -4728,8 +4728,8 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 
 .sync-dot.active {
   opacity: 1;
-  background: #22c55e;
-  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+  background: var(--t-success);
+  box-shadow: 0 0 6px var(--t-success-glow, rgba(34, 197, 94, 0.5));
 }
 
 /* ============================================
@@ -5178,7 +5178,7 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
   max-height: 80vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--t-shadow-xl);
   position: relative;
   overflow: hidden;
 }
@@ -7969,12 +7969,12 @@ body.clean-mode .clean-mode-hint {
   flex-direction: column;
   gap: 8px;
   padding: 10px 14px;
-  background: var(--t-surface-overlay);
+  background: var(--t-surface-2);
   backdrop-filter: blur(var(--t-blur-lg));
   -webkit-backdrop-filter: blur(var(--t-blur-lg));
   border: 1px solid var(--t-border-default);
   border-radius: 14px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--t-shadow-lg);
   transition: border-color 0.5s ease, box-shadow 0.5s ease;
   cursor: default;
   user-select: none;
