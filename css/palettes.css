@@ -1,0 +1,92 @@
+/* ============================================
+   MozzPCC — Paletas de colores
+   ============================================
+   Cada paleta redefine las variables --p-*
+   La paleta activa se aplica como [data-palette="id"]
+   en <body> o <html>.
+   
+   Nota: settings.js aplica paletas via setProperty()
+   como inline styles. Este archivo sirve como:
+   1. Referencia de definición de cada paleta
+   2. Fuente para temas que necesitan conocer
+      las variantes disponibles
+   3. Base para carga CSS estática (futura)
+   ============================================ */
+
+/* --- Cyan / Cyber (default) --- */
+[data-palette="cyber"] {
+  --p-accent: #00d4ff;
+  --p-accent-dim: rgba(0, 212, 255, 0.15);
+  --p-accent-glow: rgba(0, 212, 255, 0.4);
+  --p-accent-hover: #33dfff;
+  --p-accent-deep: #0099cc;
+  --p-accent-glow-far: rgba(0, 212, 255, 0.1);
+  --p-accent-secondary: #7c3aed;
+  --p-border-accent: rgba(0, 212, 255, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+/* --- Violet --- */
+[data-palette="violet"] {
+  --p-accent: #a78bfa;
+  --p-accent-dim: rgba(167, 139, 250, 0.15);
+  --p-accent-glow: rgba(167, 139, 250, 0.4);
+  --p-accent-hover: #c4b5fd;
+  --p-accent-deep: #8b5cf6;
+  --p-accent-glow-far: rgba(167, 139, 250, 0.1);
+  --p-accent-secondary: #f472b6;
+  --p-border-accent: rgba(167, 139, 250, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(167, 139, 250, 0.15);
+}
+
+/* --- Emerald --- */
+[data-palette="emerald"] {
+  --p-accent: #34d399;
+  --p-accent-dim: rgba(52, 211, 153, 0.15);
+  --p-accent-glow: rgba(52, 211, 153, 0.4);
+  --p-accent-hover: #6ee7b7;
+  --p-accent-deep: #10b981;
+  --p-accent-glow-far: rgba(52, 211, 153, 0.1);
+  --p-accent-secondary: #3b82f6;
+  --p-border-accent: rgba(52, 211, 153, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(52, 211, 153, 0.15);
+}
+
+/* --- Rose --- */
+[data-palette="rose"] {
+  --p-accent: #fb7185;
+  --p-accent-dim: rgba(251, 113, 133, 0.15);
+  --p-accent-glow: rgba(251, 113, 133, 0.4);
+  --p-accent-hover: #fda4af;
+  --p-accent-deep: #f43f5e;
+  --p-accent-glow-far: rgba(251, 113, 133, 0.1);
+  --p-accent-secondary: #e879f9;
+  --p-border-accent: rgba(251, 113, 133, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(251, 113, 133, 0.15);
+}
+
+/* --- Amber --- */
+[data-palette="amber"] {
+  --p-accent: #fbbf24;
+  --p-accent-dim: rgba(251, 191, 36, 0.15);
+  --p-accent-glow: rgba(251, 191, 36, 0.4);
+  --p-accent-hover: #fde68a;
+  --p-accent-deep: #f59e0b;
+  --p-accent-glow-far: rgba(251, 191, 36, 0.1);
+  --p-accent-secondary: #f97316;
+  --p-border-accent: rgba(251, 191, 36, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(251, 191, 36, 0.15);
+}
+
+/* --- Twitter / Sky --- */
+[data-palette="twitter"] {
+  --p-accent: #1d9bf0;
+  --p-accent-dim: rgba(29, 155, 240, 0.15);
+  --p-accent-glow: rgba(29, 155, 240, 0.4);
+  --p-accent-hover: #60a5fa;
+  --p-accent-deep: #0d8bd9;
+  --p-accent-glow-far: rgba(29, 155, 240, 0.1);
+  --p-accent-secondary: #0d8bd9;
+  --p-border-accent: rgba(29, 155, 240, 0.3);
+  --p-shadow-glow: 0 0 20px rgba(29, 155, 240, 0.15);
+}

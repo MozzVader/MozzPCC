@@ -328,9 +328,23 @@
 
     currentTheme = themeId;
     var root = document.documentElement;
+
+    // Aplicar variables legacy (los aliases en :root las propagan a --t-* / --p-*)
     Object.keys(theme.vars).forEach(function (key) {
       root.style.setProperty(key, theme.vars[key]);
     });
+
+    // Mapeo legacy → nuevas variables --p-*
+    var accent = theme.vars['--accent'] || '';
+    if (accent) {
+      root.style.setProperty('--p-accent', accent);
+      // Calcular derivados si no están explícitos en la paleta
+      root.style.setProperty('--p-border-accent', theme.vars['--border-accent'] || (accent + '4D'));
+      root.style.setProperty('--p-shadow-glow', theme.vars['--shadow-glow'] || ('0 0 20px ' + accent + '26'));
+    }
+
+    // Setear data-palette en body
+    document.body.setAttribute('data-palette', themeId);
 
     // Actualizar UI del grid de paletas
     document.querySelectorAll('.theme-palette-card').forEach(function (card) {
