@@ -110,6 +110,7 @@
 
     debounceTimers[id] = setTimeout(async () => {
       const client = getSupabase();
+      console.log('MozzPCC [notes]: guardando nota', id, 'client:', !!client, 'userId:', !!userId);
       if (!client || !userId) return;
 
       try {
