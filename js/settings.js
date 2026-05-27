@@ -22,6 +22,66 @@
   var userId = null;
   var currentTheme = 'cyber';
   var currentThemeSkin = 'default';
+  var themeSkinGrid = document.getElementById('theme-skin-grid');
+
+  // --- Tema skins (estructura visual) ---
+  var THEME_SKINS = [
+    {
+      id: 'default',
+      name: 'Dark Glass',
+      desc: 'Glassmorphism oscuro',
+      icon: 'fa-solid fa-moon',
+      available: true,
+      preview: {
+        bg: '#0a0a1a',
+        bars: ['rgba(37,37,37,0.4)', 'rgba(37,37,37,0.3)', 'rgba(37,37,37,0.35)', 'rgba(37,37,37,0.25)']
+      }
+    },
+    {
+      id: 'notion',
+      name: 'Notion',
+      desc: 'Claro y minimalista',
+      icon: 'fa-solid fa-file-lines',
+      available: false,
+      preview: {
+        bg: '#ffffff',
+        bars: ['#f1f1ef', '#e8e8e6', '#ededec', '#f4f4f3']
+      }
+    },
+    {
+      id: 'macos',
+      name: 'macOS',
+      desc: 'Vibrancy y transparencia',
+      icon: 'fa-brands fa-apple',
+      available: false,
+      preview: {
+        bg: '#1e1e2e',
+        bars: ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.06)', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']
+      }
+    },
+    {
+      id: 'windows',
+      name: 'Windows 11',
+      desc: 'Fluent Design',
+      icon: 'fa-brands fa-windows',
+      available: false,
+      preview: {
+        bg: '#202020',
+        bars: ['#2d2d2d', '#333333', '#2a2a2a', '#383838']
+      }
+    },
+    {
+      id: 'retro',
+      name: 'Retro',
+      desc: 'CRT / Fallout',
+      icon: 'fa-solid fa-tv',
+      available: false,
+      preview: {
+        bg: '#0c0c0c',
+        bars: ['#1a3a1a', '#1a2a1a', '#0f2f0f', '#142814']
+      }
+    }
+  ];
 
   // --- Paletas de colores ---
   var THEMES = [
@@ -375,6 +435,78 @@
     });
   }
 
+  // --- Tema skin: renderizar selector ---
+  function renderThemeSkins() {
+    if (!themeSkinGrid) return;
+    themeSkinGrid.innerHTML = '';
+
+    THEME_SKINS.forEach(function (skin) {
+      var card = document.createElement('div');
+      card.className = 'theme-skin-card' + (skin.id === currentThemeSkin ? ' active' : '') + (!skin.available ? ' locked' : '');
+      card.dataset.skin = skin.id;
+
+      // Mini preview
+      var previewHTML = '<div class="theme-skin-preview" style="background:' + skin.preview.bg + '">' +
+        '<div class="theme-skin-preview-inner">';
+      skin.preview.bars.forEach(function (color) {
+        previewHTML += '<div class="theme-skin-preview-bar" style="background:' + color + ';height:' + (40 + Math.random() * 50) + '%;"></div>';
+      });
+      previewHTML += '</div></div>';
+
+      // Info
+      var badgeClass = skin.available ? 'available' : 'soon';
+      var badgeText = skin.available ? 'Disponible' : 'Proximo';
+      var infoHTML = '<div class="theme-skin-info">' +
+        '<div class="theme-skin-icon" style="color:var(--accent);"><i class="' + skin.icon + '"></i></div>' +
+        '<div class="theme-skin-details">' +
+          '<div class="theme-skin-name">' + skin.name + '</div>' +
+          '<div class="theme-skin-desc">' + skin.desc + '</div>' +
+        '</div>' +
+        '<span class="theme-skin-badge ' + badgeClass + '">' + badgeText + '</span>' +
+      '</div>';
+
+      card.innerHTML = previewHTML + infoHTML;
+
+      if (skin.available) {
+        card.addEventListener('click', function () {
+          applyThemeSkin(skin.id);
+          saveThemeSkin(skin.id);
+        });
+      }
+
+      themeSkinGrid.appendChild(card);
+    });
+  }
+
+  // --- Tema skin: aplicar ---
+  function applyThemeSkin(skinId) {
+    currentThemeSkin = skinId;
+    loadThemeCSS(skinId);
+
+    // Actualizar UI
+    document.querySelectorAll('.theme-skin-card').forEach(function (card) {
+      card.classList.toggle('active', card.dataset.skin === skinId);
+    });
+  }
+
+  // --- Tema skin: persistencia ---
+  async function saveThemeSkin(skinId) {
+    var client = getSupabase();
+    if (!client || !userId) return;
+
+    try {
+      await client
+        .from('user_preferences')
+        .upsert({
+          user_id: userId,
+          theme_skin: skinId,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id' });
+    } catch (e) {
+      // Silencioso — tema funciona en memoria
+    }
+  }
+
   // --- Tema: renderizar paletas ---
   function renderPalettes() {
     if (!themePaletteGrid) return;
@@ -409,21 +541,36 @@
     if (!client || !userId) return;
 
     try {
-      // Nota: theme_skin se agregará al query cuando la columna exista en la DB
       var { data, error } = await client
         .from('user_preferences')
-        .select('theme, city')
+        .select('theme, theme_skin, city')
         .eq('user_id', userId)
         .maybeSingle();
 
       if (error) {
-        // Tabla quizás no existe aún — usar defaults
+        // Columna theme_skin puede no existir todavía — reintentar sin ella
+        if (error.code === '42P01' || error.message.includes('does not exist') || error.status === 400) {
+          var fallback = await client
+            .from('user_preferences')
+            .select('theme, city')
+            .eq('user_id', userId)
+            .maybeSingle();
+          if (!fallback.error && fallback.data) {
+            if (fallback.data.theme) applyTheme(fallback.data.theme);
+            if (fallback.data.city) {
+              var cityInput2 = document.getElementById('weather-city-input');
+              if (cityInput2) cityInput2.value = fallback.data.city;
+            }
+          }
+          return;
+        }
         console.warn('MozzPCC: Error cargando preferencias (theme):', error.message);
         return;
       }
 
       if (data) {
         if (data.theme) applyTheme(data.theme);
+        if (data.theme_skin) applyThemeSkin(data.theme_skin);
         if (data.city) {
           var cityInput = document.getElementById('weather-city-input');
           if (cityInput) cityInput.value = data.city;
@@ -467,6 +614,7 @@
     // Activar tab Apariencia por defecto
     var defaultTab = document.querySelector('.settings-tab[data-tab="appearance"]');
     if (defaultTab) defaultTab.click();
+    renderThemeSkins();
     renderPalettes();
   }
 
@@ -845,7 +993,7 @@
     currentTheme = 'cyber';
     currentThemeSkin = 'default';
     applyTheme('cyber');
-    loadThemeCSS('default');
+    applyThemeSkin('default');
     closeSettings();
   });
 })();
