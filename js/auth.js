@@ -30,9 +30,24 @@
   const userEmailDisplay = document.getElementById('user-email-display');
   const logoutBtn = document.getElementById('logout-btn');
 
+  // --- Elementos de reset de contraseña ---
+  const authForm = document.getElementById('auth-form');
+  const authForgotBtn = document.getElementById('auth-forgot-btn');
+  const authDivider = document.querySelector('.auth-divider');
+  const authOAuth = document.querySelector('.auth-oauth');
+  const authMagicBtn = document.getElementById('auth-magic-btn');
+  const authUpdateForm = document.getElementById('auth-update-password-form');
+  const authNewPassword = document.getElementById('auth-new-password');
+  const authNewPasswordConfirm = document.getElementById('auth-new-password-confirm');
+  const authUpdateBtn = document.getElementById('auth-update-password-btn');
+  const authUpdateError = document.getElementById('auth-update-error');
+  const authUpdateBackBtn = document.getElementById('auth-update-back-btn');
+  const authNewPasswordToggle = document.getElementById('auth-new-password-toggle');
+
   // --- Estado ---
   let isLoginMode = true; // true = login, false = register
   let isDashboardVisible = false; // trackea si el dashboard ya está mostrándose
+  let isRecoveryMode = false; // true cuando venimos de un link de reset de contraseña
 
   // --- Funciones de utilidad ---
 
@@ -71,6 +86,23 @@
   }
 
   /**
+   * Muestra un error en el formulario de nueva contraseña
+   * @param {string} message - Mensaje de error en español
+   */
+  function showUpdateError(message) {
+    authUpdateError.textContent = message;
+    authUpdateError.style.display = 'block';
+    clearTimeout(showUpdateError._timer);
+    showUpdateError._timer = setTimeout(() => {
+      authUpdateError.style.display = 'none';
+    }, 6000);
+  }
+
+  function hideUpdateError() {
+    authUpdateError.style.display = 'none';
+  }
+
+  /**
    * Traduce errores de Supabase a mensajes amigables en español
    * @param {string} error - Mensaje de error de Supabase
    * @returns {string} Mensaje en español
@@ -98,6 +130,9 @@
     }
     if (msg.includes('invalid email')) {
       return 'El formato del correo no es válido.';
+    }
+    if (msg.includes('same password') || msg.includes('new password should be different')) {
+      return 'La nueva contraseña debe ser diferente a la actual.';
     }
 
     return 'Ocurrió un error inesperado. Intentá de nuevo.';
@@ -130,6 +165,11 @@
     dashboardMain.style.display = 'none';
     userInfoBar.style.display = 'none';
 
+    // Si no estamos en modo recuperación, resetear al estado normal
+    if (!isRecoveryMode) {
+      showLoginForm();
+    }
+
     // Resetear formulario
     emailInput.value = '';
     passwordInput.value = '';
@@ -141,6 +181,80 @@
     authScreen.classList.remove('auth-fade-out');
     authScreen.classList.add('auth-fade-in');
     authCard.classList.add('auth-card-enter');
+  }
+
+  /**
+   * Muestra el formulario principal (login/register) y oculta el de nueva contraseña
+   */
+  function showLoginForm() {
+    isRecoveryMode = false;
+    authForm.style.display = 'flex';
+    authUpdateForm.style.display = 'none';
+    if (authDivider) authDivider.style.display = 'flex';
+    if (authOAuth) authOAuth.style.display = 'flex';
+
+    // Mostrar u ocultar botones según modo
+    if (authForgotBtn) authForgotBtn.style.display = isLoginMode ? 'block' : 'none';
+    if (authMagicBtn) authMagicBtn.style.display = 'block';
+
+    // Resetear título
+    if (isLoginMode) {
+      authTitle.textContent = 'MozzPCC';
+      authSubtitle.textContent = 'Ingresá a tu centro de comando personal';
+    }
+  }
+
+  /**
+   * Muestra el formulario de nueva contraseña (después de clickear el link de recovery)
+   */
+  function showUpdatePasswordForm() {
+    isRecoveryMode = true;
+    authForm.style.display = 'none';
+    authUpdateForm.style.display = 'flex';
+    if (authDivider) authDivider.style.display = 'none';
+    if (authOAuth) authOAuth.style.display = 'none';
+
+    authTitle.textContent = 'Nueva Contraseña';
+    authSubtitle.textContent = 'Ingresá y confirmá tu nueva contraseña';
+
+    // Limpiar campos
+    authNewPassword.value = '';
+    authNewPasswordConfirm.value = '';
+    hideUpdateError();
+    authUpdateBtn.disabled = false;
+    authUpdateBtn.textContent = 'Actualizar contraseña';
+    authUpdateBtn.classList.remove('loading');
+  }
+
+  /**
+   * Muestra un mensaje de éxito dentro de la auth card (reemplaza los forms)
+   * @param {string} message - Mensaje de éxito en HTML
+   */
+  function showAuthSuccess(message) {
+    authForm.style.display = 'none';
+    authUpdateForm.style.display = 'none';
+    if (authDivider) authDivider.style.display = 'none';
+    if (authOAuth) authOAuth.style.display = 'none';
+
+    // Crear div de éxito dinámicamente
+    var oldSuccess = authCard.querySelector('.auth-success');
+    if (oldSuccess) oldSuccess.remove();
+
+    var successDiv = document.createElement('div');
+    successDiv.className = 'auth-success';
+    successDiv.innerHTML = '<i class="fa-solid fa-circle-check" style="font-size:1.6rem;display:block;margin-bottom:10px;"></i>' + message;
+
+    // Insertar después del logo
+    var authLogo = authCard.querySelector('.auth-logo');
+    authLogo.insertAdjacentElement('afterend', successDiv);
+  }
+
+  /**
+   * Remueve el mensaje de éxito si existe
+   */
+  function removeAuthSuccess() {
+    var oldSuccess = authCard.querySelector('.auth-success');
+    if (oldSuccess) oldSuccess.remove();
   }
 
   /**
@@ -310,6 +424,8 @@
    */
   function toggleAuthMode() {
     isLoginMode = !isLoginMode;
+    isRecoveryMode = false;
+    removeAuthSuccess();
     hideError();
     emailInput.value = '';
     passwordInput.value = '';
@@ -325,6 +441,16 @@
       authSubmitBtn.textContent = 'Crear Cuenta';
       authToggleBtn.innerHTML = '¿Ya tenés cuenta? <strong>Iniciá sesión</strong>';
     }
+
+    // Mostrar/ocultar botón de forgot según modo
+    if (authForgotBtn) authForgotBtn.style.display = isLoginMode ? 'block' : 'none';
+    if (authMagicBtn) authMagicBtn.style.display = 'block';
+
+    // Asegurar que el form principal está visible
+    authForm.style.display = 'flex';
+    authUpdateForm.style.display = 'none';
+    if (authDivider) authDivider.style.display = 'flex';
+    if (authOAuth) authOAuth.style.display = 'flex';
 
     emailInput.focus();
   }
@@ -463,6 +589,114 @@
   }
 
   /**
+   * Maneja el envío del email de recuperación de contraseña
+   */
+  async function handleForgotPassword() {
+    hideError();
+    removeAuthSuccess();
+
+    const email = emailInput.value.trim();
+
+    if (!email) {
+      showError('Ingresá tu correo electrónico para recuperar la contraseña.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      showError('Ingresá un correo electrónico válido.');
+      return;
+    }
+
+    setLoading(true, 'Enviando correo...');
+
+    try {
+      const { error } = await client.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+
+      if (error) {
+        showError(translateError(error));
+        setLoading(false);
+        return;
+      }
+
+      setLoading(false);
+      // Mostrar mensaje de éxito
+      showAuthSuccess('Te enviamos un correo con el link para resetear tu contraseña. Revisá tu bandeja de entrada (y la carpeta de spam) y hacé clic en el enlace.');
+    } catch (err) {
+      console.error('Error forgot password:', err);
+      showError(translateError(err));
+      setLoading(false);
+    }
+  }
+
+  /**
+   * Maneja la actualización de la contraseña (después de recovery)
+   */
+  async function handleUpdatePassword() {
+    hideUpdateError();
+
+    const newPassword = authNewPassword.value;
+    const confirmPassword = authNewPasswordConfirm.value;
+
+    if (!newPassword || !confirmPassword) {
+      showUpdateError('Completá ambos campos.');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      showUpdateError('La contraseña debe tener al menos 6 caracteres.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      showUpdateError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    authUpdateBtn.disabled = true;
+    authUpdateBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Actualizando...';
+    authUpdateBtn.classList.add('loading');
+
+    try {
+      const { data, error } = await client.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        showUpdateError(translateError(error));
+        authUpdateBtn.disabled = false;
+        authUpdateBtn.textContent = 'Actualizar contraseña';
+        authUpdateBtn.classList.remove('loading');
+        return;
+      }
+
+      // Contraseña actualizada con éxito — el onAuthStateChange disparará showDashboard
+      console.log('MozzPCC: Contraseña actualizada correctamente.');
+      isRecoveryMode = false;
+    } catch (err) {
+      console.error('Error update password:', err);
+      showUpdateError(translateError(err));
+      authUpdateBtn.disabled = false;
+      authUpdateBtn.textContent = 'Actualizar contraseña';
+      authUpdateBtn.classList.remove('loading');
+    }
+  }
+
+  /**
+   * Toggle visibilidad de la nueva contraseña
+   */
+  function toggleNewPasswordVisibility() {
+    if (authNewPassword.type === 'password') {
+      authNewPassword.type = 'text';
+      authNewPasswordToggle.innerHTML = '<i class="fa-regular fa-eye"></i>';
+    } else {
+      authNewPassword.type = 'password';
+      authNewPasswordToggle.innerHTML = '<i class="fa-regular fa-eye-slash"></i>';
+    }
+  }
+
+  /**
    * Valida formato de email
    * @param {string} email
    * @returns {boolean}
@@ -501,7 +735,16 @@
     client.auth.onAuthStateChange((event, session) => {
       console.log('MozzPCC: Auth state change:', event);
 
+      if (event === 'PASSWORD_RECOVERY') {
+        // El usuario clickeó un link de recuperación de contraseña
+        console.log('MozzPCC: Flujo de recuperación de contraseña detectado.');
+        // Mostrar el form de nueva contraseña (authScreen ya debería estar visible)
+        showUpdatePasswordForm();
+        return; // NO mostrar el dashboard todavía
+      }
+
       if (session) {
+        // Si venimos de actualizar contraseña, mostrar dashboard
         showDashboard(session);
       } else {
         // Auth logout event
@@ -554,6 +797,23 @@
 
     // Magic link
     document.getElementById('auth-magic-btn').addEventListener('click', handleMagicLink);
+
+    // Forgot password
+    authForgotBtn.addEventListener('click', handleForgotPassword);
+
+    // Update password form
+    authUpdateBtn.addEventListener('click', handleUpdatePassword);
+    authUpdateBackBtn.addEventListener('click', function() {
+      removeAuthSuccess();
+      showLoginForm();
+    });
+    authNewPassword.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') authNewPasswordConfirm.focus();
+    });
+    authNewPasswordConfirm.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') handleUpdatePassword();
+    });
+    authNewPasswordToggle.addEventListener('click', toggleNewPasswordVisibility);
 
     // Toggle password visibility
     authPasswordToggle.addEventListener('click', togglePasswordVisibility);

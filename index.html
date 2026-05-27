@@ -105,9 +105,38 @@
           ¿No tenés cuenta? <strong>Creá una</strong>
         </button>
 
+        <!-- Forgot password (solo visible en modo login) -->
+        <button type="button" id="auth-forgot-btn" class="auth-forgot-btn">
+          ¿Olvidaste tu contraseña?
+        </button>
+
         <!-- Magic link -->
         <button type="button" id="auth-magic-btn" class="auth-magic-btn">
           <i class="fa-regular fa-paper-plane"></i> Enviar enlace mágico
+        </button>
+      </form>
+
+      <!-- ===== FORM NUEVA CONTRASEÑA (hidden por default) ===== -->
+      <form id="auth-update-password-form" class="auth-update-password-form" style="display:none;" autocomplete="on">
+        <div class="auth-input-group">
+          <div class="auth-input-wrapper">
+            <i class="fa-solid fa-lock auth-input-icon"></i>
+            <input type="password" id="auth-new-password" class="auth-input" placeholder="Nueva contraseña" autocomplete="new-password" required minlength="6">
+            <button type="button" id="auth-new-password-toggle" class="auth-password-toggle" aria-label="Mostrar contraseña">
+              <i class="fa-regular fa-eye-slash"></i>
+            </button>
+          </div>
+          <div class="auth-input-wrapper">
+            <i class="fa-solid fa-lock auth-input-icon"></i>
+            <input type="password" id="auth-new-password-confirm" class="auth-input" placeholder="Confirmar nueva contraseña" autocomplete="new-password" required minlength="6">
+          </div>
+        </div>
+        <div id="auth-update-error" class="auth-error" style="display:none;"></div>
+        <button type="button" id="auth-update-password-btn" class="auth-btn auth-btn-primary">
+          Actualizar contraseña
+        </button>
+        <button type="button" id="auth-update-back-btn" class="auth-toggle-btn">
+          <i class="fa-solid fa-arrow-left"></i> Volver al inicio de sesión
         </button>
       </form>
 

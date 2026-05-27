@@ -4231,6 +4231,47 @@ body::after {
   font-weight: 600;
 }
 
+/* Forgot password button */
+.auth-forgot-btn {
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transition: var(--transition-fast);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+}
+
+.auth-forgot-btn:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
+
+/* Update password form */
+.auth-update-password-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: authFadeIn 0.3s ease;
+}
+
+/* Success message inside auth card */
+.auth-success {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: var(--radius-xs);
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  color: #86efac;
+  line-height: 1.4;
+  text-align: center;
+}
+
 /* Magic link button */
 .auth-magic-btn {
   width: 100%;
