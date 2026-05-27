@@ -58,7 +58,13 @@
   var barChart = null;
   var lineChart = null;
   var currentTab = 'movimientos';
-  var finSummaryHidden = localStorage.getItem('mozzpcc-fin-summary-hidden') === 'true';
+  var finSummaryHidden;
+
+  // Leer preferencia de privacidad (persiste entre sesiones)
+  function loadPrivacyPref() {
+    finSummaryHidden = localStorage.getItem('mozzpcc-fin-summary-hidden') === 'true';
+  }
+  loadPrivacyPref();
 
   // Meses en espanol (corto)
   var MONTH_NAMES = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -1272,9 +1278,6 @@
     barChart = null;
     lineChart = null;
     initialized = false;
-    finSummaryHidden = false;
-    localStorage.removeItem('mozzpcc-fin-summary-hidden');
-
     var summaryRow = document.querySelector('.fin-summary-row');
     if (summaryRow) summaryRow.classList.remove('fin-privacy-on');
 
@@ -1477,6 +1480,12 @@
 
     // Actualizar resumen
     updateSummary();
+
+    // Restaurar estado de privacidad del resumen
+    if (finSummaryHidden) {
+      var sRow = document.querySelector('.fin-summary-row');
+      if (sRow) sRow.classList.add('fin-privacy-on');
+    }
 
     // Renderizar graficos (con pequeño delay para asegurar canvas esta visible)
     setTimeout(function () {
