@@ -19,34 +19,60 @@ Cualquier combinación es posible: Notion + Cyan, macOS + Purple, Retro + Orange
 
 ```
 css/
-├── styles.css            ← BASE: layout, estructura, componentes compartidos (usa variables)
-├── palettes.css          ← PALETAS: variantes de color de acento
+├── styles.css            ← BASE: layout, estructura, :root con --p-*, --s-*, universales, aliases
+├── palettes.css          ← PALETAS: variantes de color de acento (--p-*)
 └── themes/
-    ├── default.css       ← Tema actual (dark glassmorphism)
-    ├── notion.css        ← Notion / Linear (claro, minimalista)
-    ├── macos.css         ← macOS (traffic lights, vibrancy)
-    ├── windows.css       ← Windows 11 (Fluent Design)
-    └── retro.css         ← CRT / Fallout (scanlines, phosphor)
+    ├── default.css       ← ✅ Tema actual (dark glassmorphism) — cargado desde index.html
+    ├── notion.css        ← (Fase 5) Notion / Linear (claro, minimalista)
+    ├── macos.css         ← (Fase 6) macOS (traffic lights, vibrancy)
+    ├── windows.css       ← (Fase 7) Windows 11 (Fluent Design)
+    └── retro.css         ← (Fase 8) CRT / Fallout (scanlines, phosphor)
 ```
 
 ### Carga dinámica
 
-Solo se carga la paleta activa + el tema activo (1 archivo cada uno). El tema `default` está embebido en `styles.css` y no requiere archivo extra.
+- **Tema default**: siempre cargado via `<link>` en `index.html` + `data-theme="default"` en `<body>`
+- **Otros temas**: se cargan dinámicamente via JS (`loadThemeCSS()`) como `<link id="theme-skin-css">`
+- Solo un archivo de tema extra puede estar activo a la vez; al cambiar se remueve el anterior
+
+```html
+<!-- index.html -->
+<body data-theme="default" data-palette="cyber">
+```
 
 ```js
-function loadTheme(themeName) {
-  const old = document.getElementById('theme-css');
-  if (old) old.remove();
-  if (themeName !== 'default') {
-    const link = document.createElement('link');
-    link.id = 'theme-css';
+// settings.js — carga dinámica de temas
+function loadThemeCSS(themeSkinName) {
+  var oldLink = document.getElementById('theme-skin-css');
+  if (oldLink) oldLink.remove();
+
+  currentThemeSkin = themeSkinName;
+
+  // Default ya está cargado desde index.html
+  if (themeSkinName !== 'default') {
+    var link = document.createElement('link');
+    link.id = 'theme-skin-css';
     link.rel = 'stylesheet';
-    link.href = `css/themes/${themeName}.css`;
+    link.href = '/MozzPCC/css/themes/' + themeSkinName + '.css';
     document.head.appendChild(link);
   }
-  document.body.setAttribute('data-theme', themeName);
+
+  document.body.setAttribute('data-theme', themeSkinName);
 }
 ```
+
+## Fases de implementación
+
+| Fase | Descripción | Estado |
+|------|-------------|--------|
+| Fase 1 | Fundamentos: variables --t-*, --p-*, --s-* + aliases | ✅ Completada |
+| Fase 2 | Migración masiva CSS: reemplazar hardcoded → variables | ✅ Completada |
+| Fase 3 | Split de archivos: default.css + carga dinámica | ✅ Completada |
+| Fase 4 | Theme selector UI en settings | 🔲 Pendiente |
+| Fase 5 | Tema Notion / Linear | 🔲 Pendiente |
+| Fase 6 | Tema macOS | 🔲 Pendiente |
+| Fase 7 | Tema Windows 11 | 🔲 Pendiente |
+| Fase 8 | Tema Retro / CRT | 🔲 Pendiente |
 
 ## Convención de nombres — Variables CSS
 
@@ -217,20 +243,11 @@ Estas variables son funcionales y no dependen del tema:
 | `--transition` | Transición estándar |
 | `--transition-fast` | Transición rápida |
 
-## Migración desde variables actuales
+## Estado actual de la migración
 
-Las variables existentes (`--bg-primary`, `--accent`, `--text-primary`, etc.) se migran al nuevo sistema mediante aliases en la Fase 1 para evitar romper nada:
+- **Fase 1 ✅**: Variables `--t-*`, `--p-*`, `--s-*` creadas + aliases
+- **Fase 2 ✅**: Todo el CSS migrado a usar variables (reemplazo de hardcoded)
+- **Fase 3 ✅**: Variables `--t-*` movidas a `default.css` + carga dinámica via `loadThemeCSS()`
 
-```css
-/* Alias temporal — se eliminan en la Fase 2 */
-:root {
-  --bg-primary: var(--t-body-bg);
-  --bg-secondary: var(--t-body-secondary);
-  --bg-glass: var(--t-card-bg);
-  --accent: var(--p-accent);
-  --text-primary: var(--t-text-primary);
-  /* ... etc */
-}
-```
-
-Una vez que todo `styles.css` usa directamente `--t-*` / `--p-*`, los aliases se eliminan.
+Los aliases legacy se mantienen en `:root` para compatibilidad con el código JS existente.
+Cuando se eliminen los aliases, las referencias en JS (`settings.js`) y CSS se actualizarán directamente a `--t-*`/`--p-*`.

@@ -21,6 +21,7 @@
   // --- Estado ---
   var userId = null;
   var currentTheme = 'cyber';
+  var currentThemeSkin = 'default';
 
   // --- Paletas de colores ---
   var THEMES = [
@@ -321,6 +322,28 @@
     });
   }
 
+  // --- Tema skin: carga dinámica de CSS ---
+  function loadThemeCSS(themeSkinName) {
+    // Remover theme CSS anterior (si existe)
+    var oldLink = document.getElementById('theme-skin-css');
+    if (oldLink) oldLink.remove();
+
+    currentThemeSkin = themeSkinName;
+
+    // Si no es default, cargar el CSS extra.
+    // El default ya está cargado desde index.html.
+    if (themeSkinName !== 'default') {
+      var link = document.createElement('link');
+      link.id = 'theme-skin-css';
+      link.rel = 'stylesheet';
+      link.href = '/MozzPCC/css/themes/' + themeSkinName + '.css';
+      document.head.appendChild(link);
+    }
+
+    // Setear data-theme en body
+    document.body.setAttribute('data-theme', themeSkinName);
+  }
+
   // --- Tema: aplicar ---
   function applyTheme(themeId) {
     var theme = THEMES.find(function (t) { return t.id === themeId; });
@@ -388,12 +411,13 @@
     try {
       var { data, error } = await client
         .from('user_preferences')
-        .select('theme, city')
+        .select('theme, theme_skin, city')
         .eq('user_id', userId)
         .single();
 
       if (!error && data) {
         if (data.theme) applyTheme(data.theme);
+        if (data.theme_skin) loadThemeCSS(data.theme_skin);
         if (data.city) {
           var cityInput = document.getElementById('weather-city-input');
           if (cityInput) cityInput.value = data.city;
@@ -813,7 +837,9 @@
   window.addEventListener('auth:logout', function () {
     userId = null;
     currentTheme = 'cyber';
+    currentThemeSkin = 'default';
     applyTheme('cyber');
+    loadThemeCSS('default');
     closeSettings();
   });
 })();

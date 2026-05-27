@@ -9,98 +9,12 @@
 /* --- Variables CSS --- */
 :root {
   /* ============================================
-   * THEME VARIABLES (--t-*) — Dark Glassmorphism
-   * Cambian entre Default / Notion / macOS / etc.
+   * THEME VARIABLES (--t-*) — cargadas desde
+   * css/themes/default.css via [data-theme="default"]
+   *
+   * OTROS TEMAS: notion.css, macos.css, etc.
+   * redefinen estas variables con sus valores.
    * ============================================ */
-
-  /* Body */
-  --t-body-bg: #0a0a1a;
-  --t-body-secondary: #111128;
-  --t-body-pattern: rgba(255, 255, 255, 0.03);
-  --t-body-glow-a: rgba(124, 58, 237, 0.15);
-  --t-body-glow-b: rgba(0, 212, 255, 0.1);
-  --t-body-glow-c: rgba(124, 58, 237, 0.08);
-
-  /* Cards */
-  --t-card-bg: rgba(37, 37, 37, 0.3);
-  --t-card-hover: rgba(255, 255, 255, 0.08);
-  --t-card-border: rgba(255, 255, 255, 0.1);
-  --t-card-border-hover: rgba(255, 255, 255, 0.2);
-  --t-card-radius: 10px;
-  --t-card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --t-card-shine: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  --t-card-chrome: none;
-  --t-card-padding-top: 0px;
-
-  /* Superficies */
-  --t-surface-1: rgba(255, 255, 255, 0.03);
-  --t-surface-2: rgba(255, 255, 255, 0.04);
-  --t-surface-3: rgba(255, 255, 255, 0.06);
-  --t-surface-4: rgba(255, 255, 255, 0.08);
-  --t-surface-5: rgba(255, 255, 255, 0.1);
-  --t-surface-tooltip: rgb(37 37 37 / 90%);
-  --t-surface-dropdown: #1e1e2e;
-  --t-surface-overlay: rgba(10, 10, 26, 0.7);
-  --t-surface-modal: rgb(37 37 37 / 85%);
-  --t-surface-toast: rgba(30, 30, 40, 0.9);
-  --t-surface-input: rgba(255, 255, 255, 0.04);
-  --t-surface-input-focus: rgba(255, 255, 255, 0.06);
-
-  /* Bordes */
-  --t-border-subtle: rgba(255, 255, 255, 0.06);
-  --t-border-default: rgba(255, 255, 255, 0.1);
-  --t-border-strong: rgba(255, 255, 255, 0.2);
-  --t-input-border: rgba(255, 255, 255, 0.08);
-  --t-input-border-focus: var(--p-accent);
-
-  /* Sombras */
-  --t-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --t-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --t-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4);
-  --t-shadow-xl: 0 20px 60px rgba(0, 0, 0, 0.5);
-
-  /* Blur */
-  --t-blur-sm: 8px;
-  --t-blur-md: 12px;
-  --t-blur-lg: 16px;
-  --t-blur-xl: 20px;
-  --t-blur-2xl: 24px;
-  --t-blur-3xl: 40px;
-  --t-blur-card: 20px;
-
-  /* Tipografía */
-  --t-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --t-font-mono: 'Inter', monospace;
-
-  /* Radios */
-  --t-radius-xs: 6px;
-  --t-radius-sm: 8px;
-  --t-radius-md: 10px;
-  --t-radius-lg: 14px;
-  --t-radius-xl: 20px;
-
-  /* Colores semánticos */
-  --t-danger: #ef4444;
-  --t-danger-dim: rgba(239, 68, 68, 0.1);
-  --t-danger-light: #fca5a5;
-  --t-danger-hover: #f87171;
-  --t-success: #22c55e;
-  --t-success-dim: rgba(34, 197, 94, 0.1);
-  --t-success-light: #86efac;
-  --t-success-hover: #4ade80;
-  --t-warning: #fbbf24;
-  --t-info: #3b82f6;
-
-  /* Texto */
-  --t-text-primary: #f0f0f5;
-  --t-text-secondary: #a0a0b8;
-  --t-text-muted: #6b6b80;
-  --t-text-tooltip: #e2e8f0;
-  --t-text-on-accent: #ffffff;
-
-  /* Skeleton */
-  --t-skeleton-base: rgba(255, 255, 255, 0.04);
-  --t-skeleton-shine: rgba(255, 255, 255, 0.08);
 
   /* ============================================
    * PALETTE VARIABLES (--p-*) — Cyan (default)
@@ -143,8 +57,7 @@
 
   /* ============================================
    * LEGACY ALIASES — Apuntan a nuevas variables
-   * Mantienen compatibilidad mientras se migra.
-   * TODO: Eliminar en Fase 2
+   * Mantienen compatibilidad con código existente.
    * ============================================ */
   --bg-primary: var(--t-body-bg);
   --bg-secondary: var(--t-body-secondary);
