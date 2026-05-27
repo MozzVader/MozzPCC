@@ -3,12 +3,63 @@
  *
  * Pulsa Esc para activar: fade-out de todo excepto el reloj.
  * Clic o Esc para volver al dashboard completo.
+ *
+ * Auto-lock: activa Clean Mode automaticamente tras N minutos de inactividad.
+ * El tiempo se configura en Apariencia → Auto-lock (guardado en localStorage).
  */
 
 (function () {
   'use strict';
 
   var isActive = false;
+
+  // --- Auto-lock (inactividad) ---
+  var inactivityTimer = null;
+  var ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'wheel'];
+
+  function getAutoLockMinutes() {
+    var val = localStorage.getItem('mozzpcc-autolock-minutes');
+    if (val === null) return 20; // Default
+    return parseInt(val, 10) || 0;
+  }
+
+  function resetInactivityTimer() {
+    clearTimeout(inactivityTimer);
+    var minutes = getAutoLockMinutes();
+    if (minutes <= 0) return; // Desactivado
+
+    inactivityTimer = setTimeout(function () {
+      if (!isActive && !isOverlayOpen()) {
+        activate();
+      }
+    }, minutes * 60 * 1000);
+  }
+
+  function startInactivityTracking() {
+    // Limpiar listeners previos si existen
+    stopInactivityTracking();
+
+    for (var i = 0; i < ACTIVITY_EVENTS.length; i++) {
+      document.addEventListener(ACTIVITY_EVENTS[i], resetInactivityTimer, { passive: true });
+    }
+    resetInactivityTimer();
+  }
+
+  function stopInactivityTracking() {
+    clearTimeout(inactivityTimer);
+    for (var i = 0; i < ACTIVITY_EVENTS.length; i++) {
+      document.removeEventListener(ACTIVITY_EVENTS[i], resetInactivityTimer);
+    }
+  }
+
+  // Exponer para que settings.js pueda reiniciar el timer al cambiar la config
+  window._resetAutoLock = function () {
+    clearTimeout(inactivityTimer);
+    var minutes = getAutoLockMinutes();
+    if (minutes > 0) {
+      resetInactivityTimer();
+    }
+  };
 
   /**
    * Verifica si hay algun overlay/modal abierto
@@ -44,7 +95,7 @@
       clockSection.scrollIntoView({ behavior: 'smooth' });
     }
 
-    console.log('[Clean Mode] Activado');
+    console.log('[Clean Mode] Activado' + (inactivityTimer ? ' (auto-lock)' : ''));
   }
 
   /**
@@ -54,6 +105,10 @@
     if (!isActive) return;
     isActive = false;
     document.body.classList.remove('clean-mode');
+
+    // Resetear el timer de inactividad al volver
+    resetInactivityTimer();
+
     console.log('[Clean Mode] Desactivado');
   }
 
@@ -104,5 +159,10 @@
     deactivate();
   });
 
-  console.log('[Clean Mode] Listo - pulsá Esc para activar');
+  // Iniciar tracking de inactividad cuando el dashboard esté visible
+  window.addEventListener('auth:ready', function () {
+    startInactivityTracking();
+  });
+
+  console.log('[Clean Mode] Listo - pulsá Esc para activar | Auto-lock: ' + getAutoLockMinutes() + ' min');
 })();

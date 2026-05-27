@@ -735,6 +735,38 @@
     currencySelect.addEventListener('change', saveCurrency);
   }
 
+  // --- Auto-lock Settings ---
+  var autolockSelect = document.getElementById('autolock-select');
+  var autolockStatus = document.getElementById('autolock-status');
+
+  function loadAutolock() {
+    var saved = localStorage.getItem('mozzpcc-autolock-minutes');
+    if (saved !== null && autolockSelect) {
+      autolockSelect.value = saved;
+    }
+  }
+
+  function saveAutolock() {
+    if (!autolockSelect) return;
+    var val = autolockSelect.value;
+    localStorage.setItem('mozzpcc-autolock-minutes', val);
+    if (autolockStatus) {
+      var minutes = parseInt(val, 10);
+      autolockStatus.textContent = minutes > 0
+        ? 'Auto-lock: ' + minutes + ' minutos'
+        : 'Auto-lock desactivado';
+      autolockStatus.style.color = 'var(--note-green)';
+      setTimeout(function () { autolockStatus.textContent = ''; }, 2000);
+    }
+    // Reiniciar el timer de inactividad con el nuevo valor
+    if (window._resetAutoLock) window._resetAutoLock();
+  }
+
+  loadAutolock();
+  if (autolockSelect) {
+    autolockSelect.addEventListener('change', saveAutolock);
+  }
+
   // --- Eventos ---
   initTabs();
   settingsBtn.addEventListener('click', openSettings);
