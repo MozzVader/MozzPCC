@@ -8,13 +8,17 @@
   var tipsBtn = document.getElementById('tips-btn');
   var tipsModal = document.getElementById('tips-modal');
   var tipsClose = document.getElementById('tips-close');
+  var tipsInner = tipsModal ? tipsModal.querySelector('.tips-modal') : null;
+  var tipsTrap = tipsInner && tipsModal ? createFocusTrap(tipsInner, tipsModal) : null;
 
   function openTips() {
     tipsModal.style.display = '';
+    if (tipsTrap) tipsTrap.activate();
   }
 
   function closeTips() {
     tipsModal.style.display = 'none';
+    if (tipsTrap) tipsTrap.deactivate();
   }
 
   if (tipsBtn) tipsBtn.addEventListener('click', openTips);

@@ -38,6 +38,87 @@ function getCurrency() {
   return localStorage.getItem('mozzpcc-currency') || '$';
 }
 
+// =========================================================================
+//  FOCUS TRAP — Mantiene el foco dentro de un contenedor (accesibilidad)
+// =========================================================================
+
+/**
+ * Crea un focus trap para un elemento modal.
+ * Cuando el modal está abierto, Tab/Shift+Tab solo ciclan entre los
+ * elementos enfocables dentro del contenedor.
+ *
+ * @param {HTMLElement} container - El contenedor del modal (ej: el div.settings-modal)
+ * @param {HTMLElement} overlay - El overlay completo (ej: el div#settings-modal)
+ * @returns {{ activate: Function, deactivate: Function }}
+ *
+ * Uso:
+ *   var trap = createFocusTrap(modal, overlay);
+ *   // Al abrir:
+ *   trap.activate(prevFocusedElement);
+ *   // Al cerrar:
+ *   trap.deactivate();
+ */
+function createFocusTrap(container, overlay) {
+  var previouslyFocused = null;
+  var handler = null;
+
+  handler = function (e) {
+    if (e.key !== 'Tab') return;
+
+    // Obtener todos los elementos enfocables dentro del contenedor
+    var focusable = container.querySelectorAll(
+      'a[href], button:not([disabled]), textarea:not([disabled]), ' +
+      'input:not([disabled]), select:not([disabled]), ' +
+      '[tabindex]:not([tabindex="-1"])'
+    );
+
+    if (!focusable.length) {
+      e.preventDefault();
+      return;
+    }
+
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      // Shift+Tab: si está en el primero, ir al último
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      // Tab: si está en el último, ir al primero
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+
+  return {
+    activate: function (prevElement) {
+      previouslyFocused = prevElement || document.activeElement;
+      document.addEventListener('keydown', handler);
+      // Enfocar el primer elemento del modal
+      var firstFocusable = container.querySelector(
+        'a[href], button:not([disabled]), textarea:not([disabled]), ' +
+        'input:not([disabled]), select:not([disabled]), ' +
+        '[tabindex]:not([tabindex="-1"])'
+      );
+      if (firstFocusable) {
+        firstFocusable.focus();
+      }
+    },
+    deactivate: function () {
+      document.removeEventListener('keydown', handler);
+      // Restaurar foco al elemento que tenía foco antes de abrir el modal
+      if (previouslyFocused && previouslyFocused.focus) {
+        previouslyFocused.focus();
+      }
+    }
+  };
+}
+
 // --- Iconos disponibles (compartidos entre Quick Access y Read Later) ---
 var BRAND_ICONS = [
   'fa-brands fa-github',

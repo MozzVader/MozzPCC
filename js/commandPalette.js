@@ -11,6 +11,8 @@
   var overlay = document.getElementById('cmd-palette');
   var input = document.getElementById('cmd-palette-input');
   var resultsEl = document.getElementById('cmd-palette-results');
+  var paletteInner = overlay ? overlay.querySelector('.cmd-palette') : null;
+  var paletteTrap = paletteInner && overlay ? createFocusTrap(paletteInner, overlay) : null;
 
   // --- Estado ---
   var isOpen = false;
@@ -406,14 +408,16 @@
     isOpen = true;
     overlay.style.display = 'flex';
     input.value = '';
-    input.focus();
     render('');
+    if (paletteTrap) paletteTrap.activate();
+    else input.focus();
   }
 
   function close() {
     isOpen = false;
     overlay.style.display = 'none';
-    input.blur();
+    if (paletteTrap) paletteTrap.deactivate();
+    else input.blur();
   }
 
   function toggle() {

@@ -14,6 +14,8 @@
   var settingsBtn = document.getElementById('settings-btn');
   var settingsModal = document.getElementById('settings-modal');
   var settingsClose = document.getElementById('settings-close');
+  var settingsInner = settingsModal ? settingsModal.querySelector('.settings-modal') : null;
+  var settingsTrap = settingsInner && settingsModal ? createFocusTrap(settingsInner, settingsModal) : null;
   var themePaletteGrid = document.getElementById('theme-palette-grid');
 
   // --- Estado ---
@@ -417,6 +419,7 @@
   // --- Modal open/close ---
   function openSettings() {
     settingsModal.style.display = 'flex';
+    if (settingsTrap) settingsTrap.activate();
     // Activar tab Apariencia por defecto
     var defaultTab = document.querySelector('.settings-tab[data-tab="appearance"]');
     if (defaultTab) defaultTab.click();
@@ -425,6 +428,7 @@
 
   function closeSettings() {
     settingsModal.style.display = 'none';
+    if (settingsTrap) settingsTrap.deactivate();
   }
 
   // --- Quick Links Settings (Tab "Rápidos") ---
