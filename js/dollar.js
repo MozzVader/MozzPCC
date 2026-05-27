@@ -11,6 +11,7 @@
   var REFRESH_MS = 30 * 60 * 1000;
   var API_LATEST = 'https://api.bluelytics.com.ar/v2/latest';
   var API_EVOLUTION = 'https://api.bluelytics.com.ar/v2/evolution.json';
+  var DOLLAR_CACHE_TTL = 30 * 60 * 1000; // 30 minutos
 
   var dollarData = null;
   var evolution = [];
@@ -48,9 +49,18 @@
   async function fetchEvolution() {
     if (evolutionLoaded) return;
     try {
-      var res = await fetch(API_EVOLUTION);
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      var data = await res.json();
+      // Intentar cache
+      var cachedEvo = apiCacheGet('dollar_evolution');
+      var data;
+
+      if (cachedEvo) {
+        data = cachedEvo;
+      } else {
+        var res = await fetch(API_EVOLUTION);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        data = await res.json();
+        apiCacheSet('dollar_evolution', data, DOLLAR_CACHE_TTL);
+      }
 
       // Build evolution per type
       var seriesMap = {};
@@ -78,9 +88,18 @@
   // --- Fetch cotización actual ---
   async function fetchLatest() {
     try {
+      // Intentar cache
+      var cached = apiCacheGet('dollar_latest');
+      if (cached) {
+        dollarData = cached;
+        render();
+        return;
+      }
+
       var res = await fetch(API_LATEST);
       if (!res.ok) throw new Error('HTTP ' + res.status);
       dollarData = await res.json();
+      apiCacheSet('dollar_latest', dollarData, DOLLAR_CACHE_TTL);
       render();
     } catch (e) {
       console.warn('[Dólar] Error:', e.message);

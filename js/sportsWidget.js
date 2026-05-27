@@ -26,6 +26,7 @@
   var currentLeague = LEAGUES[0].id;
   var currentDate = new Date();
   var isLoading = false;
+  var SPORTS_CACHE_TTL = 5 * 60 * 1000; // 5 minutos
 
   // --- DOM ---
   var selectEl = document.getElementById('sp-league-select');
@@ -135,77 +136,23 @@
     matchList.innerHTML = '<div class="sp-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Cargando partidos...</span></div>';
 
     try {
-      var res = await fetch(API + '/' + currentLeague + '/scoreboard?dates=' + dateStr(currentDate));
-      if (!res.ok) throw new Error('API error');
-      var data = await res.json();
-      var events = data.events || [];
+      var cacheKey = 'sports_matches_' + currentLeague + '_' + dateStr(currentDate);
 
-      matchList.innerHTML = '';
+      // Intentar cache
+      var cached = apiCacheGet(cacheKey);
+      var events;
 
-      if (events.length === 0) {
-        matchList.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.82rem;">No hay partidos para este dia</div>';
-        isLoading = false;
-        return;
+      if (cached) {
+        events = cached;
+      } else {
+        var res = await fetch(API + '/' + currentLeague + '/scoreboard?dates=' + dateStr(currentDate));
+        if (!res.ok) throw new Error('API error');
+        var data = await res.json();
+        events = data.events || [];
+        apiCacheSet(cacheKey, events, SPORTS_CACHE_TTL);
       }
 
-      events.forEach(function (ev) {
-        var comp = ev.competitions[0] || {};
-        var status = comp.status || {};
-        var statusType = status.type || {};
-        var state = statusType.state;
-        var detail = statusType.shortDetail || statusType.description || '';
-        var clock = status.displayClock || '';
-
-        var competitors = (comp.competitors || []).slice().sort(function (a, b) {
-          return a.homeAway === 'home' ? -1 : 1;
-        });
-
-        var home = competitors[0] || {};
-        var away = competitors[1] || {};
-
-        var li = document.createElement('li');
-        li.className = 'sp-match-item' + (state === 'in' ? ' live' : '');
-
-        var metaHtml = '';
-        if (state === 'in') {
-          metaHtml = '<span class="live-dot"></span>' + esc(clock || detail);
-        } else if (state === 'pre') {
-          metaHtml = '<i class="fa-regular fa-clock"></i> ' + formatTime(ev.date);
-        } else {
-          metaHtml = detail || 'Finalizado';
-        }
-
-        var homeWinner = state === 'post' && parseInt(home.score) > parseInt(away.score);
-        var awayWinner = state === 'post' && parseInt(away.score) > parseInt(home.score);
-
-        li.innerHTML =
-          '<div class="sp-match-meta">' + metaHtml + '</div>' +
-          '<div class="sp-match-teams">' +
-            '<div class="sp-team home">' +
-              '<img class="sp-team-logo" src="' + (home.team ? home.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
-              '<span class="sp-team-name' + (homeWinner ? ' winner' : '') + (awayWinner ? ' loser' : '') + '">' + esc(home.team ? home.team.shortDisplayName || home.team.displayName : 'Home') + '</span>' +
-            '</div>' +
-            '<div class="sp-score">' +
-              '<span>' + esc(home.score || '-') + '</span>' +
-              '<span class="sp-score-dash">-</span>' +
-              '<span>' + esc(away.score || '-') + '</span>' +
-            '</div>' +
-            '<div class="sp-team away">' +
-              '<img class="sp-team-logo" src="' + (away.team ? away.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
-              '<span class="sp-team-name' + (awayWinner ? ' winner' : '') + (homeWinner ? ' loser' : '') + '">' + esc(away.team ? away.team.shortDisplayName || away.team.displayName : 'Away') + '</span>' +
-            '</div>' +
-          '</div>';
-
-        if (state === 'post') {
-          var links = (comp.links || []).filter(function (l) { return l.rel.indexOf('recap') > -1 || l.rel.indexOf('summary') > -1; });
-          if (links.length > 0) {
-            li.style.cursor = 'pointer';
-            li.addEventListener('click', function () { window.open(links[0].href, '_blank', 'noopener'); });
-          }
-        }
-
-        matchList.appendChild(li);
-      });
+      renderMatches(events);
     } catch (e) {
       console.error('Error loading matches:', e);
       matchList.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--red);font-size:0.82rem;">Error al cargar partidos</div>';
@@ -214,15 +161,95 @@
     isLoading = false;
   }
 
+  // --- RENDER MATCHES ---
+  function renderMatches(events) {
+    matchList.innerHTML = '';
+
+    if (events.length === 0) {
+      matchList.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--text-muted);font-size:0.82rem;">No hay partidos para este dia</div>';
+      return;
+    }
+
+    events.forEach(function (ev) {
+      var comp = ev.competitions[0] || {};
+      var status = comp.status || {};
+      var statusType = status.type || {};
+      var state = statusType.state;
+      var detail = statusType.shortDetail || statusType.description || '';
+      var clock = status.displayClock || '';
+
+      var competitors = (comp.competitors || []).slice().sort(function (a, b) {
+        return a.homeAway === 'home' ? -1 : 1;
+      });
+
+      var home = competitors[0] || {};
+      var away = competitors[1] || {};
+
+      var li = document.createElement('li');
+      li.className = 'sp-match-item' + (state === 'in' ? ' live' : '');
+
+      var metaHtml = '';
+      if (state === 'in') {
+        metaHtml = '<span class="live-dot"></span>' + esc(clock || detail);
+      } else if (state === 'pre') {
+        metaHtml = '<i class="fa-regular fa-clock"></i> ' + formatTime(ev.date);
+      } else {
+        metaHtml = detail || 'Finalizado';
+      }
+
+      var homeWinner = state === 'post' && parseInt(home.score) > parseInt(away.score);
+      var awayWinner = state === 'post' && parseInt(away.score) > parseInt(home.score);
+
+      li.innerHTML =
+        '<div class="sp-match-meta">' + metaHtml + '</div>' +
+        '<div class="sp-match-teams">' +
+          '<div class="sp-team home">' +
+            '<img class="sp-team-logo" src="' + (home.team ? home.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
+            '<span class="sp-team-name' + (homeWinner ? ' winner' : '') + (awayWinner ? ' loser' : '') + '">' + esc(home.team ? home.team.shortDisplayName || home.team.displayName : 'Home') + '</span>' +
+          '</div>' +
+          '<div class="sp-score">' +
+            '<span>' + esc(home.score || '-') + '</span>' +
+            '<span class="sp-score-dash">-</span>' +
+            '<span>' + esc(away.score || '-') + '</span>' +
+          '</div>' +
+          '<div class="sp-team away">' +
+            '<img class="sp-team-logo" src="' + (away.team ? away.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
+            '<span class="sp-team-name' + (awayWinner ? ' winner' : '') + (homeWinner ? ' loser' : '') + '">' + esc(away.team ? away.team.shortDisplayName || away.team.displayName : 'Away') + '</span>' +
+          '</div>' +
+        '</div>';
+
+      if (state === 'post') {
+        var links = (comp.links || []).filter(function (l) { return l.rel.indexOf('recap') > -1 || l.rel.indexOf('summary') > -1; });
+        if (links.length > 0) {
+          li.style.cursor = 'pointer';
+          li.addEventListener('click', function () { window.open(links[0].href, '_blank', 'noopener'); });
+        }
+      }
+
+      matchList.appendChild(li);
+    });
+  }
+
   // --- LOAD STANDINGS ---
   async function loadStandings() {
     if (!standingsDiv) return;
     standingsDiv.innerHTML = '<div class="sp-loading"><i class="fa-solid fa-spinner fa-spin"></i><span>Cargando posiciones...</span></div>';
 
     try {
-      var res = await fetch(API + '/' + currentLeague + '/standings');
-      if (!res.ok) throw new Error('Not found');
-      var data = await res.json();
+      var cacheKey = 'sports_standings_' + currentLeague;
+
+      // Intentar cache
+      var cached = apiCacheGet(cacheKey);
+      var data;
+
+      if (cached) {
+        data = cached;
+      } else {
+        var res = await fetch(API + '/' + currentLeague + '/standings');
+        if (!res.ok) throw new Error('Not found');
+        data = await res.json();
+        apiCacheSet(cacheKey, data, SPORTS_CACHE_TTL);
+      }
 
       var children = data.children || [];
       if (children.length === 0) {

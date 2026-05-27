@@ -61,6 +61,7 @@
   var city = '';
   var coords = null; // { lat, lon, name }
   var refreshTimer = null;
+  var WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 minutos
 
   // --- Geocoding: ciudad → coordenadas ---
   async function geocode(query) {
@@ -96,12 +97,21 @@
         '&daily=temperature_2m_max,temperature_2m_min,weather_code' +
         '&timezone=auto&forecast_days=7';
 
-      var res = await fetch(url);
-      var data = await res.json();
+      // Intentar obtener desde cache
+      var cacheKey = 'weather_' + coords.lat + '_' + coords.lon;
+      var cached = apiCacheGet(cacheKey);
+      var data;
 
-      if (data.error) {
-        setEmpty('api');
-        return;
+      if (cached) {
+        data = cached;
+      } else {
+        var res = await fetch(url);
+        data = await res.json();
+        if (data.error) {
+          setEmpty('api');
+          return;
+        }
+        apiCacheSet(cacheKey, data, WEATHER_CACHE_TTL);
       }
 
       var current = data.current;
@@ -266,6 +276,8 @@
 
     fetchWeather();
     startRefresh();
+    // Invalidar cache de clima anterior al cambiar ciudad
+    apiCacheCleanup();
   }
 
   // --- Eventos ---

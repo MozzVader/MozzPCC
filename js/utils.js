@@ -39,6 +39,116 @@ function getCurrency() {
 }
 
 // =========================================================================
+//  API CACHE — Cache centralizado para respuestas de APIs externas
+//  Usa localStorage con timestamps y TTL configurable por clave.
+// =========================================================================
+
+var _apiCachePrefix = 'mozzpcc_apicache_';
+
+/**
+ * Obtiene datos cacheados para una clave dada.
+ * @param {string} key - Identificador único (ej: 'weather', 'dollar-latest')
+ * @returns {*} Los datos cacheados, o null si no existen o expiraron.
+ */
+function apiCacheGet(key) {
+  try {
+    var raw = localStorage.getItem(_apiCachePrefix + key);
+    if (!raw) return null;
+    var entry = JSON.parse(raw);
+    if (Date.now() - entry.ts > entry.ttl) {
+      localStorage.removeItem(_apiCachePrefix + key);
+      return null;
+    }
+    return entry.data;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Guarda datos en cache con un TTL.
+ * @param {string} key - Identificador único
+ * @param {*} data - Los datos a cachear (se serializan con JSON.stringify)
+ * @param {number} ttlMs - Tiempo de vida en milisegundos
+ */
+function apiCacheSet(key, data, ttlMs) {
+  try {
+    localStorage.setItem(_apiCachePrefix + key, JSON.stringify({
+      ts: Date.now(),
+      ttl: ttlMs,
+      data: data
+    }));
+  } catch (e) {
+    // localStorage lleno — limpiar caches viejos y reintentar
+    apiCacheCleanup();
+    try {
+      localStorage.setItem(_apiCachePrefix + key, JSON.stringify({
+        ts: Date.now(),
+        ttl: ttlMs,
+        data: data
+      }));
+    } catch (e2) {
+      // No se pudo guardar, seguir sin cache
+    }
+  }
+}
+
+/**
+ * Invalida (borra) el cache para una clave específica.
+ * @param {string} key - Identificador único
+ */
+function apiCacheInvalidate(key) {
+  try {
+    localStorage.removeItem(_apiCachePrefix + key);
+  } catch (e) {}
+}
+
+/**
+ * Limpia todas las entradas de API cache que ya expiraron.
+ */
+function apiCacheCleanup() {
+  try {
+    var keysToRemove = [];
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      if (k && k.indexOf(_apiCachePrefix) === 0) {
+        try {
+          var entry = JSON.parse(localStorage.getItem(k));
+          if (Date.now() - entry.ts > entry.ttl) {
+            keysToRemove.push(k);
+          }
+        } catch (e) {
+          keysToRemove.push(k);
+        }
+      }
+    }
+    keysToRemove.forEach(function (k) { localStorage.removeItem(k); });
+  } catch (e) {}
+}
+
+/**
+ * Wrapper para fetch con cache: retorna datos cacheados si son válidos,
+ * si no hace el fetch real y cachea el resultado.
+ *
+ * @param {string} cacheKey - Clave para el cache
+ * @param {string} url - URL a fetchear
+ * @param {number} ttlMs - TTL del cache en ms
+ * @param {object} [opts] - Opciones adicionales para fetch
+ * @returns {Promise<*>} Los datos (JSON parseado)
+ */
+async function fetchWithCache(cacheKey, url, ttlMs, opts) {
+  var cached = apiCacheGet(cacheKey);
+  if (cached !== null) return cached;
+
+  var res = await fetch(url, opts);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  var data = await res.json();
+
+  apiCacheSet(cacheKey, data, ttlMs);
+  return data;
+}
+
+// =========================================================================
 //  FOCUS TRAP — Mantiene el foco dentro de un contenedor (accesibilidad)
 // =========================================================================
 
