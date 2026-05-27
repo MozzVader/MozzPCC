@@ -313,6 +313,89 @@ body::after {
   border-radius: 4px;
 }
 
+/* --- Bottom Navigation Bar (mobile only) --- */
+.bottom-nav {
+  display: none; /* hidden by default, shown on mobile */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 800;
+  background: rgba(10, 10, 26, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border-glass);
+  padding: 6px 4px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 56px;
+  padding: 4px 6px;
+  border: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0;
+  cursor: pointer;
+  transition: color 0.25s ease, transform 0.2s ease;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+.bottom-nav-item i {
+  font-size: 1.05rem;
+  transition: color 0.25s ease, transform 0.2s ease;
+}
+
+.bottom-nav-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.9);
+}
+
+.bottom-nav-item.active {
+  color: var(--accent);
+}
+
+.bottom-nav-item.active i {
+  transform: scale(1.15);
+}
+
+/* Active indicator line */
+.bottom-nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
 /* --- Back to Top --- */
 .back-to-top {
   position: fixed;
@@ -3741,11 +3824,28 @@ body::after {
   .section-dot.active {
     height: 18px;
   }
+
+  /* Bottom navigation bar — visible on mobile */
+  .bottom-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  /* Adjust snap-section bottom padding for bottom nav */
+  .snap-section {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* Back to top hidden on mobile (bottom nav covers it) */
+  .back-to-top {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
   .snap-section {
-    padding: 60px 12px 80px 12px;
+    padding: 60px 12px calc(80px + env(safe-area-inset-bottom, 0px)) 12px;
   }
 
   .card {
@@ -6680,6 +6780,7 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
 
 /* ===== CLEAN MODE ===== */
 body.clean-mode .section-indicators,
+body.clean-mode .bottom-nav,
 body.clean-mode .dashboard footer,
 body.clean-mode .user-info-bar {
   opacity: 0;
@@ -7976,7 +8077,7 @@ body.clean-mode .clean-mode-hint {
 /* --- Responsive countdown --- */
 @media (max-width: 640px) {
   .countdown-float {
-    bottom: 12px;
+    bottom: calc(56px + env(safe-area-inset-bottom, 0px) + 12px);
     left: 12px;
     padding: 8px 10px;
     border-radius: 12px;

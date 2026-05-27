@@ -118,6 +118,7 @@
   function initSectionDots() {
     var sections = document.querySelectorAll('.snap-section');
     var dots = document.querySelectorAll('.section-dot');
+    var bottomNavItems = document.querySelectorAll('.bottom-nav-item');
     if (!sections.length || !dots.length) return;
 
     // --- URL anchors: update hash on section change, restore on load ---
@@ -180,6 +181,9 @@
           dots.forEach(function (dot) {
             dot.classList.toggle('active', dot.getAttribute('data-section') === id);
           });
+          bottomNavItems.forEach(function (item) {
+            item.classList.toggle('active', item.getAttribute('data-section') === id);
+          });
           setSectionHash(id);
         }
       });
@@ -196,6 +200,17 @@
     dots.forEach(function (dot) {
       dot.addEventListener('click', function () {
         var targetId = dot.getAttribute('data-section');
+        var target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Click en bottom nav item → scroll a la sección correspondiente
+    bottomNavItems.forEach(function (item) {
+      item.addEventListener('click', function () {
+        var targetId = item.getAttribute('data-section');
         var target = document.getElementById(targetId);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth' });
