@@ -53,10 +53,10 @@
       name: 'Linear',
       desc: 'Dark minimalista',
       icon: 'fa-solid fa-bolt',
-      available: false,
+      available: true,
       preview: {
-        bg: '#0a0a0a',
-        bars: ['#1a1a1a', '#161616', '#1e1e1e', '#141414']
+        bg: '#08080a',
+        bars: ['#111113', '#161618', '#1c1c1f', '#222225']
       }
     },
     {

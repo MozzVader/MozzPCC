@@ -1,0 +1,122 @@
+/* ============================================
+   MozzPCC — Tema Linear (Dark Minimalista)
+   ============================================
+   Inspirado en Linear.app: negros profundos,
+   bordes sutiles, cero glow, cero blur,
+   tipografia limpia y contraste moderado.
+   Minimalismo extremo, sin decoracion.
+   ============================================ */
+
+[data-theme="linear"] {
+  /* --- Body --- */
+  --t-body-bg: #08080a;
+  --t-body-secondary: #0c0c0e;
+  --t-body-pattern: transparent;
+  --t-body-glow-a: transparent;
+  --t-body-glow-b: transparent;
+  --t-body-glow-c: transparent;
+
+  /* --- Cards (surface con elevation minima) --- */
+  --t-card-bg: #111113;
+  --t-card-hover: #18181b;
+  --t-card-border: rgba(255, 255, 255, 0.06);
+  --t-card-border-hover: rgba(255, 255, 255, 0.1);
+  --t-card-radius: 8px;
+  --t-card-shadow: none;
+  --t-card-shine: none;
+  --t-card-chrome: none;
+  --t-card-padding-top: 0px;
+
+  /* --- Superficies (gradiente sutil de grises) --- */
+  --t-surface-1: #111113;
+  --t-surface-2: #161618;
+  --t-surface-3: #1c1c1f;
+  --t-surface-4: #222225;
+  --t-surface-5: #2a2a2e;
+  --t-surface-tooltip: rgb(22 22 26 / 95%);
+  --t-surface-dropdown: #111113;
+  --t-surface-overlay: rgba(0, 0, 0, 0.6);
+  --t-surface-modal: #0f0f11;
+  --t-surface-toast: #111113;
+  --t-surface-input: #0f0f11;
+  --t-surface-input-focus: #141416;
+
+  /* --- Bordes (casi invisibles, estilo Linear) --- */
+  --t-border-subtle: rgba(255, 255, 255, 0.04);
+  --t-border-default: rgba(255, 255, 255, 0.06);
+  --t-border-strong: rgba(255, 255, 255, 0.1);
+  --t-input-border: rgba(255, 255, 255, 0.06);
+  --t-input-border-focus: var(--p-accent);
+
+  /* --- Sombras (planas, sin glow) --- */
+  --t-shadow-sm: none;
+  --t-shadow-md: none;
+  --t-shadow-lg: none;
+  --t-shadow-xl: none;
+
+  /* --- Blur (cero — Linear es completamente flat) --- */
+  --t-blur-sm: 0px;
+  --t-blur-md: 0px;
+  --t-blur-lg: 0px;
+  --t-blur-xl: 0px;
+  --t-blur-2xl: 0px;
+  --t-blur-3xl: 0px;
+  --t-blur-card: 0px;
+
+  /* --- Tipografia (Inter a peso regular, limpia) --- */
+  --t-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --t-font-mono: 'Inter', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- Radios (pequenos, consistentes) --- */
+  --t-radius-xs: 4px;
+  --t-radius-sm: 5px;
+  --t-radius-md: 6px;
+  --t-radius-lg: 8px;
+  --t-radius-xl: 12px;
+
+  /* --- Colores semanticos (adaptados para fondo oscuro profundo) --- */
+  --t-danger: #f87171;
+  --t-danger-dim: rgba(248, 113, 113, 0.08);
+  --t-danger-light: #fca5a5;
+  --t-danger-hover: #fca5a5;
+  --t-success: #5eead4;
+  --t-success-dim: rgba(94, 234, 212, 0.08);
+  --t-success-light: #99f6e4;
+  --t-success-hover: #99f6e4;
+  --t-warning: #fbbf24;
+  --t-info: #818cf8;
+
+  /* --- Texto (alto contraste sobre negro profundo) --- */
+  --t-text-primary: #ededef;
+  --t-text-secondary: #8b8b8f;
+  --t-text-muted: #55555a;
+  --t-text-tooltip: #ededef;
+  --t-text-on-accent: #ffffff;
+
+  /* --- Skeleton --- */
+  --t-skeleton-base: rgba(255, 255, 255, 0.03);
+  --t-skeleton-shine: rgba(255, 255, 255, 0.06);
+
+  /* ============================================
+   * LEGACY ALIASES
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
+}

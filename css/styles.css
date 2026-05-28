@@ -6316,9 +6316,9 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(20, 20, 30, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--t-surface-overlay);
+  backdrop-filter: blur(var(--t-blur-lg));
+  -webkit-backdrop-filter: blur(var(--t-blur-lg));
   border-radius: var(--radius);
   z-index: 50;
   display: flex;
@@ -7943,7 +7943,7 @@ body.clean-mode .clean-mode-hint {
 
 .ns-form-btn:hover {
   background: var(--accent);
-  color: #000;
+  color: var(--t-text-on-accent);
 }
 
 .ns-form-status {
