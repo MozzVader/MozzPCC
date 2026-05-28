@@ -106,11 +106,9 @@
   var syncTimer = null;
 
   window.addEventListener('sync:success', function () {
-    console.log('MozzPCC: sync:success event fired');
-    if (!syncDot) { console.warn('MozzPCC: sync-dot element not found'); return; }
+    if (!syncDot) return;
     clearTimeout(syncTimer);
     syncDot.classList.add('active');
-    console.log('MozzPCC: sync-dot classes:', syncDot.className, 'computed opacity:', getComputedStyle(syncDot).opacity);
     syncTimer = setTimeout(function () {
       syncDot.classList.remove('active');
     }, 2500);

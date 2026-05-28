@@ -110,7 +110,6 @@
 
     debounceTimers[id] = setTimeout(async () => {
       const client = getSupabase();
-      console.log('MozzPCC [notes]: guardando nota', id, 'client:', !!client, 'userId:', !!userId);
       if (!client || !userId) return;
 
       try {
@@ -342,6 +341,7 @@
       });
 
       renderizarNotas();
+      window.dispatchEvent(new CustomEvent('sync:success'));
 
       // Enfocar el título de la nueva nota
       const primeraNota = notesGrid.querySelector('.note');
@@ -388,6 +388,8 @@
               if (result.error) {
                 console.warn('Error al eliminar nota:', result.error);
                 cargarNotas();
+              } else {
+                window.dispatchEvent(new CustomEvent('sync:success'));
               }
             })
             .catch(function (e) {
@@ -402,6 +404,7 @@
           .from('notes')
           .delete()
           .eq('id', id);
+        if (!error) window.dispatchEvent(new CustomEvent('sync:success'));
 
         if (error) {
           console.warn('Error al eliminar nota:', error);
