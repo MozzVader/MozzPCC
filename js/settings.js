@@ -202,6 +202,22 @@
         '--bg-glow-c': 'rgba(136, 153, 166, 0.08)',
         '--border-accent': 'rgba(29, 155, 240, 0.3)'
       }
+    },
+    {
+      id: 'zai',
+      name: 'Zai',
+      swatches: ['#a78bfa', '#2dd4bf', '#f472b6', '#818cf8'],
+      vars: {
+        '--accent': '#a78bfa',
+        '--accent-dim': 'rgba(167, 139, 250, 0.12)',
+        '--accent-glow': 'rgba(167, 139, 250, 0.3)',
+        '--accent-secondary': '#2dd4bf',
+        '--shadow-glow': '0 0 20px rgba(167, 139, 250, 0.1)',
+        '--bg-glow-a': 'rgba(167, 139, 250, 0.1)',
+        '--bg-glow-b': 'rgba(45, 212, 191, 0.06)',
+        '--bg-glow-c': 'rgba(244, 114, 182, 0.05)',
+        '--border-accent': 'rgba(167, 139, 250, 0.25)'
+      }
     }
   ];
 
@@ -501,9 +517,18 @@
   }
 
   // --- Tema skin: aplicar ---
+  // Algunos skins sugieren una paleta por defecto (mismo id que el skin)
+  var SKIN_PALETTES = { zai: 'zai' };
+
   function applyThemeSkin(skinId) {
     currentThemeSkin = skinId;
     loadThemeCSS(skinId);
+
+    // Auto-aplicar paleta sugerida si existe
+    if (SKIN_PALETTES[skinId]) {
+      var suggested = THEMES.find(function (t) { return t.id === SKIN_PALETTES[skinId]; });
+      if (suggested) applyTheme(suggested.id);
+    }
 
     // Actualizar UI
     document.querySelectorAll('.theme-skin-card').forEach(function (card) {
