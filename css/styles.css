@@ -4093,6 +4093,15 @@ body::after {
   transition: color 0.2s ease;
 }
 
+.security-actions .settings-btn-add {
+  width: auto;
+  height: auto;
+  padding: 9px 18px;
+  font-size: 0.82rem;
+  gap: 7px;
+  white-space: nowrap;
+}
+
 /* ============================================
    AUTENTICACIÓN — Auth Screen
    ============================================ */
