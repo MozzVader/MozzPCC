@@ -4009,6 +4009,91 @@ body::after {
 }
 
 /* ============================================
+   SEGURIDAD — Password Change (Settings Tab)
+   ============================================ */
+
+.security-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.security-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.security-field label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.security-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--t-surface-input);
+  border: 1px solid var(--t-input-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.security-input-wrap:focus-within {
+  border-color: var(--t-input-border-focus);
+}
+
+.security-input-wrap input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  font-family: var(--font);
+}
+
+.security-input-wrap input::placeholder {
+  color: var(--text-muted);
+}
+
+.security-toggle-pw {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: color 0.2s ease;
+  padding: 0;
+}
+
+.security-toggle-pw:hover {
+  color: var(--text-secondary);
+}
+
+.security-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.security-actions span {
+  font-size: 0.78rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+/* ============================================
    AUTENTICACIÓN — Auth Screen
    ============================================ */
 

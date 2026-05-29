@@ -986,6 +986,9 @@
           <button class="settings-tab" data-tab="backup">
             <i class="fa-solid fa-cloud-arrow-down"></i> Backup
           </button>
+          <button class="settings-tab" data-tab="security">
+            <i class="fa-solid fa-shield-halved"></i> Seguridad
+          </button>
         </div>
         <button id="settings-close" class="settings-close" aria-label="Cerrar">
           <i class="fa-solid fa-xmark"></i>
@@ -1183,6 +1186,52 @@
           <div class="backup-section">
             <h3><i class="fa-solid fa-circle-info" style="color:var(--text-muted);margin-right:6px;"></i> Info</h3>
             <p class="backup-hint">El backup incluye todas las tablas de tu cuenta. Los datos se guardan como un archivo JSON.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Seguridad -->
+      <div class="settings-tab-content" id="tab-security">
+        <div class="appearance-panel">
+          <div class="appearance-section">
+            <h3><i class="fa-solid fa-shield-halved" style="color:var(--accent);margin-right:6px;"></i> Cambiar contrasena</h3>
+            <p class="appearance-hint">Actualiza tu contrasena. No necesitás escribir la actual — solo la nueva dos veces.</p>
+
+            <div class="security-form">
+              <div class="security-field">
+                <label for="security-new-password">Nueva contrasena</label>
+                <div class="security-input-wrap">
+                  <input type="password" id="security-new-password" placeholder="Minimo 6 caracteres" autocomplete="new-password">
+                  <button class="security-toggle-pw" data-target="security-new-password" type="button" aria-label="Mostrar contrasena">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="security-field">
+                <label for="security-confirm-password">Confirmar contrasena</label>
+                <div class="security-input-wrap">
+                  <input type="password" id="security-confirm-password" placeholder="Repeti la contrasena" autocomplete="new-password">
+                  <button class="security-toggle-pw" data-target="security-confirm-password" type="button" aria-label="Mostrar contrasena">
+                    <i class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="security-actions">
+                <button id="security-change-pw" class="settings-btn-add" type="button">
+                  <i class="fa-solid fa-key"></i> Cambiar contrasena
+                </button>
+                <span id="security-status"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="backup-divider"></div>
+
+          <div class="backup-section">
+            <h3><i class="fa-solid fa-circle-info" style="color:var(--text-muted);margin-right:6px;"></i> Info</h3>
+            <p class="backup-hint">La sesion actual no se cierra al cambiar la contrasena. En tu proximo login deberas usar la nueva.</p>
           </div>
         </div>
       </div>

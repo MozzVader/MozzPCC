@@ -981,6 +981,86 @@
     autolockSelect.addEventListener('change', saveAutolock);
   }
 
+  // --- Password Change (Tab Seguridad) ---
+  var newPwInput = document.getElementById('security-new-password');
+  var confirmPwInput = document.getElementById('security-confirm-password');
+  var changePwBtn = document.getElementById('security-change-pw');
+  var securityStatus = document.getElementById('security-status');
+
+  function setSecurityStatus(msg, isError) {
+    if (!securityStatus) return;
+    securityStatus.textContent = msg;
+    securityStatus.style.color = isError ? 'var(--t-danger)' : 'var(--t-success)';
+    if (!isError) {
+      setTimeout(function () { if (securityStatus) securityStatus.textContent = ''; }, 4000);
+    }
+  }
+
+  async function changePassword() {
+    if (!newPwInput || !confirmPwInput || !changePwBtn) return;
+
+    var pw = newPwInput.value;
+    var confirm = confirmPwInput.value;
+
+    if (!pw || pw.length < 6) {
+      setSecurityStatus('La contrasena debe tener al menos 6 caracteres', true);
+      newPwInput.focus();
+      return;
+    }
+
+    if (pw !== confirm) {
+      setSecurityStatus('Las contrasenas no coinciden', true);
+      confirmPwInput.focus();
+      return;
+    }
+
+    var client = getSupabase();
+    if (!client) {
+      setSecurityStatus('Error: no hay sesion activa', true);
+      return;
+    }
+
+    changePwBtn.disabled = true;
+    changePwBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cambiando...';
+
+    try {
+      var { error } = await client.auth.updateUser({ password: pw });
+
+      if (error) {
+        setSecurityStatus('Error: ' + error.message, true);
+      } else {
+        setSecurityStatus('Contrasena actualizada correctamente', false);
+        newPwInput.value = '';
+        confirmPwInput.value = '';
+      }
+    } catch (e) {
+      setSecurityStatus('Error inesperado: ' + (e.message || e), true);
+    }
+
+    changePwBtn.disabled = false;
+    changePwBtn.innerHTML = '<i class="fa-solid fa-key"></i> Cambiar contrasena';
+  }
+
+  if (changePwBtn) changePwBtn.addEventListener('click', changePassword);
+  if (confirmPwInput) confirmPwInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') changePassword();
+  });
+  if (newPwInput) newPwInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') confirmPwInput.focus();
+  });
+
+  // Toggle password visibility
+  document.querySelectorAll('.security-toggle-pw').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var targetId = btn.dataset.target;
+      var input = document.getElementById(targetId);
+      if (!input) return;
+      var isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      btn.querySelector('i').className = isPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye';
+    });
+  });
+
   // --- Eventos ---
   initTabs();
   settingsBtn.addEventListener('click', openSettings);
