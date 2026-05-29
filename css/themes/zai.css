@@ -1,0 +1,125 @@
+/* ============================================
+   MozzPCC — Tema Zai (Aurora Neural)
+   ============================================
+   Tema firma: auroras boreales sutiles, gradientes
+   que evocan caminos neuronales, profundidad
+   cromatica sin saturacion. Magia silenciosa.
+
+   La base es azulada profunda con gradientes de
+   aurora (violeta → teal → rosa) en los bordes
+   y superficies. Glow minimo, blur medio.
+   ============================================ */
+
+[data-theme="zai"] {
+  /* --- Body (azulada profunda, como cielo nocturno pre-aurora) --- */
+  --t-body-bg: #06080f;
+  --t-body-secondary: #0a0e18;
+  --t-body-pattern: rgba(120, 80, 220, 0.02);
+  --t-body-glow-a: rgba(99, 60, 200, 0.06);
+  --t-body-glow-b: rgba(0, 200, 180, 0.04);
+  --t-body-glow-c: rgba(180, 60, 180, 0.03);
+
+  /* --- Cards (superficie con tinte aurora) --- */
+  --t-card-bg: rgba(14, 18, 30, 0.6);
+  --t-card-hover: rgba(30, 28, 55, 0.4);
+  --t-card-border: rgba(120, 80, 220, 0.08);
+  --t-card-border-hover: rgba(120, 80, 220, 0.16);
+  --t-card-radius: 10px;
+  --t-card-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  --t-card-shine: linear-gradient(135deg, rgba(120, 80, 220, 0.04), rgba(0, 200, 180, 0.02), transparent);
+  --t-card-chrome: none;
+  --t-card-padding-top: 0px;
+
+  /* --- Superficies (gradiente sutil violeta → teal) --- */
+  --t-surface-1: rgba(14, 18, 32, 0.7);
+  --t-surface-2: rgba(18, 22, 38, 0.65);
+  --t-surface-3: rgba(24, 26, 48, 0.6);
+  --t-surface-4: rgba(32, 30, 58, 0.55);
+  --t-surface-5: rgba(40, 34, 70, 0.5);
+  --t-surface-tooltip: rgb(16 18 32 / 94%);
+  --t-surface-dropdown: #0e1220;
+  --t-surface-overlay: rgba(6, 8, 15, 0.75);
+  --t-surface-modal: rgb(14 18 30 / 90%);
+  --t-surface-toast: rgb(16 18 32 / 92%);
+  --t-surface-input: rgba(14, 18, 32, 0.8);
+  --t-surface-input-focus: rgba(18, 22, 38, 0.9);
+
+  /* --- Bordes (tinte aurora sutil) --- */
+  --t-border-subtle: rgba(120, 80, 220, 0.04);
+  --t-border-default: rgba(120, 80, 220, 0.08);
+  --t-border-strong: rgba(120, 80, 220, 0.16);
+  --t-input-border: rgba(120, 80, 220, 0.1);
+  --t-input-border-focus: var(--p-accent);
+
+  /* --- Sombras (con tinte aurora en las mas grandes) --- */
+  --t-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+  --t-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+  --t-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --t-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
+
+  /* --- Blur (medio — suficiente para vibrancy, no excesivo) --- */
+  --t-blur-sm: 6px;
+  --t-blur-md: 10px;
+  --t-blur-lg: 14px;
+  --t-blur-xl: 18px;
+  --t-blur-2xl: 22px;
+  --t-blur-3xl: 32px;
+  --t-blur-card: 14px;
+
+  /* --- Tipografia (Inter, con sutil weight) --- */
+  --t-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --t-font-mono: 'Inter', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- Radios (ligeramente mas generosos) --- */
+  --t-radius-xs: 6px;
+  --t-radius-sm: 8px;
+  --t-radius-md: 10px;
+  --t-radius-lg: 14px;
+  --t-radius-xl: 20px;
+
+  /* --- Colores semanticos (aurora tinted) --- */
+  --t-danger: #f472b6;
+  --t-danger-dim: rgba(244, 114, 182, 0.1);
+  --t-danger-light: #f9a8d4;
+  --t-danger-hover: #f9a8d4;
+  --t-success: #2dd4bf;
+  --t-success-dim: rgba(45, 212, 191, 0.1);
+  --t-success-light: #5eead4;
+  --t-success-hover: #5eead4;
+  --t-warning: #fbbf24;
+  --t-info: #a78bfa;
+
+  /* --- Texto (alto contraste con tinte frio) --- */
+  --t-text-primary: #e8eaf0;
+  --t-text-secondary: #9095a8;
+  --t-text-muted: #5a5e72;
+  --t-text-tooltip: #e8eaf0;
+  --t-text-on-accent: #ffffff;
+
+  /* --- Skeleton --- */
+  --t-skeleton-base: rgba(120, 80, 220, 0.03);
+  --t-skeleton-shine: rgba(120, 80, 220, 0.06);
+
+  /* ============================================
+   * LEGACY ALIASES
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
+}

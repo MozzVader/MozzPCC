@@ -97,10 +97,10 @@
       name: 'Zai',
       desc: 'Aurora Neural',
       icon: 'fa-solid fa-wand-magic-sparkles',
-      available: false,
+      available: true,
       preview: {
-        bg: '#080812',
-        bars: ['#1a1035', '#0f1a30', '#15102a', '#0d1525']
+        bg: '#06080f',
+        bars: ['#141630', '#181c34', '#1e1a40', '#141828']
       }
     }
   ];
