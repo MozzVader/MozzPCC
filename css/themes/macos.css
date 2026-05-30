@@ -144,8 +144,14 @@ body[data-theme="macos"]::before {
 }
 
 /* --- Card headers estilo ventana macOS --- */
-[data-theme="macos"] .card {
+/* Solo cards con card-header necesitan padding-top para el title bar */
+[data-theme="macos"] .card:has(.card-header) {
   padding-top: var(--t-card-padding-top);
+  position: relative;
+}
+
+/* Todas las cards necesitan position:relative si no lo tienen */
+[data-theme="macos"] .card {
   position: relative;
 }
 
@@ -171,7 +177,7 @@ body[data-theme="macos"]::before {
   display: flex;
   align-items: center;
   z-index: 2;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Wrapper flex para traffic + title + actions */
@@ -274,13 +280,17 @@ body[data-theme="macos"]::before {
   position: static !important;
 }
 
-/* Cards con sticky header: overflow hidden + bg mas solido */
+/* Cards con sticky header: bg mas solido (overflow visible para dropdowns) */
 [data-theme="macos"] .widget-tasks .card,
 [data-theme="macos"] .widget-finances .card,
 [data-theme="macos"] .widget-read-later .card,
 [data-theme="macos"] .widget-tv-shows .card {
-  overflow: hidden;
   background: rgba(22, 22, 40, 0.7);
+}
+
+/* Dollar widget: overflow visible para que el dropdown de tipo se despliegue */
+[data-theme="macos"] .widget-dollar {
+  overflow: visible;
 }
 
 /* --- GitHub widget header: links van a ch-actions --- */
