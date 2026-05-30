@@ -262,23 +262,22 @@ body[data-theme="macos"]::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* --- Override: card-header con sticky --- */
+/* --- Override: card-header dentro de wrappers (no absolute, sino static) --- */
 [data-theme="macos"] .task-sticky-header .card-header,
 [data-theme="macos"] .finances-sticky-header .card-header,
 [data-theme="macos"] .read-later-sticky-header .card-header,
 [data-theme="macos"] .tv-header .card-header {
-  position: sticky;
-  top: 0;
-  z-index: 5;
+  position: static;
 }
 
-/* Cards con sticky header necesitan overflow hidden + bg mas solido */
+/* Cards con sticky header: overflow hidden + bg mas solido + sin padding-top */
 [data-theme="macos"] .widget-tasks .card,
 [data-theme="macos"] .widget-finances .card,
 [data-theme="macos"] .widget-read-later .card,
 [data-theme="macos"] .widget-tv-shows .card {
   overflow: hidden;
   background: rgba(22, 22, 40, 0.7);
+  padding-top: 0;
 }
 
 /* --- GitHub widget header: links van a ch-actions --- */
@@ -293,12 +292,15 @@ body[data-theme="macos"]::before {
   color: var(--t-text-primary);
 }
 
-/* --- Hide original icon from card-header (macOS uses traffic lights instead) --- */
+/* --- Ocultar hijos originales del card-header (JS los marca con ch-original-hidden) --- */
+[data-theme="macos"] .card-header > .ch-original-hidden {
+  display: none !important;
+}
+
+/* Fallback CSS: ocultar h2 e icono directos (por si JS no inyecto) */
 [data-theme="macos"] .card-header > i:first-child {
   display: none;
 }
-
-/* Hide original h2 (replaced by ch-title) */
 [data-theme="macos"] .card-header > h2:first-of-type,
 [data-theme="macos"] .card-header > h2 {
   display: none;

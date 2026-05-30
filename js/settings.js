@@ -595,18 +595,43 @@
   function injectTrafficLights(header) {
     if (header.querySelector('.ch-traffic')) return;
 
-    // Extraer el titulo del h2
+    // Extraer el titulo del h2 (busca a cualquier profundidad)
     var h2 = header.querySelector('h2');
     var titleText = h2 ? h2.textContent.trim() : '';
 
-    // Extraer elementos de accion (botones, links que NO son el icono)
+    // Recolectar acciones y ocultar titulo/icono
+    // Maneja dos estructuras:
+    //  A) Simple: <i>, <h2>, <button>/<a> como hijos directos
+    //  B) Compleja (ej: dolar): wrappers como leftWrap(contiene i+h2) y dropdown(contiene button+menu)
     var actions = [];
     var children = Array.prototype.slice.call(header.children);
+
     children.forEach(function (child) {
-      if (child.tagName === 'H2' || child.tagName === 'I') return;
+      if (child.tagName === 'H2' || child.tagName === 'I') {
+        // Icono o titulo directo → CSS fallback los oculta
+        return;
+      }
+
       if (child.tagName === 'BUTTON' || child.tagName === 'A' ||
           (child.classList && (child.classList.contains('btn-add') || child.classList.contains('tv-add-btn')))) {
+        // Boton/link directo → mover a ch-actions
         actions.push(child);
+      } else {
+        // Es un contenedor (div). Verificar que contiene
+        var containsH2 = child.querySelector && child.querySelector('h2');
+        var containsAction = child.querySelectorAll && child.querySelectorAll('button, a');
+
+        if (containsH2) {
+          // Wrapper con titulo (ej: leftWrap del dolar) → ocultar
+          child.classList.add('ch-original-hidden');
+        } else if (containsAction && containsAction.length > 0) {
+          // Wrapper con acciones pero sin titulo (ej: dropdown del dolar)
+          // → mover TODO el contenedor para preservar estructura (button+menu)
+          actions.push(child);
+        } else {
+          // Elemento desconocido sin acciones ni titulo → ocultar
+          child.classList.add('ch-original-hidden');
+        }
       }
     });
 
@@ -626,7 +651,7 @@
     title.textContent = titleText;
     newContent.appendChild(title);
 
-    // Acciones
+    // Acciones (movidas desde su posicion original)
     if (actions.length > 0) {
       var actionsWrap = document.createElement('div');
       actionsWrap.className = 'ch-actions';
@@ -649,6 +674,7 @@
     document.querySelectorAll('.card-header').forEach(function (header) {
       var wrapper = header.querySelector('.ch-wrap');
       if (wrapper) {
+        // Mover acciones de vuelta al header
         var actionsWrap = wrapper.querySelector('.ch-actions');
         if (actionsWrap) {
           while (actionsWrap.firstChild) {
@@ -657,6 +683,11 @@
         }
         wrapper.remove();
       }
+
+      // Restaurar hijos originales (quitar clase de ocultamiento)
+      header.querySelectorAll('.ch-original-hidden').forEach(function (el) {
+        el.classList.remove('ch-original-hidden');
+      });
     });
   }
 
