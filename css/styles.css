@@ -8450,7 +8450,7 @@ body.clean-mode .clean-mode-hint {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: -2;
+  z-index: -1;
   pointer-events: none;
   background-size: cover;
   background-position: center;
@@ -8473,6 +8473,11 @@ body.clean-mode .clean-mode-hint {
 /* Wallpaper con color sólido (sin overlay oscuro) */
 #pcc-wallpaper.wp-solid::after {
   display: none;
+}
+
+/* Ocultar fondo del tema cuando hay wallpaper activo */
+body[data-wallpaper]::before {
+  display: none !important;
 }
 
 /* --- Settings: Wallpaper --- */

@@ -91,10 +91,12 @@
       if (wu) {
         d.style.backgroundImage = 'url(' + wu + ')';
         d.style.display = 'block';
+        document.body.setAttribute('data-wallpaper', 'url');
       } else if (wc) {
         d.className = 'wp-solid';
         d.style.backgroundColor = wc;
         d.style.display = 'block';
+        document.body.setAttribute('data-wallpaper', 'color');
       }
       document.body.appendChild(d);
     }

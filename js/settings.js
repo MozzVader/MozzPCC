@@ -1484,17 +1484,20 @@
       el.style.backgroundImage = 'url(' + value + ')';
       el.style.backgroundColor = '';
       el.style.display = 'block';
+      document.body.setAttribute('data-wallpaper', 'url');
     } else if (type === 'color') {
       el.className = 'wp-solid';
       el.style.backgroundImage = '';
       el.style.backgroundColor = value;
       el.style.display = 'block';
+      document.body.setAttribute('data-wallpaper', 'color');
     } else {
       // reset
       el.className = '';
       el.style.backgroundImage = '';
       el.style.backgroundColor = '';
       el.style.display = 'none';
+      document.body.removeAttribute('data-wallpaper');
     }
   }
 
