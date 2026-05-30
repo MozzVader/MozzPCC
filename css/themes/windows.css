@@ -1,0 +1,376 @@
+/* ============================================
+   MozzPCC — Tema Windows 11 (Fluent Design)
+   ============================================
+   Inspirado en Windows 11 / Fluent Design System:
+   - Card headers estilo ventana Win11 (titulo izq, controles der)
+   - Mica: fondo con tint del color de acento
+   - Acrylic: superficies translucidas con blur
+   - Sin grid, bordes sutiles, sombras en capas
+   - Tipografia Segoe UI Variable
+   ============================================ */
+
+[data-theme="windows"] {
+  /* --- Body (Mica — fondo suave con tint) --- */
+  --t-body-bg: #202020;
+  --t-body-secondary: #1c1c1c;
+  --t-body-pattern: transparent;
+  /* Glows toman el accent de la paleta */
+  --t-body-glow-a: var(--accent-dim);
+  --t-body-glow-b: rgba(255, 255, 255, 0.015);
+  --t-body-glow-c: var(--accent-dim);
+
+  /* --- Cards (Acrylic — translucidos) --- */
+  --t-card-bg: rgba(44, 44, 44, 0.65);
+  --t-card-hover: rgba(55, 55, 55, 0.75);
+  --t-card-border: rgba(255, 255, 255, 0.065);
+  --t-card-border-hover: rgba(255, 255, 255, 0.1);
+  --t-card-radius: 8px;
+  --t-card-shadow: 0 2px 6px rgba(0, 0, 0, 0.14), 0 8px 24px rgba(0, 0, 0, 0.1);
+  --t-card-shine: none;
+  --t-card-chrome: none;
+  --t-card-padding-top: 32px;
+
+  /* --- Superficies (Acrylic / Mica layers) --- */
+  --t-surface-1: rgba(44, 44, 44, 0.5);
+  --t-surface-2: rgba(50, 50, 50, 0.6);
+  --t-surface-3: rgba(56, 56, 56, 0.7);
+  --t-surface-4: rgba(62, 62, 62, 0.75);
+  --t-surface-5: rgba(68, 68, 68, 0.8);
+  --t-surface-tooltip: rgb(32 32 32 / 96%);
+  --t-surface-dropdown: rgba(44, 44, 44, 0.92);
+  --t-surface-overlay: rgba(0, 0, 0, 0.5);
+  --t-surface-modal: rgba(44, 44, 44, 0.92);
+  --t-surface-toast: rgba(44, 44, 44, 0.95);
+  --t-surface-input: rgba(255, 255, 255, 0.05);
+  --t-surface-input-focus: rgba(255, 255, 255, 0.08);
+
+  /* --- Bordes (Fluent: muy sutiles, casi invisibles) --- */
+  --t-border-subtle: rgba(255, 255, 255, 0.04);
+  --t-border-default: rgba(255, 255, 255, 0.065);
+  --t-border-strong: rgba(255, 255, 255, 0.12);
+  --t-input-border: rgba(255, 255, 255, 0.065);
+  --t-input-border-focus: var(--p-accent);
+
+  /* --- Sombras (Fluent: layered, suaves) --- */
+  --t-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.04);
+  --t-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12), 0 0 4px rgba(0, 0, 0, 0.06);
+  --t-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.16), 0 0 8px rgba(0, 0, 0, 0.08);
+  --t-shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.2), 0 0 16px rgba(0, 0, 0, 0.1);
+
+  /* --- Blur (Acrylic) --- */
+  --t-blur-sm: 12px;
+  --t-blur-md: 20px;
+  --t-blur-lg: 30px;
+  --t-blur-xl: 40px;
+  --t-blur-2xl: 50px;
+  --t-blur-3xl: 64px;
+  --t-blur-card: 30px;
+
+  /* --- Tipografia (Segoe UI Variable) --- */
+  --t-font: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --t-font-mono: 'Cascadia Code', 'Segoe UI Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- Radios (Win11: 8px standard) --- */
+  --t-radius-xs: 4px;
+  --t-radius-sm: 6px;
+  --t-radius-md: 8px;
+  --t-radius-lg: 12px;
+  --t-radius-xl: 16px;
+
+  /* --- Colores semanticos (Win11 palette) --- */
+  --t-danger: #c42b1c;
+  --t-danger-dim: rgba(196, 43, 28, 0.15);
+  --t-danger-light: #e8503d;
+  --t-danger-hover: #e8503d;
+  --t-success: #0f7b0f;
+  --t-success-dim: rgba(15, 123, 15, 0.15);
+  --t-success-light: #3fb43f;
+  --t-success-hover: #3fb43f;
+  --t-warning: #9d5d00;
+  --t-info: #005fb8;
+
+  /* --- Texto (Win11: clean whites) --- */
+  --t-text-primary: #ffffff;
+  --t-text-secondary: #c8c8c8;
+  --t-text-muted: #8a8a8a;
+  --t-text-tooltip: #ffffff;
+  --t-text-on-accent: #ffffff;
+
+  /* --- Skeleton --- */
+  --t-skeleton-base: rgba(255, 255, 255, 0.04);
+  --t-skeleton-shine: rgba(255, 255, 255, 0.08);
+
+  /* ============================================
+   * LEGACY ALIASES
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
+}
+
+/* ============================================
+   WINDOWS 11 ESPECIFICO — Title bar + overrides
+   ============================================ */
+
+/* Sin grid en el fondo */
+body[data-theme="windows"]::after {
+  display: none !important;
+}
+
+/* Mica background: gradiente suave con tint del accent */
+body[data-theme="windows"]::before {
+  background:
+    radial-gradient(ellipse at 20% 20%, var(--bg-glow-a) 0%, transparent 45%),
+    radial-gradient(ellipse at 80% 80%, var(--bg-glow-c) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.01) 0%, transparent 60%),
+    linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  animation: bgShift 25s ease-in-out infinite alternate;
+}
+
+/* --- Card headers estilo ventana Windows 11 --- */
+/* Solo cards con card-header necesitan padding-top para el title bar */
+[data-theme="windows"] .card:has(.card-header) {
+  padding-top: var(--t-card-padding-top);
+  position: relative;
+}
+
+[data-theme="windows"] .card {
+  position: relative;
+}
+
+[data-theme="windows"] .card::after {
+  display: none;
+}
+
+/* El card-header se convierte en title bar Win11 */
+[data-theme="windows"] .card-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  margin: 0;
+  padding: 0 6px 0 14px;
+  padding-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--t-card-radius) var(--t-card-radius) 0 0;
+  background: rgba(32, 32, 32, 0.85);
+  backdrop-filter: blur(var(--t-blur-lg));
+  -webkit-backdrop-filter: blur(var(--t-blur-lg));
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* Wrapper flex para icon + title + spacer + actions + controls */
+[data-theme="windows"] .card-header .ch-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Titulo alineado a la izquierda (Win11 style) */
+[data-theme="windows"] .card-header .ch-title {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--t-text-secondary);
+  letter-spacing: 0.2px;
+  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-left: 8px;
+}
+
+/* Spacer que empuja los controles a la derecha */
+[data-theme="windows"] .card-header .ch-spacer {
+  flex: 1;
+}
+
+/* Window controls (minimize, maximize, close) — estilo Win11 */
+[data-theme="windows"] .card-header .ch-controls {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 3;
+  margin-left: 4px;
+}
+
+[data-theme="windows"] .card-header .ch-controls span {
+  width: 46px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s ease, background 0.1s ease;
+  cursor: default;
+}
+
+[data-theme="windows"] .card:hover .ch-controls span {
+  opacity: 1;
+}
+
+[data-theme="windows"] .card:hover .ch-controls span:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="windows"] .card:hover .ch-controls .ch-ctrl-close:hover {
+  background: #c42b1c;
+}
+
+/* Window control icons (SVG-like con CSS) */
+[data-theme="windows"] .card-header .ch-ctrl-min::after {
+  content: '';
+  width: 10px;
+  height: 1px;
+  background: var(--t-text-secondary);
+  border-radius: 1px;
+}
+
+[data-theme="windows"] .card-header .ch-ctrl-max::after {
+  content: '';
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--t-text-secondary);
+  border-radius: 1px;
+}
+
+[data-theme="windows"] .card-header .ch-ctrl-close::after {
+  content: '×';
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--t-text-secondary);
+  line-height: 1;
+}
+
+[data-theme="windows"] .card:hover .ch-ctrl-close:hover::after {
+  color: #ffffff;
+}
+
+/* Acciones a la derecha (btn-add, links, etc.) */
+[data-theme="windows"] .card-header .ch-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+}
+
+/* Botones dentro del header (solo hijos directos) */
+[data-theme="windows"] .card-header .ch-actions > .btn-add,
+[data-theme="windows"] .card-header .ch-actions > button,
+[data-theme="windows"] .card-header .ch-actions > a {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--t-radius-xs);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+[data-theme="windows"] .card-header .ch-actions > .btn-add:hover,
+[data-theme="windows"] .card-header .ch-actions > button:hover,
+[data-theme="windows"] .card-header .ch-actions > a:hover {
+  color: var(--t-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Dropdown del dolar dentro de ch-actions */
+[data-theme="windows"] .card-header .ch-actions .dollar-type-dropdown {
+  position: relative;
+}
+[data-theme="windows"] .card-header .ch-actions .dollar-type-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--t-border-default);
+  border-radius: var(--t-radius-xs);
+  color: var(--t-text-muted);
+  font-size: 0.68rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+[data-theme="windows"] .card-header .ch-actions .dollar-type-btn:hover {
+  color: var(--t-text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--t-border-strong);
+}
+[data-theme="windows"] .card-header .ch-actions .dollar-type-menu {
+  min-width: 100%;
+}
+
+/* --- Wrappers: evitar que creen containing block --- */
+[data-theme="windows"] .task-sticky-header,
+[data-theme="windows"] .finances-sticky-header,
+[data-theme="windows"] .read-later-sticky-header,
+[data-theme="windows"] .tv-header {
+  position: static !important;
+}
+
+/* Cards con sticky header: bg mas solido */
+[data-theme="windows"] .widget-tasks .card,
+[data-theme="windows"] .widget-finances .card,
+[data-theme="windows"] .widget-read-later .card,
+[data-theme="windows"] .widget-tv-shows .card {
+  background: rgba(32, 32, 32, 0.75);
+}
+
+/* Dollar widget: overflow visible */
+[data-theme="windows"] .widget-dollar {
+  overflow: visible;
+}
+
+/* --- GitHub widget header --- */
+[data-theme="windows"] .widget-github .card-header a {
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+[data-theme="windows"] .widget-github .card-header a:hover {
+  color: var(--t-text-primary);
+}
+
+/* --- Ocultar hijos originales del card-header (JS los marca con ch-original-hidden) --- */
+[data-theme="windows"] .card-header > .ch-original-hidden {
+  display: none !important;
+}
+
+/* Fallback CSS */
+[data-theme="windows"] .card-header > i:first-child {
+  display: none;
+}
+[data-theme="windows"] .card-header > h2:first-of-type,
+[data-theme="windows"] .card-header > h2 {
+  display: none;
+}

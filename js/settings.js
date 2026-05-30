@@ -75,7 +75,7 @@
       name: 'Windows 11',
       desc: 'Fluent Design',
       icon: 'fa-brands fa-windows',
-      available: false,
+      available: true,
       preview: {
         bg: '#202020',
         bars: ['#2d2d2d', '#333333', '#2a2a2a', '#383838']
@@ -233,6 +233,22 @@
         '--bg-glow-b': 'rgba(255, 255, 255, 0.02)',
         '--bg-glow-c': 'rgba(100, 210, 255, 0.06)',
         '--border-accent': 'rgba(100, 210, 255, 0.2)'
+      }
+    },
+    {
+      id: 'windows',
+      name: 'Windows 11',
+      swatches: ['#60cdff', '#0078d4', '#00b7c3', '#9b59b6'],
+      vars: {
+        '--accent': '#60cdff',
+        '--accent-dim': 'rgba(96, 205, 255, 0.12)',
+        '--accent-glow': 'rgba(96, 205, 255, 0.25)',
+        '--accent-secondary': '#00b7c3',
+        '--shadow-glow': '0 0 20px rgba(96, 205, 255, 0.08)',
+        '--bg-glow-a': 'rgba(96, 205, 255, 0.06)',
+        '--bg-glow-b': 'rgba(255, 255, 255, 0.015)',
+        '--bg-glow-c': 'rgba(0, 183, 195, 0.05)',
+        '--border-accent': 'rgba(96, 205, 255, 0.2)'
       }
     }
   ];
@@ -534,7 +550,7 @@
 
   // --- Tema skin: aplicar ---
   // Algunos skins sugieren una paleta por defecto (mismo id que el skin)
-  var SKIN_PALETTES = { zai: 'zai', macos: 'macos' };
+  var SKIN_PALETTES = { zai: 'zai', macos: 'macos', windows: 'windows' };
 
   function applyThemeSkin(skinId) {
     currentThemeSkin = skinId;
@@ -551,6 +567,13 @@
       injectMacOSTitleBars();
     } else {
       removeMacOSTitleBars();
+    }
+
+    // Windows 11: inyectar/remover window controls
+    if (skinId === 'windows') {
+      injectWindowsTitleBars();
+    } else {
+      removeWindowsTitleBars();
     }
 
     // Actualizar UI
@@ -716,6 +739,157 @@
       }
 
       // Restaurar hijos originales (quitar clase de ocultamiento)
+      header.querySelectorAll('.ch-original-hidden').forEach(function (el) {
+        el.classList.remove('ch-original-hidden');
+      });
+    });
+  }
+
+  // --- Windows 11: inyectar window controls en card-headers ---
+  var windowsInjected = false;
+
+  function injectWindowsTitleBars() {
+    if (windowsInjected) return;
+    windowsInjected = true;
+
+    document.querySelectorAll('.card-header').forEach(function (header) {
+      injectWindowsControls(header);
+    });
+
+    // Observer para card-headers dinamicos
+    if (!windowsObserver) {
+      var pendingW = {};
+      var wTimer = null;
+
+      windowsObserver = new MutationObserver(function (mutations) {
+        if (currentThemeSkin !== 'windows') return;
+
+        mutations.forEach(function (m) {
+          m.addedNodes.forEach(function (node) {
+            if (node.nodeType !== 1) return;
+            if (node.classList && node.classList.contains('card-header')) {
+              injectWindowsControls(node);
+            }
+            var headers = node.querySelectorAll ? node.querySelectorAll('.card-header') : [];
+            headers.forEach(function (h) { injectWindowsControls(h); });
+          });
+
+          // Re-inyectar si un card-header existente perdió sus controles
+          var target = m.target;
+          if (target.nodeType === 1) {
+            var header = (target.classList && target.classList.contains('card-header'))
+              ? target
+              : (target.closest ? target.closest('.card-header') : null);
+            if (header && !header.querySelector('.ch-controls')) {
+              pendingW[header.className || 'unknown'] = header;
+            }
+          }
+        });
+
+        var keys = Object.keys(pendingW);
+        if (keys.length > 0) {
+          var toFix = keys.map(function (k) { return pendingW[k]; });
+          pendingW = {};
+          if (wTimer) clearTimeout(wTimer);
+          wTimer = setTimeout(function () {
+            toFix.forEach(function (h) {
+              if (currentThemeSkin === 'windows' && !h.querySelector('.ch-controls')) {
+                injectWindowsControls(h);
+              }
+            });
+          }, 50);
+        }
+      });
+      windowsObserver.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  var windowsObserver = null;
+
+  function injectWindowsControls(header) {
+    if (header.querySelector('.ch-controls')) return;
+
+    // Extraer el titulo
+    var h2 = header.querySelector('h2');
+    var titleText = h2 ? h2.textContent.trim() : '';
+
+    // Recolectar acciones (misma logica que macOS)
+    var actions = [];
+    var children = Array.prototype.slice.call(header.children);
+
+    children.forEach(function (child) {
+      if (child.tagName === 'H2' || child.tagName === 'I') return;
+
+      if (child.tagName === 'BUTTON' || child.tagName === 'A' ||
+          (child.classList && (child.classList.contains('btn-add') || child.classList.contains('tv-add-btn')))) {
+        actions.push(child);
+      } else {
+        var containsH2 = child.querySelector && child.querySelector('h2');
+        var containsAction = child.querySelectorAll && child.querySelectorAll('button, a');
+
+        if (containsH2) {
+          child.classList.add('ch-original-hidden');
+        } else if (containsAction && containsAction.length > 0) {
+          actions.push(child);
+        } else {
+          child.classList.add('ch-original-hidden');
+        }
+      }
+    });
+
+    // Construir wrapper
+    var wrap = document.createElement('div');
+    wrap.className = 'ch-wrap';
+
+    // Titulo (alineado a la izquierda en Win11)
+    var title = document.createElement('div');
+    title.className = 'ch-title';
+    title.textContent = titleText;
+    wrap.appendChild(title);
+
+    // Spacer
+    var spacer = document.createElement('div');
+    spacer.className = 'ch-spacer';
+    wrap.appendChild(spacer);
+
+    // Acciones
+    if (actions.length > 0) {
+      var actionsWrap = document.createElement('div');
+      actionsWrap.className = 'ch-actions';
+      actions.forEach(function (el) { actionsWrap.appendChild(el); });
+      wrap.appendChild(actionsWrap);
+    }
+
+    // Window controls (minimize, maximize, close) — a la derecha
+    var controls = document.createElement('div');
+    controls.className = 'ch-controls';
+    controls.innerHTML = '<span class="ch-ctrl-min"></span><span class="ch-ctrl-max"></span><span class="ch-ctrl-close"></span>';
+    wrap.appendChild(controls);
+
+    header.appendChild(wrap);
+  }
+
+  function removeWindowsTitleBars() {
+    if (!windowsInjected) return;
+    windowsInjected = false;
+
+    if (windowsObserver) {
+      windowsObserver.disconnect();
+      windowsObserver = null;
+    }
+
+    document.querySelectorAll('.card-header').forEach(function (header) {
+      var wrapper = header.querySelector('.ch-wrap');
+      if (wrapper) {
+        var actionsWrap = wrapper.querySelector('.ch-actions');
+        if (actionsWrap) {
+          while (actionsWrap.firstChild) {
+            header.appendChild(actionsWrap.firstChild);
+          }
+        }
+        wrapper.remove();
+      }
+
       header.querySelectorAll('.ch-original-hidden').forEach(function (el) {
         el.classList.remove('ch-original-hidden');
       });
