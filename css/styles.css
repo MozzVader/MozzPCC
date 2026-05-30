@@ -8476,7 +8476,8 @@ body.clean-mode .clean-mode-hint {
 }
 
 /* Ocultar fondo del tema cuando hay wallpaper activo */
-body[data-wallpaper]::before {
+body[data-wallpaper]::before,
+body[data-wallpaper]::after {
   display: none !important;
 }
 
