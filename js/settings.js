@@ -454,14 +454,13 @@
 
   // --- Tema skin: carga dinámica de CSS ---
   function loadThemeCSS(themeSkinName) {
-    // Remover theme CSS anterior (si existe)
+    // Renombrar el link viejo (si existe) para no perder la referencia
     var oldLink = document.getElementById('theme-skin-css');
-    if (oldLink) oldLink.remove();
+    if (oldLink) oldLink.removeAttribute('id');
 
     currentThemeSkin = themeSkinName;
 
-    // Si no es default, cargar el CSS extra.
-    // El default ya está cargado desde index.html.
+    // Agregar el nuevo CSS ANTES de remover el viejo para evitar flash blanco
     if (themeSkinName !== 'default') {
       var link = document.createElement('link');
       link.id = 'theme-skin-css';
@@ -470,8 +469,11 @@
       document.head.appendChild(link);
     }
 
-    // Setear data-theme en body
+    // Cambiar data-theme ahora — como ambos CSS estan cargados, solo el correcto aplica
     document.body.setAttribute('data-theme', themeSkinName);
+
+    // Remover el viejo CSS — seguro porque el nuevo ya esta cargado (o volvimos a default)
+    if (oldLink) oldLink.remove();
   }
 
   // --- Tema: aplicar ---

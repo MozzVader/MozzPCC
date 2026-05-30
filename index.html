@@ -56,24 +56,19 @@
   <link rel="stylesheet" href="/MozzPCC/css/palettes.css">
   <link rel="stylesheet" href="/MozzPCC/css/themes/default.css">
 
-  <!-- FOUC prevention: preload correct theme CSS before first paint -->
+  <!-- FOUC prevention: document.write SI bloquea el parser -->
   <script>
   (function(){
     try {
       var s = localStorage.getItem('pcc_theme_skin');
       if (s && s !== 'default') {
-        var l = document.createElement('link');
-        l.id = 'theme-skin-css';
-        l.rel = 'stylesheet';
-        l.href = '/MozzPCC/css/themes/' + s + '.css';
-        document.head.appendChild(l);
+        document.write('<link id="theme-skin-css" rel="stylesheet" href="/MozzPCC/css/themes/' + s + '.css">');
       }
     } catch(e) {}
   })();
   </script>
 </head>
 <body data-theme="default" data-palette="cyber">
-<!-- FOUC prevention: apply saved theme before first render -->
 <script>
 (function(){
   try {
