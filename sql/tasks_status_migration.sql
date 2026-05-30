@@ -9,6 +9,10 @@ ALTER TABLE tasks ADD COLUMN IF NOT EXISTS sort_order INTEGER NOT NULL DEFAULT 0
 UPDATE tasks SET status = 'completed' WHERE completed = true;
 UPDATE tasks SET status = 'pending' WHERE completed = false OR completed IS NULL;
 
+-- Add CHECK constraint on status
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_status_check;
+ALTER TABLE tasks ADD CONSTRAINT tasks_status_check CHECK (status IN ('pending', 'en_progreso', 'hecha'));
+
 -- Drop old column
 ALTER TABLE tasks DROP COLUMN IF EXISTS completed;
 

@@ -46,6 +46,7 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Acceso Rapido | Links favoritos con iconos Font Awesome, imagen o favicon automatico |
 | Backup/Restore | Exportar e importar todos tus datos en JSON |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
+| Countdown | Temporizador flotante configurable (dias, horas, minutos) con celebracion al llegar a cero |
 
 ### Personalizacion
 
@@ -115,11 +116,15 @@ MozzPCC/
 ├── landing.html            # Landing page de presentacion
 ├── favicon.ico             # Favicon del sitio
 ├── assets/
-│   └── logo.png            # Logo del proyecto
+│   ├── logo.png            # Logo del proyecto
+│   ├── logo-readme.png     # Logo para el README
+│   ├── favicon-16x16.png   # Favicon 16x16
+│   └── favicon-32x32.png   # Favicon 32x32
 ├── img/
 │   ├── demo-scroll.webp    # Screenshot demo (secciones)
 │   ├── demo-finanzas.webp  # Screenshot demo (finanzas)
-│   └── demo-kanban.webp    # Screenshot demo (kanban)
+│   ├── demo-kanban.webp    # Screenshot demo (kanban)
+│   └── og-image.png        # Open Graph image para compartidos
 ├── css/
 │   ├── styles.css          # Estilos completos
 │   ├── palettes.css        # Paletas de colores
@@ -148,6 +153,8 @@ MozzPCC/
 │   ├── sportsWidget.js     # Resultados deportivos
 │   ├── githubWidget.js     # Widget de GitHub (repos + activity)
 │   ├── commandPalette.js   # Command Palette (Ctrl+K + busqueda web)
+│   ├── countdown.js         # Temporizador flotante con celebracion
+│   ├── touchGestures.js    # Gestos tactiles para navegacion mobile
 │   ├── cleanMode.js        # Clean Mode + auto-lock por inactividad
 │   ├── backup.js           # Backup/restore de datos
 │   ├── undoToast.js        # Toast global de deshacer
@@ -160,6 +167,7 @@ MozzPCC/
 │   ├── tasks_priority_migration.sql       # Migration: priority en tasks
 │   ├── read_later_migration.sql           # Migration: tabla read_later_items
 │   ├── read_later_tag_migration.sql       # Migration: tag_color en read_later_items
+│   ├── read_later_icon_migration.sql      # Migration: icon en read_later_items
 │   ├── tv_shows_migration.sql             # Migration: tabla tv_shows
 │   ├── steam_migration.sql               # Migration: tabla user_steam_settings
 │   ├── theme_skin_migration.sql          # Migration: theme_skin en user_preferences
@@ -167,7 +175,10 @@ MozzPCC/
 ├── supabase/
 │   └── (Sin Edge Functions)
 ├── README.md               # Este archivo
-└── SETUP.md                # Guia de configuracion paso a paso
+├── SETUP.md                # Guia de configuracion paso a paso
+├── THEME_SYSTEM.md         # Documentacion del sistema de temas/skins/paletas
+├── MEJORAS.md              # Registro de mejoras y cambios
+└── LICENSE.md               # Licencia CC BY-NC-ND 4.0
 ```
 
 ## Configuracion Rapida
