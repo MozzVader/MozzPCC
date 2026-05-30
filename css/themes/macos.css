@@ -129,12 +129,12 @@
    ============================================ */
 
 /* Apagar el grid en el fondo */
-[data-theme="macos"] body::after {
-  display: none;
+body[data-theme="macos"]::after {
+  display: none !important;
 }
 
 /* Wallpaper: gradientes radiales suaves tomando el accent de la paleta */
-[data-theme="macos"] body::before {
+body[data-theme="macos"]::before {
   background:
     radial-gradient(ellipse at 25% 30%, var(--bg-glow-a) 0%, transparent 50%),
     radial-gradient(ellipse at 75% 70%, var(--bg-glow-c) 0%, transparent 50%),
@@ -165,7 +165,9 @@
   padding-bottom: 0;
   border-bottom: none;
   border-radius: var(--t-card-radius) var(--t-card-radius) 0 0;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(22, 22, 40, 0.92);
+  backdrop-filter: blur(var(--t-blur-lg));
+  -webkit-backdrop-filter: blur(var(--t-blur-lg));
   display: flex;
   align-items: center;
   z-index: 2;
@@ -270,12 +272,13 @@
   z-index: 5;
 }
 
-/* Cards con sticky header necesitan padding-top */
+/* Cards con sticky header necesitan overflow hidden + bg mas solido */
 [data-theme="macos"] .widget-tasks .card,
 [data-theme="macos"] .widget-finances .card,
 [data-theme="macos"] .widget-read-later .card,
 [data-theme="macos"] .widget-tv-shows .card {
   overflow: hidden;
+  background: rgba(22, 22, 40, 0.7);
 }
 
 /* --- GitHub widget header: links van a ch-actions --- */
