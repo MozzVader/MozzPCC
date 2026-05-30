@@ -79,6 +79,28 @@
   } catch(e) {}
 })();
 </script>
+<!-- Wallpaper overlay (FOUC-safe: inline script aplica wallpaper de localStorage) -->
+<script>
+(function(){
+  try {
+    var wu = localStorage.getItem('pcc_wallpaper_url');
+    var wc = localStorage.getItem('pcc_wallpaper_color');
+    if (wu || wc) {
+      var d = document.createElement('div');
+      d.id = 'pcc-wallpaper';
+      if (wu) {
+        d.style.backgroundImage = 'url(' + wu + ')';
+        d.style.display = 'block';
+      } else if (wc) {
+        d.className = 'wp-solid';
+        d.style.backgroundColor = wc;
+        d.style.display = 'block';
+      }
+      document.body.appendChild(d);
+    }
+  } catch(e) {}
+})();
+</script>
 
   <!-- ===== CLEAN MODE HINT ===== -->
   <div class="clean-mode-hint">Hace clic o pulsá Esc para volver</div>
@@ -1045,6 +1067,32 @@
             <h3><i class="fa-solid fa-droplet" style="color:var(--accent);margin-right:6px;"></i> Paleta de colores</h3>
             <p class="appearance-hint">Personalizá los colores de acento de tu dashboard</p>
             <div id="theme-palette-grid" class="theme-palette-grid"></div>
+          </div>
+          <!-- Section: Wallpaper -->
+          <div class="appearance-section">
+            <h3><i class="fa-solid fa-image" style="color:var(--accent);margin-right:6px;"></i> Fondo / Wallpaper</h3>
+            <p class="appearance-hint">Personalizá el fondo de tu dashboard. Si no elegis nada, se usa el fondo por defecto del tema.</p>
+            <div class="wallpaper-settings">
+              <div class="wallpaper-input-row">
+                <input type="text" id="wallpaper-url-input" class="weather-city-input" placeholder="URL de una imagen (jpg, png, webp...)" maxlength="1000" style="flex:1;">
+                <button id="wallpaper-save-btn" class="weather-city-save" title="Aplicar imagen">
+                  <i class="fa-solid fa-check"></i>
+                </button>
+              </div>
+              <div class="wallpaper-color-row">
+                <label class="wallpaper-label">Color solido:</label>
+                <input type="color" id="wallpaper-color-input" class="wallpaper-color-input" value="#0a0a1a">
+                <button id="wallpaper-color-save-btn" class="weather-city-save" title="Aplicar color">
+                  <i class="fa-solid fa-fill-drip"></i>
+                </button>
+              </div>
+              <div class="wallpaper-actions-row">
+                <button id="wallpaper-reset-btn" class="wallpaper-reset-btn">
+                  <i class="fa-solid fa-rotate-left"></i> Restaurar fondo del tema
+                </button>
+              </div>
+              <p id="wallpaper-status" class="weather-city-status"></p>
+            </div>
           </div>
           <div class="appearance-section">
             <h3><i class="fa-solid fa-cloud-sun" style="color:var(--accent);margin-right:6px;"></i> Clima</h3>

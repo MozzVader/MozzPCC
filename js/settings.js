@@ -82,17 +82,6 @@
       }
     },
     {
-      id: 'retro',
-      name: 'Retro',
-      desc: 'CRT / Fallout',
-      icon: 'fa-solid fa-tv',
-      available: false,
-      preview: {
-        bg: '#0c0c0c',
-        bars: ['#1a3a1a', '#1a2a1a', '#0f2f0f', '#142814']
-      }
-    },
-    {
       id: 'zai',
       name: 'Zai',
       desc: 'Aurora Neural',
@@ -1475,10 +1464,123 @@
     }
   });
 
+  // --- Wallpaper ---
+  var wpUrlInput = document.getElementById('wallpaper-url-input');
+  var wpColorInput = document.getElementById('wallpaper-color-input');
+  var wpSaveBtn = document.getElementById('wallpaper-save-btn');
+  var wpColorSaveBtn = document.getElementById('wallpaper-color-save-btn');
+  var wpResetBtn = document.getElementById('wallpaper-reset-btn');
+  var wpStatus = document.getElementById('wallpaper-status');
+
+  function applyWallpaper(type, value) {
+    var el = document.getElementById('pcc-wallpaper');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'pcc-wallpaper';
+      document.body.appendChild(el);
+    }
+    if (type === 'url') {
+      el.className = '';
+      el.style.backgroundImage = 'url(' + value + ')';
+      el.style.backgroundColor = '';
+      el.style.display = 'block';
+    } else if (type === 'color') {
+      el.className = 'wp-solid';
+      el.style.backgroundImage = '';
+      el.style.backgroundColor = value;
+      el.style.display = 'block';
+    } else {
+      // reset
+      el.className = '';
+      el.style.backgroundImage = '';
+      el.style.backgroundColor = '';
+      el.style.display = 'none';
+    }
+  }
+
+  function saveWallpaper(type, value) {
+    try { localStorage.removeItem('pcc_wallpaper_url'); localStorage.removeItem('pcc_wallpaper_color'); } catch(e) {}
+    var client = getSupabase();
+    var payload = { wallpaper_url: null, wallpaper_color: null, updated_at: new Date().toISOString() };
+
+    if (type === 'url') {
+      try { localStorage.setItem('pcc_wallpaper_url', value); } catch(e) {}
+      payload.wallpaper_url = value;
+    } else if (type === 'color') {
+      try { localStorage.setItem('pcc_wallpaper_color', value); } catch(e) {}
+      payload.wallpaper_color = value;
+    }
+
+    applyWallpaper(type, value);
+
+    if (client && userId) {
+      client.from('user_preferences').update(payload).eq('user_id', userId).then(function(){}, function(){});
+    }
+  }
+
+  function removeWallpaper() {
+    try { localStorage.removeItem('pcc_wallpaper_url'); localStorage.removeItem('pcc_wallpaper_color'); } catch(e) {}
+    applyWallpaper('reset', null);
+    var client = getSupabase();
+    if (client && userId) {
+      client.from('user_preferences').update({
+        wallpaper_url: null,
+        wallpaper_color: null,
+        updated_at: new Date().toISOString()
+      }).eq('user_id', userId).then(function(){}, function(){});
+    }
+  }
+
+  async function loadWallpaper() {
+    var client = getSupabase();
+    if (!client || !userId) return;
+    try {
+      var { data } = await client
+        .from('user_preferences')
+        .select('wallpaper_url, wallpaper_color')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (data) {
+        if (data.wallpaper_url) {
+          try { localStorage.setItem('pcc_wallpaper_url', data.wallpaper_url); } catch(e) {}
+          applyWallpaper('url', data.wallpaper_url);
+        } else if (data.wallpaper_color) {
+          try { localStorage.setItem('pcc_wallpaper_color', data.wallpaper_color); } catch(e) {}
+          applyWallpaper('color', data.wallpaper_color);
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Wallpaper event listeners
+  if (wpSaveBtn) wpSaveBtn.addEventListener('click', function () {
+    var url = wpUrlInput ? wpUrlInput.value.trim() : '';
+    if (!url) { if (wpStatus) { wpStatus.textContent = 'Pegá una URL de imagen'; wpStatus.style.color = '#fb7185'; } return; }
+    saveWallpaper('url', url);
+    if (wpStatus) { wpStatus.textContent = 'Wallpaper aplicado'; wpStatus.style.color = '#4ade80'; }
+    setTimeout(function() { if (wpStatus) wpStatus.textContent = ''; }, 2500);
+  });
+  if (wpUrlInput) wpUrlInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && wpSaveBtn) wpSaveBtn.click();
+  });
+  if (wpColorSaveBtn) wpColorSaveBtn.addEventListener('click', function () {
+    var color = wpColorInput ? wpColorInput.value : '#0a0a1a';
+    saveWallpaper('color', color);
+    if (wpStatus) { wpStatus.textContent = 'Color aplicado'; wpStatus.style.color = '#4ade80'; }
+    setTimeout(function() { if (wpStatus) wpStatus.textContent = ''; }, 2500);
+  });
+  if (wpResetBtn) wpResetBtn.addEventListener('click', function () {
+    removeWallpaper();
+    if (wpUrlInput) wpUrlInput.value = '';
+    if (wpStatus) { wpStatus.textContent = 'Fondo restaurado'; wpStatus.style.color = '#4ade80'; }
+    setTimeout(function() { if (wpStatus) wpStatus.textContent = ''; }, 2500);
+  });
+
   // --- Auth events ---
   window.addEventListener('auth:ready', function (e) {
     userId = e.detail.userId;
     loadTheme();
+    loadWallpaper();
     loadGithubUsername();
     renderQuickLinksSettings();
   });
@@ -1489,6 +1591,7 @@
     currentThemeSkin = 'default';
     applyTheme('cyber');
     applyThemeSkin('default');
+    removeWallpaper();
     closeSettings();
   });
 })();

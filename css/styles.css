@@ -8437,3 +8437,110 @@ body.clean-mode .clean-mode-hint {
     font-size: 0.9rem;
   }
 }
+
+/* ============================================
+   WALLPAPER / FONDO PERSONALIZADO
+   ============================================ */
+
+/* Overlay que cubre body::before (fondo del tema) cuando hay wallpaper */
+#pcc-wallpaper {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Capa oscura sutil sobre el wallpaper para que las cards se lean bien */
+#pcc-wallpaper::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+/* Wallpaper con color sólido (sin overlay oscuro) */
+#pcc-wallpaper.wp-solid::after {
+  display: none;
+}
+
+/* --- Settings: Wallpaper --- */
+.wallpaper-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wallpaper-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.wallpaper-color-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.wallpaper-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.wallpaper-color-input {
+  width: 40px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  cursor: pointer;
+  background: transparent;
+  padding: 2px;
+}
+
+.wallpaper-color-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.wallpaper-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
+}
+
+.wallpaper-actions-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.wallpaper-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wallpaper-reset-btn:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--text-muted);
+}
