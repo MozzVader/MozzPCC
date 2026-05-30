@@ -570,21 +570,52 @@
       injectTrafficLights(header);
     });
 
-    // Observer para card-headers que se agreguen despues (ej: widgets dinamicos)
+    // Observer para card-headers que se agregen o modifiquen despues
     if (!macOSObserver) {
+      var pendingReinject = {};
+      var reinjectTimer = null;
+
       macOSObserver = new MutationObserver(function (mutations) {
         if (currentThemeSkin !== 'macos') return;
+
         mutations.forEach(function (m) {
+          // 1) Detectar nuevos card-headers (nodos agregados)
           m.addedNodes.forEach(function (node) {
             if (node.nodeType !== 1) return;
             if (node.classList && node.classList.contains('card-header')) {
               injectTrafficLights(node);
             }
-            // Buscar card-headers dentro del nodo agregado
             var headers = node.querySelectorAll ? node.querySelectorAll('.card-header') : [];
             headers.forEach(function (h) { injectTrafficLights(h); });
           });
+
+          // 2) Detectar card-headers existentes que perdieron sus traffic lights
+          //    (ej: dollar.js initDropdown hace innerHTML='' y reconstruye)
+          var target = m.target;
+          if (target.nodeType === 1) {
+            var header = (target.classList && target.classList.contains('card-header'))
+              ? target
+              : (target.closest ? target.closest('.card-header') : null);
+            if (header && !header.querySelector('.ch-traffic')) {
+              pendingReinject[header.className || 'unknown'] = header;
+            }
+          }
         });
+
+        // Re-inyectar con un pequeño delay para dejar que el codigo externo termine
+        var keys = Object.keys(pendingReinject);
+        if (keys.length > 0) {
+          var toFix = keys.map(function (k) { return pendingReinject[k]; });
+          pendingReinject = {};
+          if (reinjectTimer) clearTimeout(reinjectTimer);
+          reinjectTimer = setTimeout(function () {
+            toFix.forEach(function (h) {
+              if (currentThemeSkin === 'macos' && !h.querySelector('.ch-traffic')) {
+                injectTrafficLights(h);
+              }
+            });
+          }, 50);
+        }
       });
       macOSObserver.observe(document.body, { childList: true, subtree: true });
     }

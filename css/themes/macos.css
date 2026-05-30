@@ -262,22 +262,25 @@ body[data-theme="macos"]::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* --- Override: card-header dentro de wrappers (no absolute, sino static) --- */
-[data-theme="macos"] .task-sticky-header .card-header,
-[data-theme="macos"] .finances-sticky-header .card-header,
-[data-theme="macos"] .read-later-sticky-header .card-header,
-[data-theme="macos"] .tv-header .card-header {
-  position: static;
+/* --- Wrappers: evitar que creen containing block --- */
+/* finances-sticky-header y read-later-sticky-header tienen position:sticky
+   en styles.css, lo cual crea un containing block. Si el card-header
+   adentro tiene position:absolute, se posiciona relativo al WRAPPER,
+   no a la card. Fix: forzar position:static en estos wrappers. */
+[data-theme="macos"] .task-sticky-header,
+[data-theme="macos"] .finances-sticky-header,
+[data-theme="macos"] .read-later-sticky-header,
+[data-theme="macos"] .tv-header {
+  position: static !important;
 }
 
-/* Cards con sticky header: overflow hidden + bg mas solido + sin padding-top */
+/* Cards con sticky header: overflow hidden + bg mas solido */
 [data-theme="macos"] .widget-tasks .card,
 [data-theme="macos"] .widget-finances .card,
 [data-theme="macos"] .widget-read-later .card,
 [data-theme="macos"] .widget-tv-shows .card {
   overflow: hidden;
   background: rgba(22, 22, 40, 0.7);
-  padding-top: 0;
 }
 
 /* --- GitHub widget header: links van a ch-actions --- */
