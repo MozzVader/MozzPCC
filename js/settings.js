@@ -466,7 +466,7 @@
       var link = document.createElement('link');
       link.id = 'theme-skin-css';
       link.rel = 'stylesheet';
-      link.href = '/MozzPCC/css/themes/' + themeSkinName + '.css';
+      link.href = '/MozzPCC/css/themes/' + themeSkinName + '.css?v=' + Date.now();
       document.head.appendChild(link);
     }
 
