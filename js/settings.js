@@ -898,6 +898,9 @@
 
   // --- Tema skin: persistencia ---
   async function saveThemeSkin(skinId) {
+    // Persistir en localStorage para FOUC prevention
+    try { localStorage.setItem('pcc_theme_skin', skinId); } catch(e) {}
+
     var client = getSupabase();
     if (!client || !userId) return;
 
@@ -989,6 +992,9 @@
   }
 
   async function saveTheme(themeId) {
+    // Persistir en localStorage para FOUC prevention
+    try { localStorage.setItem('pcc_theme', themeId); } catch(e) {}
+
     var client = getSupabase();
     if (!client || !userId) return;
 
