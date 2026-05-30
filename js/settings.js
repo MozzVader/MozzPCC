@@ -64,10 +64,10 @@
       name: 'macOS',
       desc: 'Vibrancy y transparencia',
       icon: 'fa-brands fa-apple',
-      available: false,
+      available: true,
       preview: {
-        bg: '#1e1e2e',
-        bars: ['rgba(255,255,255,0.08)', 'rgba(255,255,255,0.06)', 'rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']
+        bg: '#1a1a2e',
+        bars: ['rgba(255,255,255,0.06)', 'rgba(255,255,255,0.04)', 'rgba(255,255,255,0.07)', 'rgba(255,255,255,0.05)']
       }
     },
     {
@@ -217,6 +217,22 @@
         '--bg-glow-b': 'rgba(45, 212, 191, 0.06)',
         '--bg-glow-c': 'rgba(244, 114, 182, 0.05)',
         '--border-accent': 'rgba(167, 139, 250, 0.25)'
+      }
+    },
+    {
+      id: 'macos',
+      name: 'macOS',
+      swatches: ['#64d2ff', '#bf5af2', '#ff9f0a', '#30d158'],
+      vars: {
+        '--accent': '#64d2ff',
+        '--accent-dim': 'rgba(100, 210, 255, 0.1)',
+        '--accent-glow': 'rgba(100, 210, 255, 0.25)',
+        '--accent-secondary': '#bf5af2',
+        '--shadow-glow': '0 0 20px rgba(100, 210, 255, 0.08)',
+        '--bg-glow-a': 'rgba(100, 210, 255, 0.08)',
+        '--bg-glow-b': 'rgba(255, 255, 255, 0.02)',
+        '--bg-glow-c': 'rgba(100, 210, 255, 0.06)',
+        '--border-accent': 'rgba(100, 210, 255, 0.2)'
       }
     }
   ];
@@ -518,7 +534,7 @@
 
   // --- Tema skin: aplicar ---
   // Algunos skins sugieren una paleta por defecto (mismo id que el skin)
-  var SKIN_PALETTES = { zai: 'zai' };
+  var SKIN_PALETTES = { zai: 'zai', macos: 'macos' };
 
   function applyThemeSkin(skinId) {
     currentThemeSkin = skinId;
@@ -530,9 +546,117 @@
       if (suggested) applyTheme(suggested.id);
     }
 
+    // macOS: inyectar/remover traffic lights
+    if (skinId === 'macos') {
+      injectMacOSTitleBars();
+    } else {
+      removeMacOSTitleBars();
+    }
+
     // Actualizar UI
     document.querySelectorAll('.theme-skin-card').forEach(function (card) {
       card.classList.toggle('active', card.dataset.skin === skinId);
+    });
+  }
+
+  // --- macOS: inyectar traffic lights en card-headers ---
+  var macOSInjected = false;
+
+  function injectMacOSTitleBars() {
+    if (macOSInjected) return;
+    macOSInjected = true;
+
+    document.querySelectorAll('.card-header').forEach(function (header) {
+      injectTrafficLights(header);
+    });
+
+    // Observer para card-headers que se agreguen despues (ej: widgets dinamicos)
+    if (!macOSObserver) {
+      macOSObserver = new MutationObserver(function (mutations) {
+        if (currentThemeSkin !== 'macos') return;
+        mutations.forEach(function (m) {
+          m.addedNodes.forEach(function (node) {
+            if (node.nodeType !== 1) return;
+            if (node.classList && node.classList.contains('card-header')) {
+              injectTrafficLights(node);
+            }
+            // Buscar card-headers dentro del nodo agregado
+            var headers = node.querySelectorAll ? node.querySelectorAll('.card-header') : [];
+            headers.forEach(function (h) { injectTrafficLights(h); });
+          });
+        });
+      });
+      macOSObserver.observe(document.body, { childList: true, subtree: true });
+    }
+  }
+
+  var macOSObserver = null;
+
+  function injectTrafficLights(header) {
+    if (header.querySelector('.ch-traffic')) return;
+
+    // Extraer el titulo del h2
+    var h2 = header.querySelector('h2');
+    var titleText = h2 ? h2.textContent.trim() : '';
+
+    // Extraer elementos de accion (botones, links que NO son el icono)
+    var actions = [];
+    var children = Array.prototype.slice.call(header.children);
+    children.forEach(function (child) {
+      if (child.tagName === 'H2' || child.tagName === 'I') return;
+      if (child.tagName === 'BUTTON' || child.tagName === 'A' ||
+          (child.classList && (child.classList.contains('btn-add') || child.classList.contains('tv-add-btn')))) {
+        actions.push(child);
+      }
+    });
+
+    // Construir wrapper
+    var newContent = document.createElement('div');
+    newContent.className = 'ch-wrap';
+
+    // Traffic lights
+    var traffic = document.createElement('div');
+    traffic.className = 'ch-traffic';
+    traffic.innerHTML = '<span class="ch-tl-close"></span><span class="ch-tl-min"></span><span class="ch-tl-max"></span>';
+    newContent.appendChild(traffic);
+
+    // Titulo centrado
+    var title = document.createElement('div');
+    title.className = 'ch-title';
+    title.textContent = titleText;
+    newContent.appendChild(title);
+
+    // Acciones
+    if (actions.length > 0) {
+      var actionsWrap = document.createElement('div');
+      actionsWrap.className = 'ch-actions';
+      actions.forEach(function (el) { actionsWrap.appendChild(el); });
+      newContent.appendChild(actionsWrap);
+    }
+
+    header.appendChild(newContent);
+  }
+
+  function removeMacOSTitleBars() {
+    if (!macOSInjected) return;
+    macOSInjected = false;
+
+    if (macOSObserver) {
+      macOSObserver.disconnect();
+      macOSObserver = null;
+    }
+
+    document.querySelectorAll('.card-header').forEach(function (header) {
+      var wrapper = header.querySelector('.ch-wrap');
+      if (wrapper) {
+        var actionsWrap = wrapper.querySelector('.ch-actions');
+        if (actionsWrap) {
+          while (actionsWrap.firstChild) {
+            header.appendChild(actionsWrap.firstChild);
+          }
+        }
+        wrapper.remove();
+      }
     });
   }
 

@@ -1,0 +1,302 @@
+/* ============================================
+   MozzPCC — Tema macOS (Vibrancy + Transparencia)
+   ============================================
+   Inspirado en macOS Sonoma/Sequoia:
+   - Card headers estilo ventana macOS (semaforo)
+   - Background tipo wallpaper con gradientes
+     que toman el color de la paleta seleccionada
+   - Sin grid, vibrancy en superficies
+   - Blur suave, transparencia elegante
+   ============================================ */
+
+[data-theme="macos"] {
+  /* --- Body (wallpaper-style gradient, sin grid) --- */
+  --t-body-bg: #1a1a2e;
+  --t-body-secondary: #16213e;
+  --t-body-pattern: transparent;
+  /* Los glows se sobreescriben con los accent de la paleta */
+  --t-body-glow-a: var(--accent-dim);
+  --t-body-glow-b: rgba(255, 255, 255, 0.02);
+  --t-body-glow-c: var(--accent-dim);
+
+  /* --- Cards (vibrancy — translucidos con blur) --- */
+  --t-card-bg: rgba(255, 255, 255, 0.06);
+  --t-card-hover: rgba(255, 255, 255, 0.09);
+  --t-card-border: rgba(255, 255, 255, 0.1);
+  --t-card-border-hover: rgba(255, 255, 255, 0.16);
+  --t-card-radius: 12px;
+  --t-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  --t-card-shine: none;
+  --t-card-chrome: none;
+  --t-card-padding-top: 32px;
+
+  /* --- Superficies (transparencia vibrancy) --- */
+  --t-surface-1: rgba(255, 255, 255, 0.04);
+  --t-surface-2: rgba(255, 255, 255, 0.06);
+  --t-surface-3: rgba(255, 255, 255, 0.08);
+  --t-surface-4: rgba(255, 255, 255, 0.1);
+  --t-surface-5: rgba(255, 255, 255, 0.12);
+  --t-surface-tooltip: rgb(30 30 46 / 92%);
+  --t-surface-dropdown: rgba(30, 30, 50, 0.9);
+  --t-surface-overlay: rgba(0, 0, 0, 0.5);
+  --t-surface-modal: rgba(30, 30, 50, 0.85);
+  --t-surface-toast: rgba(30, 30, 50, 0.9);
+  --t-surface-input: rgba(255, 255, 255, 0.05);
+  --t-surface-input-focus: rgba(255, 255, 255, 0.08);
+
+  /* --- Bordes (subtiles, vibrancy) --- */
+  --t-border-subtle: rgba(255, 255, 255, 0.06);
+  --t-border-default: rgba(255, 255, 255, 0.1);
+  --t-border-strong: rgba(255, 255, 255, 0.18);
+  --t-input-border: rgba(255, 255, 255, 0.1);
+  --t-input-border-focus: var(--p-accent);
+
+  /* --- Sombras (suaves) --- */
+  --t-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --t-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --t-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.25);
+  --t-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.35);
+
+  /* --- Blur (vibrancy — necesaria para que la transparencia funcione) --- */
+  --t-blur-sm: 10px;
+  --t-blur-md: 16px;
+  --t-blur-lg: 20px;
+  --t-blur-xl: 28px;
+  --t-blur-2xl: 36px;
+  --t-blur-3xl: 48px;
+  --t-blur-card: 20px;
+
+  /* --- Tipografia --- */
+  --t-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', Roboto, sans-serif;
+  --t-font-mono: 'SF Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* --- Radios (macOS style — ligeramente mas redondeados) --- */
+  --t-radius-xs: 6px;
+  --t-radius-sm: 8px;
+  --t-radius-md: 10px;
+  --t-radius-lg: 14px;
+  --t-radius-xl: 20px;
+
+  /* --- Colores semanticos --- */
+  --t-danger: #ff5f57;
+  --t-danger-dim: rgba(255, 95, 87, 0.12);
+  --t-danger-light: #ff8a84;
+  --t-danger-hover: #ff8a84;
+  --t-success: #28c840;
+  --t-success-dim: rgba(40, 200, 64, 0.12);
+  --t-success-light: #5de06e;
+  --t-success-hover: #5de06e;
+  --t-warning: #ffbd2e;
+  --t-info: #64d2ff;
+
+  /* --- Texto --- */
+  --t-text-primary: #f5f5f7;
+  --t-text-secondary: #a1a1a6;
+  --t-text-muted: #6e6e73;
+  --t-text-tooltip: #f5f5f7;
+  --t-text-on-accent: #ffffff;
+
+  /* --- Skeleton --- */
+  --t-skeleton-base: rgba(255, 255, 255, 0.04);
+  --t-skeleton-shine: rgba(255, 255, 255, 0.08);
+
+  /* ============================================
+   * LEGACY ALIASES
+   * ============================================ */
+  --bg-primary: var(--t-body-bg);
+  --bg-secondary: var(--t-body-secondary);
+  --bg-glass: var(--t-card-bg);
+  --bg-glass-hover: var(--t-card-hover);
+  --border-glass: var(--t-card-border);
+  --border-glass-hover: var(--t-card-border-hover);
+  --bg-glow-a: var(--t-body-glow-a);
+  --bg-glow-b: var(--t-body-glow-b);
+  --bg-glow-c: var(--t-body-glow-c);
+  --text-primary: var(--t-text-primary);
+  --text-secondary: var(--t-text-secondary);
+  --text-muted: var(--t-text-muted);
+  --shadow-card: var(--t-card-shadow);
+  --radius: var(--t-radius-md);
+  --radius-sm: var(--t-radius-sm);
+  --radius-xs: var(--t-radius-xs);
+  --radius-lg: var(--t-radius-lg);
+  --font: var(--t-font);
+  --border: var(--t-border-default);
+}
+
+/* ============================================
+   MACOS ESPECIFICO — Traffic lights + overrides
+   ============================================ */
+
+/* Apagar el grid en el fondo */
+[data-theme="macos"] body::after {
+  display: none;
+}
+
+/* Wallpaper: gradientes radiales suaves tomando el accent de la paleta */
+[data-theme="macos"] body::before {
+  background:
+    radial-gradient(ellipse at 25% 30%, var(--bg-glow-a) 0%, transparent 50%),
+    radial-gradient(ellipse at 75% 70%, var(--bg-glow-c) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.015) 0%, transparent 70%),
+    linear-gradient(160deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  animation: bgShift 30s ease-in-out infinite alternate;
+}
+
+/* --- Card headers estilo ventana macOS --- */
+[data-theme="macos"] .card {
+  padding-top: var(--t-card-padding-top);
+  position: relative;
+}
+
+[data-theme="macos"] .card::after {
+  display: none;
+}
+
+/* El card-header se convierte en title bar */
+[data-theme="macos"] .card-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  margin: 0;
+  padding: 0 14px;
+  padding-bottom: 0;
+  border-bottom: none;
+  border-radius: var(--t-card-radius) var(--t-card-radius) 0 0;
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Wrapper flex para traffic + title + actions */
+[data-theme="macos"] .card-header .ch-wrap {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Contenedor del titulo centrado */
+[data-theme="macos"] .card-header .ch-title {
+  flex: 1;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--t-text-muted);
+  letter-spacing: 0.3px;
+  text-transform: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Traffic lights */
+[data-theme="macos"] .card-header .ch-traffic {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex-shrink: 0;
+  z-index: 3;
+}
+
+[data-theme="macos"] .card-header .ch-traffic span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: block;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+}
+
+[data-theme="macos"] .card:hover .ch-traffic span {
+  opacity: 0.8;
+}
+
+[data-theme="macos"] .card-header .ch-tl-close {
+  background: #ff5f57;
+}
+[data-theme="macos"] .card-header .ch-tl-min {
+  background: #ffbd2e;
+}
+[data-theme="macos"] .card-header .ch-tl-max {
+  background: #28c840;
+}
+
+/* Acciones a la derecha (btn-add, links, etc.) */
+[data-theme="macos"] .card-header .ch-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 3;
+}
+
+/* Botones dentro del header se hacen mas discretos */
+[data-theme="macos"] .card-header .ch-actions .btn-add,
+[data-theme="macos"] .card-header .ch-actions button,
+[data-theme="macos"] .card-header .ch-actions a {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+  background: transparent;
+  border: none;
+  border-radius: var(--t-radius-xs);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+[data-theme="macos"] .card-header .ch-actions .btn-add:hover,
+[data-theme="macos"] .card-header .ch-actions button:hover,
+[data-theme="macos"] .card-header .ch-actions a:hover {
+  color: var(--t-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* --- Override: card-header con sticky --- */
+[data-theme="macos"] .task-sticky-header .card-header,
+[data-theme="macos"] .finances-sticky-header .card-header,
+[data-theme="macos"] .read-later-sticky-header .card-header,
+[data-theme="macos"] .tv-header .card-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+/* Cards con sticky header necesitan padding-top */
+[data-theme="macos"] .widget-tasks .card,
+[data-theme="macos"] .widget-finances .card,
+[data-theme="macos"] .widget-read-later .card,
+[data-theme="macos"] .widget-tv-shows .card {
+  overflow: hidden;
+}
+
+/* --- GitHub widget header: links van a ch-actions --- */
+[data-theme="macos"] .widget-github .card-header a {
+  font-size: 0.7rem;
+  color: var(--t-text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+[data-theme="macos"] .widget-github .card-header a:hover {
+  color: var(--t-text-primary);
+}
+
+/* --- Hide original icon from card-header (macOS uses traffic lights instead) --- */
+[data-theme="macos"] .card-header > i:first-child {
+  display: none;
+}
+
+/* Hide original h2 (replaced by ch-title) */
+[data-theme="macos"] .card-header > h2:first-of-type,
+[data-theme="macos"] .card-header > h2 {
+  display: none;
+}
