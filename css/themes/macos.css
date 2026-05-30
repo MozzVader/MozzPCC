@@ -244,7 +244,7 @@ body[data-theme="macos"]::before {
 
 /* Botones dentro del header se hacen mas discretos */
 [data-theme="macos"] .card-header .ch-actions .btn-add,
-[data-theme="macos"] .card-header .ch-actions button,
+[data-theme="macos"] .card-header .ch-actions button:not(.dollar-type-btn),
 [data-theme="macos"] .card-header .ch-actions a {
   width: 24px;
   height: 24px;
@@ -262,10 +262,38 @@ body[data-theme="macos"]::before {
 }
 
 [data-theme="macos"] .card-header .ch-actions .btn-add:hover,
-[data-theme="macos"] .card-header .ch-actions button:hover,
+[data-theme="macos"] .card-header .ch-actions button:not(.dollar-type-btn):hover,
 [data-theme="macos"] .card-header .ch-actions a:hover {
   color: var(--t-text-primary);
   background: rgba(255, 255, 255, 0.08);
+}
+
+/* Dropdown del dolar dentro de ch-actions: preservar sus estilos originales */
+[data-theme="macos"] .card-header .ch-actions .dollar-type-dropdown {
+  position: relative;
+}
+[data-theme="macos"] .card-header .ch-actions .dollar-type-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--t-border-default);
+  border-radius: var(--t-radius-xs);
+  color: var(--t-text-muted);
+  font-size: 0.68rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+[data-theme="macos"] .card-header .ch-actions .dollar-type-btn:hover {
+  color: var(--t-text-primary);
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--t-border-strong);
+}
+[data-theme="macos"] .card-header .ch-actions .dollar-type-menu {
+  min-width: 100%;
 }
 
 /* --- Wrappers: evitar que creen containing block --- */
