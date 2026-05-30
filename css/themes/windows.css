@@ -219,20 +219,16 @@ body[data-theme="windows"]::before {
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0;
-  transition: opacity 0.15s ease, background 0.1s ease;
+  opacity: 1;
+  transition: background 0.1s ease;
   cursor: default;
 }
 
-[data-theme="windows"] .card:hover .ch-controls span {
-  opacity: 1;
-}
-
-[data-theme="windows"] .card:hover .ch-controls span:hover {
+[data-theme="windows"] .card-header .ch-controls span:hover {
   background: rgba(255, 255, 255, 0.06);
 }
 
-[data-theme="windows"] .card:hover .ch-controls .ch-ctrl-close:hover {
+[data-theme="windows"] .card-header .ch-controls .ch-ctrl-close:hover {
   background: #c42b1c;
 }
 
@@ -261,7 +257,7 @@ body[data-theme="windows"]::before {
   line-height: 1;
 }
 
-[data-theme="windows"] .card:hover .ch-ctrl-close:hover::after {
+[data-theme="windows"] .card-header .ch-ctrl-close:hover::after {
   color: #ffffff;
 }
 
