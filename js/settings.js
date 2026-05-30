@@ -147,17 +147,17 @@
     {
       id: 'rose',
       name: 'Rose',
-      swatches: ['#fb7185', '#f43f5e', '#fda4af', '#e879f9'],
+      swatches: ['#7f03fc', '#a855f7', '#c084fc', '#e879f9'],
       vars: {
-        '--accent': '#fb7185',
-        '--accent-dim': 'rgba(251, 113, 133, 0.15)',
-        '--accent-glow': 'rgba(251, 113, 133, 0.4)',
-        '--accent-secondary': '#e879f9',
-        '--shadow-glow': '0 0 20px rgba(251, 113, 133, 0.15)',
-        '--bg-glow-a': 'rgba(232, 121, 249, 0.12)',
-        '--bg-glow-b': 'rgba(251, 113, 133, 0.1)',
-        '--bg-glow-c': 'rgba(244, 63, 94, 0.08)',
-        '--border-accent': 'rgba(251, 113, 133, 0.3)'
+        '--accent': '#7f03fc',
+        '--accent-dim': 'rgba(127, 3, 252, 0.15)',
+        '--accent-glow': 'rgba(127, 3, 252, 0.4)',
+        '--accent-secondary': '#a855f7',
+        '--shadow-glow': '0 0 20px rgba(127, 3, 252, 0.15)',
+        '--bg-glow-a': 'rgba(168, 85, 247, 0.12)',
+        '--bg-glow-b': 'rgba(127, 3, 252, 0.1)',
+        '--bg-glow-c': 'rgba(192, 132, 252, 0.08)',
+        '--border-accent': 'rgba(127, 3, 252, 0.3)'
       }
     },
     {
