@@ -47,6 +47,15 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Backup/Restore | Exportar e importar todos tus datos en JSON |
 | Clima | Temperatura actual via Open-Meteo (sin API key), ciudad configurable |
 
+### Personalizacion
+
+| Feature | Descripcion |
+|---------|-------------|
+| Temas del Dashboard | 6 skins: Dark Glass, Notion, Linear, macOS, Windows 11, Zai (Aurora Neural) |
+| Paletas de Colores | 9 paletas: Cyber, Violet, Emerald, Rose, Amber, Twitter, Zai, macOS, Windows 11 |
+| Wallpaper Personalizado | Imagen (URL) o color solido como fondo, independiente del tema |
+| Moneda Configurable | Simbolo de moneda personalizable (ARS, USD, EUR, BRL, GBP, etc.) |
+
 ### UX / Accesibilidad
 
 | Feature | Descripcion |
@@ -58,8 +67,6 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Auto-lock | Clean Mode automatico por inactividad (configurable: 5-60 min o desactivado) |
 | Indicador de Sync | Puntito verde que se enciende al guardar datos en Supabase |
 | Undo Global | Toast de deshacer con barra de progreso al eliminar tareas, notas, transacciones, etc. (5s) |
-| Paletas de Colores | 6 temas personalizables que cambian accent, glow y fondo en tiempo real |
-| Moneda Configurable | Simbolo de moneda personalizable (ARS, USD, EUR, BRL, GBP, etc.) |
 | Snap Scroll | Navegacion vertical con snap sections e indicadores laterales con tooltips |
 | Landing Page | Pagina de presentacion independiente con screenshots y efectos 3D |
 
@@ -68,19 +75,36 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 - Tema oscuro con degradado profundo
 - Tarjetas con efecto glassmorphism (vidrio esmerilado)
 - Navegacion vertical con snap scroll e indicadores laterales
-- 6 paletas de colores personalizables:
+- 6 skins visuales (estructura + chrome) + 9 paletas de colores:
 
-| Tema | Colores | Vibra |
-|------|---------|-------|
+### Skins
+
+| Skin | Estilo | Inspiracion |
+|------|--------|------------|
+| Dark Glass | Glassmorphism oscuro | Original PCC |
+| Notion | Claro y minimalista | Notion |
+| Linear | Dark minimalista | Linear App |
+| macOS | Vibrancy, transparencia, traffic lights | macOS Sonoma |
+| Windows 11 | Fluent Design, Acrylic, window controls | Windows 11 |
+| Zai | Aurora neural, deep blue-black | Aurora Boreal |
+
+### Paletas
+
+| Paleta | Colores | Vibra |
+|--------|---------|-------|
 | Cyber | cyan + violet + green + sky | Futurista |
 | Violet | purple + pink + blue | Futurista calido |
 | Emerald | green + teal + blue | Matrix / nature |
-| Rose | pink + red + magenta | Calido y bold |
+| Rose | purple + violet + lavender | Bold y purpura |
 | Amber | gold + orange + yellow | Calido y premium |
 | Twitter | blue + dark blue + gray | Social / clean |
+| Zai | violet + teal + pink | Aurora |
+| macOS | cyan + purple + orange + green | Apple |
+| Windows 11 | blue + teal + purple | Microsoft |
 
+- Wallpaper personalizable (imagen o color solido)
 - Diseno responsivo (escritorio, tablet y mobile)
-- Tipografia moderna (Inter via Google Fonts)
+- Tipografia moderna (Inter via Google Fonts, Segoe UI Variable en Windows 11)
 - Iconos Font Awesome 6
 
 ## Estructura
@@ -97,7 +121,15 @@ MozzPCC/
 │   ├── demo-finanzas.webp  # Screenshot demo (finanzas)
 │   └── demo-kanban.webp    # Screenshot demo (kanban)
 ├── css/
-│   └── styles.css          # Estilos completos
+│   ├── styles.css          # Estilos completos
+│   ├── palettes.css        # Paletas de colores
+│   └── themes/
+│       ├── default.css     # Tema Dark Glass (default)
+│       ├── notion.css      # Tema Notion
+│       ├── linear.css      # Tema Linear
+│       ├── macos.css       # Tema macOS (Sonoma)
+│       ├── windows.css     # Tema Windows 11 (Fluent Design)
+│       └── zai.css         # Tema Zai (Aurora Neural)
 ├── js/
 │   ├── utils.js            # Helpers compartidos (escapeHtml, timeAgo, focusTrap, iconos)
 │   ├── supabase.js         # Cliente Supabase
@@ -120,12 +152,18 @@ MozzPCC/
 │   ├── backup.js           # Backup/restore de datos
 │   ├── undoToast.js        # Toast global de deshacer
 │   ├── tips.js             # Tips y atajos (modal con focus trap)
-│   ├── settings.js         # Configuracion (temas + moneda + accesos rapidos + auto-lock)
-│   └── dollar.js           # Cotizacion del dolar
+│   └── settings.js         # Configuracion (temas, skins, paletas, wallpaper, moneda, accesos rapidos, auto-lock, countdown)
 ├── sql/
-│   ├── schema.sql          # Schema de BD + RLS
-│   ├── github_migration.sql        # Migration para tabla user_github_settings
-│   └── tasks_priority_migration.sql # Migration para campo priority en tareas
+│   ├── schema.sql                        # Schema de BD + RLS (base)
+│   ├── github_migration.sql              # Migration: github_username en user_preferences
+│   ├── tasks_status_migration.sql         # Migration: status + sort_order en tasks
+│   ├── tasks_priority_migration.sql       # Migration: priority en tasks
+│   ├── read_later_migration.sql           # Migration: tabla read_later_items
+│   ├── read_later_tag_migration.sql       # Migration: tag_color en read_later_items
+│   ├── tv_shows_migration.sql             # Migration: tabla tv_shows
+│   ├── steam_migration.sql               # Migration: tabla user_steam_settings
+│   ├── theme_skin_migration.sql          # Migration: theme_skin en user_preferences
+│   └── wallpaper_migration.sql            # Migration: wallpaper_url + wallpaper_color en user_preferences
 ├── supabase/
 │   └── (Sin Edge Functions)
 ├── README.md               # Este archivo
@@ -134,16 +172,17 @@ MozzPCC/
 
 ## Configuracion Rapida
 
-Querés tu propia instancia? Seguí la [guia de configuracion completa](SETUP.md).
+Queres tu propia instancia? Segui la [guia de configuracion completa](SETUP.md).
 
 Resumen rapido:
 
 1. Creá un proyecto en [Supabase](https://supabase.com)
 2. Ejecutá `sql/schema.sql` en el SQL Editor
-3. Actualizá las credenciales en `js/supabase.js`
-4. Configurá las Redirect URLs en Authentication
-5. (Opcional) Activá Google/GitHub OAuth
-6. Deployá en GitHub Pages
+3. Ejecutá los SQL de migracion en orden (carpeta `sql/`)
+4. Actualizá las credenciales en `js/supabase.js`
+5. Configurá las Redirect URLs en Authentication
+6. (Opcional) Activá Google/GitHub OAuth
+7. Deployá en GitHub Pages
 
 ## Tecnologias
 
