@@ -221,17 +221,18 @@
 
     var h = '';
     upcomingEpisodes.forEach(function (ep) {
-      var poster = ep.poster ? '<img class="tv-poster" src="' + ep.poster + '" alt="" onerror="this.style.display=\'none\'">' : '';
+      var poster = ep.poster ? '<img class="tv-poster" src="' + escapeHtml(ep.poster) + '" alt="" data-img-error="hide">' : '';
       h += '<div class="tv-ep-item">' +
         '<div class="tv-ep-poster">' + poster + '</div>' +
         '<div class="tv-ep-info">' +
-        '<div class="tv-ep-show">' + ep.showTitle + '</div>' +
-        '<div class="tv-ep-meta">' + epLabel(ep) + ' — ' + ep.name + '</div>' +
+        '<div class="tv-ep-show">' + escapeHtml(ep.showTitle) + '</div>' +
+        '<div class="tv-ep-meta">' + epLabel(ep) + ' — ' + escapeHtml(ep.name) + '</div>' +
         '<div class="tv-ep-date">' + formatDate(ep.airDate) + '</div>' +
         '</div></div>';
     });
 
     container.innerHTML = h;
+    setupImageErrors(container);
   }
 
   // --- Render Series (lista de series seguidas) ---
@@ -253,7 +254,7 @@
 
       var posterHtml;
       if (show.poster_url) {
-        posterHtml = '<img src="' + show.poster_url + '" alt="" onerror="this.outerHTML=\'<div class=tv-no-poster><i class=fa-solid fa-film></i></div>\'">';
+        posterHtml = '<img src="' + escapeHtml(show.poster_url) + '" alt="" data-img-error="poster-fallback">';
       } else {
         posterHtml = '<div class="tv-no-poster"><i class="fa-solid fa-film"></i></div>';
       }
@@ -270,6 +271,7 @@
         '</div>' +
         '<button class="tv-series-remove" aria-label="Eliminar ' + escapeHtml(show.title) + '"><i class="fa-solid fa-trash-can"></i></button>';
 
+      setupImageErrors(item);
       item.querySelector('.tv-series-remove').addEventListener('click', function (e) {
         e.stopPropagation();
         removeShow(show.id);
@@ -366,16 +368,16 @@
           results.innerHTML = '';
           items.forEach(function (item) {
             var isAdded = shows.some(function (s) { return s.tvmaze_id === item.id; });
-            var poster = item.image ? '<img class="tv-result-poster" src="' + item.image + '" alt="" onerror="this.style.display=\'none\'">' : '<div class="tv-result-poster tv-no-poster"><i class="fa-solid fa-film"></i></div>';
+            var poster = item.image ? '<img class="tv-result-poster" src="' + escapeHtml(item.image) + '" alt="" data-img-error="hide">' : '<div class="tv-result-poster tv-no-poster"><i class="fa-solid fa-film"></i></div>';
             var opt = document.createElement('div');
             opt.className = 'tv-result-item';
             if (isAdded) opt.classList.add('tv-already-added');
             opt.innerHTML =
               poster +
               '<div class="tv-result-info">' +
-                '<div class="tv-result-name">' + item.name + '</div>' +
-                '<div class="tv-result-meta">' + (item.year ? item.year : '') + (item.genres ? ' · ' + item.genres : '') + '</div>' +
-                '<div class="tv-result-status">' + (isAdded ? '<i class="fa-solid fa-check"></i> En tu lista' : item.status) + '</div>' +
+                '<div class="tv-result-name">' + escapeHtml(item.name) + '</div>' +
+                '<div class="tv-result-meta">' + (item.year ? escapeHtml(item.year) : '') + (item.genres ? ' · ' + escapeHtml(item.genres) : '') + '</div>' +
+                '<div class="tv-result-status">' + (isAdded ? '<i class="fa-solid fa-check"></i> En tu lista' : escapeHtml(item.status)) + '</div>' +
               '</div>';
             if (!isAdded) {
               opt.addEventListener('click', function () {
@@ -397,12 +399,13 @@
                   localStorage.removeItem(CACHE_KEY);
                   opt.classList.remove('tv-already-added', 'tv-removable');
                   var statusEl = opt.querySelector('.tv-result-status');
-                  if (statusEl) statusEl.innerHTML = item.status;
+                  if (statusEl) statusEl.innerHTML = escapeHtml(item.status);
                 }
               });
             }
             results.appendChild(opt);
           });
+          setupImageErrors(results);
         });
       }, 350);
     });

@@ -296,7 +296,6 @@
     // Si el dashboard ya está visible (ej: Supabase re-verificó sesión al cambiar de pestaña),
     // NO repetir la transición ni re-disparar auth:ready
     if (isDashboardVisible && !skipTransition) {
-      console.log('MozzPCC: Dashboard ya visible, omitiendo transición.');
       return;
     }
 
@@ -672,7 +671,6 @@
       }
 
       // Contraseña actualizada con éxito — el onAuthStateChange disparará showDashboard
-      console.log('MozzPCC: Contraseña actualizada correctamente.');
       isRecoveryMode = false;
     } catch (err) {
       console.error('Error update password:', err);
@@ -733,11 +731,8 @@
 
     // Registrar listener de cambios de auth
     client.auth.onAuthStateChange((event, session) => {
-      console.log('MozzPCC: Auth state change:', event);
-
       if (event === 'PASSWORD_RECOVERY') {
         // El usuario clickeó un link de recuperación de contraseña
-        console.log('MozzPCC: Flujo de recuperación de contraseña detectado.');
         // Mostrar el form de nueva contraseña (authScreen ya debería estar visible)
         showUpdatePasswordForm();
         return; // NO mostrar el dashboard todavía

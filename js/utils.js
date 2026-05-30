@@ -11,6 +11,34 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
+// --- Imagen fallback handler (CSP-safe, reemplaza inline onerror) ---
+function setupImageErrors(root) {
+  if (!root) return;
+  root.querySelectorAll('img[data-img-error]').forEach(function (img) {
+    img.addEventListener('error', function () {
+      var action = img.dataset.imgError;
+      if (action === 'hide') {
+        img.style.display = 'none';
+      } else if (action === 'poster-fallback') {
+        var el = document.createElement('div');
+        el.className = 'tv-no-poster';
+        el.innerHTML = '<i class="fa-solid fa-film"></i>';
+        img.replaceWith(el);
+      } else if (action === 'thumb-fallback') {
+        var el = document.createElement('div');
+        el.className = 'nw-thumb-placeholder';
+        el.innerHTML = '<i class="fa-regular fa-image"></i>';
+        img.replaceWith(el);
+      } else if (action === 'featured-fallback') {
+        var el = document.createElement('div');
+        el.className = 'nw-featured-img-placeholder';
+        el.innerHTML = '<i class="fa-regular fa-image"></i>';
+        img.replaceWith(el);
+      }
+    });
+  });
+}
+
 // --- "hace X tiempo" relativo ---
 function timeAgo(dateStr) {
   if (!dateStr) return '';

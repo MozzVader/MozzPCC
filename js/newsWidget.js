@@ -208,11 +208,6 @@
   var listEl = document.getElementById('nw-list');
 
   // --- HELPERS ---
-  function esc(text) {
-    var d = document.createElement('div');
-    d.textContent = text || '';
-    return d.innerHTML;
-  }
 
   function stripHtml(html) {
     var tmp = document.createElement('div');
@@ -388,15 +383,15 @@
     var html = '';
     articles.forEach(function (article, i) {
       var thumbHtml = article.thumbnail
-        ? '<img class="nw-thumb" src="' + esc(article.thumbnail) + '" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\\'nw-thumb-placeholder\\\'><i class=\\\'fa-regular fa-image\\\'></i></div>\'">'
+        ? '<img class="nw-thumb" src="' + escapeHtml(article.thumbnail) + '" alt="" loading="lazy" data-img-error="thumb-fallback">'
         : '<div class="nw-thumb-placeholder"><i class="fa-regular fa-image"></i></div>';
 
-      html += '<a class="nw-item" href="' + esc(article.link) + '" target="_blank" rel="noopener" style="animation-delay:' + (i * 0.03) + 's">' +
+      html += '<a class="nw-item" href="' + escapeHtml(article.link) + '" target="_blank" rel="noopener" style="animation-delay:' + (i * 0.03) + 's">' +
         thumbHtml +
         '<div class="nw-item-body">' +
-          '<span class="nw-item-title">' + esc(article.title) + '</span>' +
+          '<span class="nw-item-title">' + escapeHtml(article.title) + '</span>' +
           '<div class="nw-item-meta">' +
-            '<span class="nw-item-source">' + esc(article.source) + '</span>' +
+            '<span class="nw-item-source">' + escapeHtml(article.source) + '</span>' +
             '<span class="nw-item-sep">&middot;</span>' +
             '<span>' + timeAgo(article.pubDate) + '</span>' +
           '</div>' +
@@ -406,6 +401,7 @@
 
     listEl.className = 'nw-list';
     listEl.innerHTML = html;
+    setupImageErrors(listEl);
   }
 
   function renderFeatured() {
@@ -414,17 +410,17 @@
 
     featured.forEach(function (article, i) {
       var imgHtml = article.thumbnail
-        ? '<img class="nw-featured-img" src="' + esc(article.thumbnail) + '" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\\'nw-featured-img-placeholder\\\'><i class=\\\'fa-regular fa-image\\\'></i></div>\'">'
+        ? '<img class="nw-featured-img" src="' + escapeHtml(article.thumbnail) + '" alt="" loading="lazy" data-img-error="featured-fallback">'
         : '<div class="nw-featured-img-placeholder"><i class="fa-regular fa-newspaper"></i></div>';
 
       var descText = article.description.substring(0, 150);
 
-      html += '<a class="nw-featured-item" href="' + esc(article.link) + '" target="_blank" rel="noopener" style="animation-delay:' + (i * 0.05) + 's">' +
+      html += '<a class="nw-featured-item" href="' + escapeHtml(article.link) + '" target="_blank" rel="noopener" style="animation-delay:' + (i * 0.05) + 's">' +
         imgHtml +
-        '<span class="nw-featured-title">' + esc(article.title) + '</span>' +
-        (descText ? '<span class="nw-featured-desc">' + esc(descText) + '</span>' : '') +
+        '<span class="nw-featured-title">' + escapeHtml(article.title) + '</span>' +
+        (descText ? '<span class="nw-featured-desc">' + escapeHtml(descText) + '</span>' : '') +
         '<div class="nw-featured-meta">' +
-          '<span class="nw-featured-source">' + esc(article.source) + '</span>' +
+          '<span class="nw-featured-source">' + escapeHtml(article.source) + '</span>' +
           '<span class="nw-item-sep">&middot;</span>' +
           '<span>' + timeAgo(article.pubDate) + '</span>' +
         '</div>' +
@@ -433,6 +429,7 @@
 
     listEl.className = 'nw-featured';
     listEl.innerHTML = html;
+    setupImageErrors(listEl);
   }
 
   // --- STATES ---
@@ -443,7 +440,7 @@
 
   function showEmpty(msg) {
     listEl.className = 'nw-list';
-    listEl.innerHTML = '<div class="nw-empty"><i class="fa-regular fa-newspaper"></i><span>' + esc(msg) + '</span></div>';
+    listEl.innerHTML = '<div class="nw-empty"><i class="fa-regular fa-newspaper"></i><span>' + escapeHtml(msg) + '</span></div>';
   }
 
   // --- PUBLIC API (for settings panel) ---

@@ -95,7 +95,6 @@
       clockSection.scrollIntoView({ behavior: 'smooth' });
     }
 
-    console.log('[Clean Mode] Activado' + (inactivityTimer ? ' (auto-lock)' : ''));
   }
 
   /**
@@ -108,8 +107,6 @@
 
     // Resetear el timer de inactividad al volver
     resetInactivityTimer();
-
-    console.log('[Clean Mode] Desactivado');
   }
 
   /**
@@ -163,6 +160,4 @@
   window.addEventListener('auth:ready', function () {
     startInactivityTracking();
   });
-
-  console.log('[Clean Mode] Listo - pulsá Esc para activar | Auto-lock: ' + getAutoLockMinutes() + ' min');
 })();

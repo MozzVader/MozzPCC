@@ -145,13 +145,6 @@
     return String(n);
   }
 
-  // --- Escape HTML ---
-  function esc(text) {
-    var d = document.createElement('div');
-    d.textContent = text || '';
-    return d.innerHTML;
-  }
-
   // --- Show view ---
   function showView(view) {
     if (loadingEl) loadingEl.style.display = view === 'loading' ? 'flex' : 'none';
@@ -225,7 +218,7 @@
         icon = 'fa-solid fa-arrow-up';
         iconClass = 'push';
         var count = (event.payload && event.payload.commits) ? event.payload.commits.length : 0;
-        text = '<strong>' + esc(repo.split('/')[1] || repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo.split('/')[1] || repo) + '</strong>';
         detail = count + ' commit' + (count !== 1 ? 's' : '') + ' pushed';
         break;
       case 'PullRequestEvent':
@@ -233,53 +226,53 @@
         iconClass = 'pr';
         var pr = event.payload && event.payload.pull_request;
         var action = (event.payload && event.payload.action) || 'opened';
-        text = '<strong>' + esc(pr ? pr.title : repo) + '</strong>';
-        detail = 'PR ' + action + ' en ' + esc(repo.split('/')[0] || '');
+        text = '<strong>' + escapeHtml(pr ? pr.title : repo) + '</strong>';
+        detail = 'PR ' + action + ' en ' + escapeHtml(repo.split('/')[0] || '');
         break;
       case 'IssuesEvent':
         icon = 'fa-solid fa-circle-dot';
         iconClass = 'issue';
         var issue = event.payload && event.payload.issue;
         var iAction = (event.payload && event.payload.action) || 'opened';
-        text = '<strong>' + esc(issue ? issue.title : repo) + '</strong>';
-        detail = 'Issue ' + iAction + ' en ' + esc(repo.split('/')[0] || '');
+        text = '<strong>' + escapeHtml(issue ? issue.title : repo) + '</strong>';
+        detail = 'Issue ' + iAction + ' en ' + escapeHtml(repo.split('/')[0] || '');
         break;
       case 'WatchEvent':
         icon = 'fa-solid fa-star';
         iconClass = 'star';
-        text = '<strong>' + esc(repo.split('/')[1] || repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo.split('/')[1] || repo) + '</strong>';
         detail = 'Starred';
         break;
       case 'ForkEvent':
         icon = 'fa-solid fa-code-fork';
         iconClass = 'fork';
-        text = '<strong>' + esc(repo.split('/')[1] || repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo.split('/')[1] || repo) + '</strong>';
         detail = 'Forked';
         break;
       case 'CreateEvent':
         icon = 'fa-solid fa-plus';
         iconClass = 'push';
         var refType = (event.payload && event.payload.ref_type) || 'ref';
-        text = '<strong>' + esc(repo.split('/')[1] || repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo.split('/')[1] || repo) + '</strong>';
         detail = refType.charAt(0).toUpperCase() + refType.slice(1) + ' created';
         break;
       case 'DeleteEvent':
         icon = 'fa-solid fa-trash';
         iconClass = 'delete';
-        text = '<strong>' + esc(repo.split('/')[1] || repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo.split('/')[1] || repo) + '</strong>';
         detail = (event.payload && event.payload.ref_type || 'ref') + ' deleted';
         break;
       case 'ReleaseEvent':
         icon = 'fa-solid fa-tag';
         iconClass = 'release';
         var rel = event.payload && event.payload.release;
-        text = '<strong>' + esc(rel ? rel.name || rel.tag_name : repo) + '</strong>';
-        detail = 'Release en ' + esc(repo.split('/')[0] || '');
+        text = '<strong>' + escapeHtml(rel ? rel.name || rel.tag_name : repo) + '</strong>';
+        detail = 'Release en ' + escapeHtml(repo.split('/')[0] || '');
         break;
       default:
         icon = 'fa-solid fa-circle';
         iconClass = 'push';
-        text = '<strong>' + esc(repo) + '</strong>';
+        text = '<strong>' + escapeHtml(repo) + '</strong>';
         detail = type.replace('Event', '');
         break;
     }
@@ -349,12 +342,12 @@
         var langDot = '';
         if (repo.language) {
           var color = getLangColor(repo.language);
-          langDot = '<span class="gh-repo-meta"><span><span class="gh-repo-lang-dot" style="background:' + color + '"></span>' + esc(repo.language) + '</span></span>';
+          langDot = '<span class="gh-repo-meta"><span><span class="gh-repo-lang-dot" style="background:' + color + '"></span>' + escapeHtml(repo.language) + '</span></span>';
         }
 
         card.innerHTML =
-          '<div class="gh-repo-name">' + esc(repo.name) + '</div>' +
-          '<div class="gh-repo-desc">' + esc(repo.description || '') + '</div>' +
+          '<div class="gh-repo-name">' + escapeHtml(repo.name) + '</div>' +
+          '<div class="gh-repo-desc">' + escapeHtml(repo.description || '') + '</div>' +
           '<div class="gh-repo-meta">' +
             '<span><i class="fa-regular fa-star"></i> ' + formatNum(repo.stargazers_count) + '</span>' +
             '<span><i class="fa-solid fa-code-fork"></i> ' + formatNum(repo.forks_count) + '</span>' +
@@ -400,14 +393,14 @@
         var langHtml = '';
         if (repo.language) {
           var color = getLangColor(repo.language);
-          langHtml = '<span class="gh-trending-lang"><span class="gh-repo-lang-dot" style="background:' + color + '"></span>' + esc(repo.language) + '</span>';
+          langHtml = '<span class="gh-trending-lang"><span class="gh-repo-lang-dot" style="background:' + color + '"></span>' + escapeHtml(repo.language) + '</span>';
         }
 
         li.innerHTML =
           '<span class="gh-trending-rank' + (idx < 3 ? ' top3' : '') + '">' + (idx + 1) + '</span>' +
           '<div class="gh-trending-info">' +
-            '<div class="gh-trending-name">' + esc(name) + ' <span>' + esc(owner) + '</span></div>' +
-            '<div class="gh-trending-desc">' + esc(repo.description || '') + '</div>' +
+            '<div class="gh-trending-name">' + escapeHtml(name) + ' <span>' + escapeHtml(owner) + '</span></div>' +
+            '<div class="gh-trending-desc">' + escapeHtml(repo.description || '') + '</div>' +
           '</div>' +
           '<div class="gh-trending-stats">' +
             '<span class="gh-trending-stars"><i class="fa-regular fa-star"></i> ' + formatNum(repo.stargazers_count) + '</span>' +

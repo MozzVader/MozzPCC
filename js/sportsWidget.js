@@ -120,13 +120,6 @@
     return h + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
   }
 
-  // --- ESCAPE ---
-  function esc(text) {
-    var d = document.createElement('div');
-    d.textContent = text || '';
-    return d.innerHTML;
-  }
-
   // --- LOAD MATCHES ---
   async function loadMatches() {
     if (isLoading || !matchList || !dateLabel) return;
@@ -190,7 +183,7 @@
 
       var metaHtml = '';
       if (state === 'in') {
-        metaHtml = '<span class="live-dot"></span>' + esc(clock || detail);
+        metaHtml = '<span class="live-dot"></span>' + escapeHtml(clock || detail);
       } else if (state === 'pre') {
         metaHtml = '<i class="fa-regular fa-clock"></i> ' + formatTime(ev.date);
       } else {
@@ -204,17 +197,17 @@
         '<div class="sp-match-meta">' + metaHtml + '</div>' +
         '<div class="sp-match-teams">' +
           '<div class="sp-team home">' +
-            '<img class="sp-team-logo" src="' + (home.team ? home.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
-            '<span class="sp-team-name' + (homeWinner ? ' winner' : '') + (awayWinner ? ' loser' : '') + '">' + esc(home.team ? home.team.shortDisplayName || home.team.displayName : 'Home') + '</span>' +
+            '<img class="sp-team-logo" src="' + escapeHtml(home.team ? home.team.logo : '') + '" alt="" data-img-error="hide">' +
+            '<span class="sp-team-name' + (homeWinner ? ' winner' : '') + (awayWinner ? ' loser' : '') + '">' + escapeHtml(home.team ? home.team.shortDisplayName || home.team.displayName : 'Home') + '</span>' +
           '</div>' +
           '<div class="sp-score">' +
-            '<span>' + esc(home.score || '-') + '</span>' +
+            '<span>' + escapeHtml(home.score || '-') + '</span>' +
             '<span class="sp-score-dash">-</span>' +
-            '<span>' + esc(away.score || '-') + '</span>' +
+            '<span>' + escapeHtml(away.score || '-') + '</span>' +
           '</div>' +
           '<div class="sp-team away">' +
-            '<img class="sp-team-logo" src="' + (away.team ? away.team.logo : '') + '" alt="" onerror="this.style.display=\'none\'">' +
-            '<span class="sp-team-name' + (awayWinner ? ' winner' : '') + (homeWinner ? ' loser' : '') + '">' + esc(away.team ? away.team.shortDisplayName || away.team.displayName : 'Away') + '</span>' +
+            '<img class="sp-team-logo" src="' + escapeHtml(away.team ? away.team.logo : '') + '" alt="" data-img-error="hide">' +
+            '<span class="sp-team-name' + (awayWinner ? ' winner' : '') + (homeWinner ? ' loser' : '') + '">' + escapeHtml(away.team ? away.team.shortDisplayName || away.team.displayName : 'Away') + '</span>' +
           '</div>' +
         '</div>';
 
@@ -228,6 +221,7 @@
 
       matchList.appendChild(li);
     });
+    setupImageErrors(matchList);
   }
 
   // --- LOAD STANDINGS ---
@@ -283,8 +277,8 @@
         html += '<tr>' +
           '<td class="pos' + posClass + '">' + pos + '</td>' +
           '<td><div class="team-cell">' +
-            '<img src="' + (team.logo || '') + '" alt="" onerror="this.style.display=\'none\'">' +
-            '<span>' + esc(team.shortDisplayName || team.displayName || team.abbreviation || '') + '</span>' +
+            '<img src="' + escapeHtml(team.logo || '') + '" alt="" data-img-error="hide">' +
+            '<span>' + escapeHtml(team.shortDisplayName || team.displayName || team.abbreviation || '') + '</span>' +
           '</div></td>' +
           '<td>' + stat('gamesPlayed') + '</td>' +
           '<td>' + stat('wins') + '</td>' +
@@ -299,6 +293,7 @@
 
       html += '</tbody></table>';
       standingsDiv.innerHTML = html;
+      setupImageErrors(standingsDiv);
     } catch (e) {
       console.warn('Standings not available:', e);
       standingsDiv.innerHTML = '<div class="sp-standings-note"><i class="fa-solid fa-table-list"></i><span>Posiciones no disponibles temporalmente</span></div>';

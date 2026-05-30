@@ -17,7 +17,6 @@
     }
 
     window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    console.log('MozzPCC: Cliente Supabase inicializado correctamente.');
   } catch (e) {
     console.error('MozzPCC: Error al inicializar Supabase:', e);
     window.supabaseClient = null;

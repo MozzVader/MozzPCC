@@ -27,14 +27,12 @@
   function loadCDN(name) {
     if (_cdnLoaded[name]) return Promise.resolve(true);
     if (_cdnLoading[name]) return _cdnLoading[name];
-    console.log('[Finanzas] Cargando ' + name + ' on-demand...');
     _cdnLoading[name] = new Promise(function (resolve) {
       var s = document.createElement('script');
       s.src = CDN_URLS[name];
       s.onload = function () {
         _cdnLoaded[name] = true;
         _cdnLoading[name] = null;
-        console.log('[Finanzas] ' + name + ' cargado correctamente.');
         resolve(true);
       };
       s.onerror = function () {
@@ -202,8 +200,6 @@
 
         if (insertError) {
           console.warn('[Finanzas] Error al sembrar categorias:', insertError);
-        } else {
-          console.log('[Finanzas] Categorias por defecto creadas');
         }
       }
     } catch (e) {
@@ -1423,8 +1419,6 @@
     var wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Transacciones');
     XLSX.writeFile(wb, fileName);
-
-    console.log('[Finanzas] Exportadas ' + filtered.length + ' transacciones a ' + fileName);
   }
 
   // =========================================================================
@@ -1497,8 +1491,6 @@
     if (dateInput && !dateInput.value) {
       dateInput.value = getToday();
     }
-
-    console.log('[Finanzas] Modulo inicializado');
   }
 
   // =========================================================================
