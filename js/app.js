@@ -181,8 +181,8 @@
         setSectionHash(bestId);
       }
     }, {
-      root: dashboard,
-      threshold: [0.2, 0.4, 0.6]
+      root: null,
+      threshold: [0.3, 0.5, 0.7]
     });
 
     var sections = document.querySelectorAll('.snap-section');
@@ -246,9 +246,12 @@
 
     // --- Clean Mode toggle ---
     if (cleanBtn) {
-      cleanBtn.addEventListener('click', function () {
+      cleanBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
         if (typeof window._cleanModeToggle === 'function') {
           window._cleanModeToggle();
+        } else {
+          document.body.classList.toggle('clean-mode');
         }
       });
     }
