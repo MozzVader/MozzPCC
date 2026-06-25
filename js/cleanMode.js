@@ -121,6 +121,9 @@
     }
   }
 
+  // Exponer toggle para que otros modulos (sidebar) puedan usarlo
+  window._cleanModeToggle = toggle;
+
   // Esc para toggle
   document.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') {

@@ -162,19 +162,27 @@
     }
 
     // --- Scroll spy (IntersectionObserver) ---
+    var scrollSpyReady = false;
     var observer = new IntersectionObserver(function (entries) {
+      if (!scrollSpyReady) return;
+      // Encontrar la seccion mas visible
+      var bestId = null;
+      var bestRatio = 0;
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          var id = entry.target.id;
-          navItems.forEach(function (item) {
-            item.classList.toggle('active', item.getAttribute('data-section') === id);
-          });
-          setSectionHash(id);
+        if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
+          bestRatio = entry.intersectionRatio;
+          bestId = entry.target.id;
         }
       });
+      if (bestId) {
+        navItems.forEach(function (item) {
+          item.classList.toggle('active', item.getAttribute('data-section') === bestId);
+        });
+        setSectionHash(bestId);
+      }
     }, {
       root: dashboard,
-      threshold: 0.3
+      threshold: [0.2, 0.4, 0.6]
     });
 
     var sections = document.querySelectorAll('.snap-section');
@@ -233,7 +241,9 @@
     // --- Clean Mode toggle ---
     if (cleanBtn) {
       cleanBtn.addEventListener('click', function () {
-        document.body.classList.toggle('clean-mode');
+        if (typeof window._cleanModeToggle === 'function') {
+          window._cleanModeToggle();
+        }
       });
     }
 
@@ -259,8 +269,17 @@
       if (mobileTopbar) mobileTopbar.classList.add('mobile-visible');
     }
 
-    // Restore hash after a short delay
+    // Restore hash after a short delay, then enable scroll spy
     restoreFromHash();
+    setTimeout(function () {
+      scrollSpyReady = true;
+      // Forzar actualizacion inicial del sidebar active
+      var clockItem = sidebarNav.querySelector('[data-section="section-clock"]');
+      if (clockItem && !window.location.hash) {
+        navItems.forEach(function (item) { item.classList.remove('active'); });
+        clockItem.classList.add('active');
+      }
+    }, 500);
   }
 
   // --- Keyboard Navigation ---

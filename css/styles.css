@@ -79,14 +79,16 @@
 
 html {
   scroll-behavior: smooth;
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
   font-family: var(--t-font);
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
   line-height: 1.6;
 }
 
@@ -141,6 +143,9 @@ body::after {
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  /* Evitar que se cree un containing block para fixed */
+  transform: none;
+  will-change: auto;
 }
 
 /* --- Secciones (altura natural, min-height para centrado) --- */
@@ -171,6 +176,7 @@ body::after {
   grid-template-rows: 1fr;
   gap: 24px;
   align-items: stretch;
+  max-height: calc(100dvh - 200px);
 }
 
 .snap-section-grid .card {
@@ -182,11 +188,14 @@ body::after {
 
 /* Tareas ocupa todo el espacio disponible */
 .section-productivity .snap-section-inner {
+  max-height: calc(100dvh - 200px);
   justify-content: flex-start;
   align-items: stretch;
 }
 
 .section-productivity .widget-tasks {
+  max-height: 100%;
+  overflow: hidden;
   width: 100%;
   display: flex;
   flex-direction: column;
