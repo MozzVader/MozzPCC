@@ -137,15 +137,18 @@ body::after {
 /* --- Contenedor principal (free scroll) --- */
 .dashboard {
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  /* Evitar que se cree un containing block para fixed */
-  transform: none;
-  will-change: auto;
+  /* Ocultar scrollbar */
+  scrollbar-width: none;
+}
+
+.dashboard::-webkit-scrollbar {
+  display: none;
 }
 
 /* --- Secciones (altura natural, min-height para centrado) --- */
@@ -159,6 +162,15 @@ body::after {
   position: relative;
 }
 
+/* Secciones que deben ocupar exactamente 1 viewport */
+.section-clock,
+.section-productivity,
+.section-tv-shows,
+.section-news-sports {
+  height: 100vh;
+  height: 100dvh;
+}
+
 .snap-section-inner {
   width: 100%;
   max-width: 1200px;
@@ -167,6 +179,15 @@ body::after {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+/* Inners de secciones viewport-bound: limitar altura */
+.section-clock .snap-section-inner,
+.section-productivity .snap-section-inner,
+.section-tv-shows .snap-section-inner,
+.section-news-sports .snap-section-inner {
+  max-height: calc(100dvh - 120px);
+  overflow: hidden;
 }
 
 /* Grid interno para secciones con dos columnas (TV Shows + GitHub) */
@@ -3500,6 +3521,27 @@ body::after {
 @media (max-width: 768px) {
   .snap-section {
     padding: 70px 16px 90px 16px;
+  }
+
+  /* En mobile, secciones viewport-bound pasan a min-height */
+  .section-clock,
+  .section-productivity,
+  .section-tv-shows,
+  .section-news-sports {
+    height: auto;
+  }
+
+  .snap-section-inner {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .section-clock .snap-section-inner,
+  .section-productivity .snap-section-inner,
+  .section-tv-shows .snap-section-inner,
+  .section-news-sports .snap-section-inner {
+    max-height: none;
+    overflow: visible;
   }
 
   /* Grid (TV Shows + GitHub): una columna en mobile */

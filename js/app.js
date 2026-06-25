@@ -197,6 +197,12 @@
         var targetId = item.getAttribute('data-section');
         var target = document.getElementById(targetId);
         if (target) {
+          // Actualizar active manualmente inmediatamente
+          navItems.forEach(function (ni) { ni.classList.remove('active'); });
+          item.classList.add('active');
+          // Actualizar hash
+          history.replaceState(null, '', '#' + targetId);
+          // Scroll suave
           target.scrollIntoView({ behavior: 'smooth' });
         }
         // Cerrar drawer en mobile
