@@ -166,6 +166,8 @@
 
       <!-- ===== FORM NUEVA CONTRASEÑA (hidden por default) ===== -->
       <form id="auth-update-password-form" class="auth-update-password-form" style="display:none;" autocomplete="on">
+        <!-- Hidden username field for browser autofill / accessibility -->
+        <input type="text" name="username" autocomplete="username" style="display:none;" tabindex="-1" aria-hidden="true">
         <div class="auth-input-group">
           <div class="auth-input-wrapper">
             <i class="fa-solid fa-lock auth-input-icon"></i>

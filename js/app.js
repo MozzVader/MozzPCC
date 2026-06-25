@@ -374,9 +374,12 @@
   };
 
   // --- Inicializar cuando el dashboard sea visible ---
+  // { once: true } evita que initSidebar corra dos veces
+  // (onAuthStateChange + getSession disparan auth:ready por separado,
+  //  y listeners duplicados cancelan los classList.toggle entre sí)
   window.addEventListener('auth:ready', function () {
     initSidebar();
-  });
+  }, { once: true });
 
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
