@@ -32,7 +32,7 @@
 
   /* --- Superficies (gradiente sutil violeta → teal) --- */
   --t-surface-1: rgba(14, 18, 32, 0.7);
-  --t-surface-2: rgba(18, 22, 38, 0.65);
+  --t-surface-2: #121626;
   --t-surface-3: rgba(24, 26, 48, 0.6);
   --t-surface-4: rgba(32, 30, 58, 0.55);
   --t-surface-5: rgba(40, 34, 70, 0.5);

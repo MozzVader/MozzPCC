@@ -54,21 +54,21 @@
   <!-- Estilos propios -->
   <link rel="stylesheet" href="/MozzPCC/css/styles.css">
   <link rel="stylesheet" href="/MozzPCC/css/palettes.css">
-  <link rel="stylesheet" href="/MozzPCC/css/themes/default.css">
+  <link rel="stylesheet" href="/MozzPCC/css/themes/linear.css">
 
   <!-- FOUC prevention: document.write SI bloquea el parser -->
   <script>
   (function(){
     try {
       var s = localStorage.getItem('pcc_theme_skin');
-      if (s && s !== 'default') {
+      if (s && s !== 'linear') {
         document.write('<link id="theme-skin-css" rel="stylesheet" href="/MozzPCC/css/themes/' + s + '.css">');
       }
     } catch(e) {}
   })();
   </script>
 </head>
-<body data-theme="default" data-palette="cyber">
+<body data-theme="linear" data-palette="cyber">
 <script>
 (function(){
   try {

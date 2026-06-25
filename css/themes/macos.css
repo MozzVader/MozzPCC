@@ -346,3 +346,13 @@ body[data-theme="macos"]::before {
 [data-theme="macos"] .card-header > h2 {
   display: none;
 }
+
+/* ============================================
+   MACOS — Mantener glassmorphism en cards
+   ============================================ */
+[data-theme="macos"] .card {
+  background: var(--t-card-bg);
+}
+[data-theme="macos"] .sp-table thead th {
+  background: var(--t-card-bg);
+}

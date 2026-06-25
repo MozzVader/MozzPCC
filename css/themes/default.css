@@ -124,3 +124,13 @@
   --font: var(--t-font);
   --border: var(--t-border-default);
 }
+
+/* ============================================
+   DEFAULT — Mantener glassmorphism en cards
+   ============================================ */
+[data-theme="default"] .card {
+  background: var(--t-card-bg);
+}
+[data-theme="default"] .sp-table thead th {
+  background: var(--t-card-bg);
+}

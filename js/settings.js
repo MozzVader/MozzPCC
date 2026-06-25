@@ -21,7 +21,7 @@
   // --- Estado ---
   var userId = null;
   var currentTheme = 'cyber';
-  var currentThemeSkin = 'default';
+  var currentThemeSkin = 'linear';
   var themeSkinGrid = document.getElementById('theme-skin-grid');
 
   // --- Tema skins (estructura visual) ---
@@ -450,7 +450,7 @@
     currentThemeSkin = themeSkinName;
 
     // Agregar el nuevo CSS ANTES de remover el viejo para evitar flash blanco
-    if (themeSkinName !== 'default') {
+    if (themeSkinName !== 'linear') {
       var link = document.createElement('link');
       link.id = 'theme-skin-css';
       link.rel = 'stylesheet';

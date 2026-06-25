@@ -280,9 +280,9 @@ body::after {
   color: var(--accent);
 }
 
-/* --- Tarjeta glassmorphism --- */
+/* --- Tarjeta (solido por defecto; glass en default/macos) --- */
 .card {
-  background: var(--bg-glass);
+  background: var(--t-surface-2);
   border: 1px solid var(--border-glass);
   border-radius: var(--radius);
   padding: 24px;
@@ -7835,7 +7835,7 @@ body.clean-mode .clean-mode-hint {
 .sp-table thead th {
   position: sticky;
   top: 0;
-  background: var(--bg-glass);
+  background: var(--t-surface-2);
   padding: 5px 3px;
   text-align: center;
   color: var(--text-muted);

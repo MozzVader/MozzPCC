@@ -32,7 +32,7 @@
 
   /* --- Superficies (Acrylic / Mica layers) --- */
   --t-surface-1: rgba(44, 44, 44, 0.5);
-  --t-surface-2: rgba(50, 50, 50, 0.6);
+  --t-surface-2: #323232;
   --t-surface-3: rgba(56, 56, 56, 0.7);
   --t-surface-4: rgba(62, 62, 62, 0.75);
   --t-surface-5: rgba(68, 68, 68, 0.8);
