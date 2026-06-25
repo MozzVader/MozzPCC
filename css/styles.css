@@ -79,14 +79,16 @@
 
 html {
   scroll-behavior: smooth;
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
   font-family: var(--t-font);
   background: var(--bg-primary);
   color: var(--text-primary);
-  min-height: 100vh;
-  overflow-x: hidden;
+  overflow: hidden;
+  height: 100%;
   line-height: 1.6;
 }
 
@@ -104,7 +106,7 @@ body::before {
     radial-gradient(ellipse at 50% 80%, var(--bg-glow-c) 0%, transparent 50%),
     linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
   z-index: -1;
-  animation: bgShift 20s ease-in-out infinite alternate;
+  /* animation: bgShift removed — was creating a containing block that broke position:fixed on modals */
 }
 
 @keyframes bgShift {
@@ -135,6 +137,14 @@ body::after {
 /* --- Contenedor principal (free scroll) --- */
 .dashboard {
   width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.dashboard::-webkit-scrollbar {
+  display: none;
 }
 
 /* --- Secciones (altura natural, min-height para centrado) --- */
@@ -149,8 +159,10 @@ body::after {
 }
 
 /* Secciones que deben ocupar exactamente 1 viewport */
+.section-clock,
 .section-productivity,
-.section-tv-shows {
+.section-tv-shows,
+.section-news-sports {
   height: 100vh;
   height: 100dvh;
 }
@@ -166,6 +178,7 @@ body::after {
 }
 
 /* Inners de secciones viewport-bound: limitar altura */
+.section-clock .snap-section-inner,
 .section-productivity .snap-section-inner,
 .section-tv-shows .snap-section-inner {
   max-height: calc(100dvh - 200px);
@@ -187,6 +200,12 @@ body::after {
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+}
+
+/* Prevent images from breaking constrained layouts */
+.snap-section img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Tareas ocupa todo el espacio disponible */
@@ -3506,8 +3525,10 @@ body::after {
   }
 
   /* En mobile, secciones viewport-bound pasan a min-height */
+  .section-clock,
   .section-productivity,
-  .section-tv-shows {
+  .section-tv-shows,
+  .section-news-sports {
     height: auto;
   }
 
@@ -3516,6 +3537,7 @@ body::after {
     overflow: visible;
   }
 
+  .section-clock .snap-section-inner,
   .section-productivity .snap-section-inner,
   .section-tv-shows .snap-section-inner {
     max-height: none;
@@ -4853,6 +4875,7 @@ body.sidebar-collapsed .sidebar-user-actions {
 /* Dashboard offset for sidebar */
 body.has-sidebar .dashboard {
   margin-left: 220px;
+  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.sidebar-collapsed.has-sidebar .dashboard {

@@ -1283,7 +1283,9 @@
             <h3><i class="fa-solid fa-shield-halved" style="color:var(--accent);margin-right:6px;"></i> Cambiar contrasena</h3>
             <p class="appearance-hint">Actualiza tu contrasena. No necesitás escribir la actual — solo la nueva dos veces.</p>
 
-            <div class="security-form">
+            <form class="security-form" autocomplete="on" onsubmit="return false;">
+              <!-- Hidden username field for accessibility -->
+              <input type="hidden" autocomplete="username" tabindex="-1" aria-hidden="true">
               <div class="security-field">
                 <label for="security-new-password">Nueva contrasena</label>
                 <div class="security-input-wrap">
@@ -1310,7 +1312,7 @@
                 </button>
                 <span id="security-status"></span>
               </div>
-            </div>
+            </form>
           </div>
 
           <div class="backup-divider"></div>

@@ -295,7 +295,7 @@
     // Actualizar sidebar con nombre
     if (sidebarUserEmail) sidebarUserEmail.textContent = displayName;
     if (sidebar) sidebar.style.display = 'flex';
-    if (mobileTopbar) mobileTopbar.style.display = 'flex';
+    if (mobileTopbar) mobileTopbar.style.display = '';
     document.body.classList.add('has-sidebar');
 
     // Si el dashboard ya está visible (ej: Supabase re-verificó sesión al cambiar de pestaña),

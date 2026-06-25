@@ -162,6 +162,7 @@
     }
 
     // --- Scroll spy (IntersectionObserver) ---
+    // root MUST be the dashboard (scroll container), not null (viewport)
     var scrollSpyReady = false;
     var observer = new IntersectionObserver(function (entries) {
       if (!scrollSpyReady) return;
@@ -181,8 +182,8 @@
         setSectionHash(bestId);
       }
     }, {
-      root: null,
-      threshold: [0.3, 0.5, 0.7]
+      root: dashboard,
+      threshold: [0.2, 0.4, 0.6]
     });
 
     var sections = document.querySelectorAll('.snap-section');
@@ -213,6 +214,8 @@
     });
 
     // --- Collapse toggle (desktop) ---
+    // Ensure sidebar starts expanded
+    document.body.classList.remove('sidebar-collapsed');
     if (collapseBtn) {
       collapseBtn.addEventListener('click', function () {
         document.body.classList.toggle('sidebar-collapsed');
