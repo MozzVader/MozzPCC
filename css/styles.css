@@ -205,7 +205,6 @@ body::after {
 /* Prevent images from breaking constrained layouts */
 .snap-section img {
   max-width: 100%;
-  height: auto;
 }
 
 /* Tareas ocupa todo el espacio disponible */
@@ -5102,9 +5101,6 @@ body.sidebar-collapsed.has-sidebar .dashboard {
 /* ============================================
    AUTH — RESPONSIVE
    ============================================ */
-@media (max-width: 768px) {
-  .auth-screen {
-
 @media (max-width: 480px) {
   .auth-screen {
     padding: 16px;
