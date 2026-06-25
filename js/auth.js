@@ -26,8 +26,9 @@
   const authPasswordToggle = document.getElementById('auth-password-toggle');
   const appLoading = document.getElementById('app-loading');
   const dashboardMain = document.querySelector('.dashboard');
-  const userInfoBar = document.getElementById('user-info-bar');
-  const userEmailDisplay = document.getElementById('user-email-display');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarUserEmail = document.getElementById('sidebar-user-email');
+  const mobileTopbar = document.getElementById('mobile-topbar');
   const logoutBtn = document.getElementById('logout-btn');
 
   // --- Elementos de reset de contraseña ---
@@ -163,7 +164,9 @@
     isDashboardVisible = false;
     authScreen.style.display = 'flex';
     dashboardMain.style.display = 'none';
-    userInfoBar.style.display = 'none';
+    if (sidebar) sidebar.style.display = 'none';
+    if (mobileTopbar) mobileTopbar.style.display = 'none';
+    document.body.classList.remove('has-sidebar');
 
     // Si no estamos en modo recuperación, resetear al estado normal
     if (!isRecoveryMode) {
@@ -289,13 +292,16 @@
     const email = session.user.email;
     const displayName = extractDisplayName(session.user);
 
-    // Actualizar barra de usuario con nombre
-    userEmailDisplay.textContent = displayName;
-    userInfoBar.style.display = 'flex';
+    // Actualizar sidebar con nombre
+    if (sidebarUserEmail) sidebarUserEmail.textContent = displayName;
+    if (sidebar) sidebar.style.display = 'flex';
+    if (mobileTopbar) mobileTopbar.style.display = 'flex';
+    document.body.classList.add('has-sidebar');
 
     // Si el dashboard ya está visible (ej: Supabase re-verificó sesión al cambiar de pestaña),
     // NO repetir la transición ni re-disparar auth:ready
     if (isDashboardVisible && !skipTransition) {
+      console.log('MozzPCC: Dashboard ya visible, omitiendo transición.');
       return;
     }
 
@@ -724,7 +730,8 @@
       console.error('MozzPCC: Supabase no está disponible. La autenticación está deshabilitada.');
       // Mostrar dashboard sin auth como fallback
       dashboardMain.style.display = 'block';
-      userInfoBar.style.display = 'none';
+      if (sidebar) sidebar.style.display = 'none';
+      if (mobileTopbar) mobileTopbar.style.display = 'none';
       authScreen.style.display = 'none';
       return;
     }

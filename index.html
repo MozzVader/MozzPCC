@@ -247,25 +247,92 @@
     </div>
   </div>
 
-  <!-- ===== BARRA DE USUARIO ===== -->
-  <div id="user-info-bar" class="user-info-bar" style="display:none;">
-    <div class="user-info-content">
-      <div class="user-avatar">
-        <i class="fa-solid fa-user"></i>
-      </div>
-      <span id="user-email-display" class="user-email"></span>
-      <span id="sync-dot" class="sync-dot" aria-hidden="true"></span>
-      <button id="tips-btn" class="btn-tips" aria-label="Tips y atajos">
-        <i class="fa-regular fa-lightbulb"></i>
-      </button>
-      <button id="settings-btn" class="btn-settings" aria-label="Configuración">
-        <i class="fa-solid fa-gear"></i>
-      </button>
-      <button id="logout-btn" class="btn-logout" aria-label="Cerrar sesión">
-        <i class="fa-solid fa-right-from-bracket"></i>
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar" id="sidebar" style="display:none;">
+    <div class="sidebar-header">
+      <img src="/MozzPCC/assets/logo.png" alt="MozzPCC" class="sidebar-logo">
+      <span class="sidebar-brand">MozzPCC</span>
+      <button class="sidebar-collapse-btn" id="sidebar-collapse-btn" aria-label="Colapsar sidebar">
+        <i class="fa-solid fa-angles-left"></i>
       </button>
     </div>
+
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <a href="#section-clock" class="sidebar-item active" data-section="section-clock">
+        <i class="fa-regular fa-clock"></i>
+        <span class="sidebar-item-label">Reloj</span>
+      </a>
+      <a href="#section-quick-access" class="sidebar-item" data-section="section-quick-access">
+        <i class="fa-solid fa-rocket"></i>
+        <span class="sidebar-item-label">Acceso Rapido</span>
+      </a>
+      <a href="#section-productivity" class="sidebar-item" data-section="section-productivity">
+        <i class="fa-solid fa-list-check"></i>
+        <span class="sidebar-item-label">Tareas</span>
+      </a>
+      <a href="#section-finances" class="sidebar-item" data-section="section-finances">
+        <i class="fa-solid fa-wallet"></i>
+        <span class="sidebar-item-label">Finanzas</span>
+      </a>
+      <a href="#section-tv-shows" class="sidebar-item" data-section="section-tv-shows">
+        <i class="fa-solid fa-tv"></i>
+        <span class="sidebar-item-label">Entretenimiento</span>
+      </a>
+      <a href="#section-notes" class="sidebar-item" data-section="section-notes">
+        <i class="fa-solid fa-note-sticky"></i>
+        <span class="sidebar-item-label">Notas</span>
+      </a>
+      <a href="#section-read-later" class="sidebar-item" data-section="section-read-later">
+        <i class="fa-solid fa-bookmark"></i>
+        <span class="sidebar-item-label">Ver Mas Tarde</span>
+      </a>
+      <a href="#section-news-sports" class="sidebar-item" data-section="section-news-sports">
+        <i class="fa-solid fa-newspaper"></i>
+        <span class="sidebar-item-label">Noticias</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="sidebar-item sidebar-item-clean" id="sidebar-clean-btn">
+        <i class="fa-solid fa-eye-slash"></i>
+        <span class="sidebar-item-label">Clean Mode</span>
+      </button>
+      <div class="sidebar-user">
+        <div class="sidebar-user-info">
+          <div class="user-avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <span class="sidebar-user-email" id="sidebar-user-email"></span>
+          <span id="sync-dot" class="sync-dot" aria-hidden="true"></span>
+        </div>
+        <div class="sidebar-user-actions">
+          <button id="tips-btn" class="sidebar-action-btn" aria-label="Tips y atajos">
+            <i class="fa-regular fa-lightbulb"></i>
+          </button>
+          <button id="settings-btn" class="sidebar-action-btn" aria-label="Configuración">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+          <button id="logout-btn" class="sidebar-action-btn" aria-label="Cerrar sesión">
+            <i class="fa-solid fa-right-from-bracket"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===== MOBILE TOP BAR ===== -->
+  <div class="mobile-topbar" id="mobile-topbar" style="display:none;">
+    <button class="mobile-burger" id="mobile-burger" aria-label="Menú">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+    <img src="/MozzPCC/assets/logo.png" alt="MozzPCC" class="mobile-logo">
+    <div class="mobile-user-mini" id="mobile-user-mini">
+      <i class="fa-solid fa-user"></i>
+    </div>
   </div>
+
+  <!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
   <!-- ===== DASHBOARD ===== -->
   <main class="dashboard" id="dashboard-scroll" style="display:none;">
@@ -830,59 +897,6 @@
         </footer>
       </div>
     </section>
-
-    <!-- ===== INDICADORES DE SECCIÓN ===== -->
-    <div class="section-indicators" id="section-indicators">
-      <button class="section-dot active" data-section="section-clock" data-tooltip="Reloj" aria-label="Reloj"></button>
-      <button class="section-dot" data-section="section-quick-access" data-tooltip="Acceso Rapido" aria-label="Acceso Rapido"></button>
-      <button class="section-dot" data-section="section-productivity" data-tooltip="Productividad" aria-label="Productividad"></button>
-      <button class="section-dot" data-section="section-finances" data-tooltip="Finanzas" aria-label="Finanzas"></button>
-      <button class="section-dot" data-section="section-tv-shows" data-tooltip="Entretenimiento" aria-label="Entretenimiento"></button>
-      <button class="section-dot" data-section="section-notes" data-tooltip="Notas" aria-label="Notas"></button>
-      <button class="section-dot" data-section="section-read-later" data-tooltip="Ver Mas Tarde" aria-label="Ver Mas Tarde"></button>
-      <button class="section-dot" data-section="section-news-sports" data-tooltip="Noticias y Deportes" aria-label="Noticias y Deportes"></button>
-    </div>
-
-    <!-- ===== BOTTOM NAV (mobile) ===== -->
-    <nav class="bottom-nav" id="bottom-nav" aria-label="Navegación principal">
-      <button class="bottom-nav-item active" data-section="section-clock" aria-label="Reloj">
-        <i class="fa-regular fa-clock"></i>
-        <span class="bottom-nav-label">Reloj</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-quick-access" aria-label="Acceso Rapido">
-        <i class="fa-solid fa-rocket"></i>
-        <span class="bottom-nav-label">Acceso</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-productivity" aria-label="Productividad">
-        <i class="fa-solid fa-list-check"></i>
-        <span class="bottom-nav-label">Tareas</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-finances" aria-label="Finanzas">
-        <i class="fa-solid fa-wallet"></i>
-        <span class="bottom-nav-label">Finanzas</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-tv-shows" aria-label="Entretenimiento">
-        <i class="fa-solid fa-tv"></i>
-        <span class="bottom-nav-label">TV</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-notes" aria-label="Notas">
-        <i class="fa-solid fa-note-sticky"></i>
-        <span class="bottom-nav-label">Notas</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-read-later" aria-label="Ver Mas Tarde">
-        <i class="fa-solid fa-bookmark"></i>
-        <span class="bottom-nav-label">Links</span>
-      </button>
-      <button class="bottom-nav-item" data-section="section-news-sports" aria-label="Noticias y Deportes">
-        <i class="fa-solid fa-newspaper"></i>
-        <span class="bottom-nav-label">News</span>
-      </button>
-    </nav>
-
-    <!-- Back to Top -->
-    <button id="back-to-top" class="back-to-top" aria-label="Volver arriba">
-      <i class="fa-solid fa-chevron-up"></i>
-    </button>
 
   </main>
 

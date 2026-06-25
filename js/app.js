@@ -1,6 +1,6 @@
 /**
  * app.js — Lógica principal de la aplicación
- * Reloj en tiempo real, fecha y saludo según hora del día
+ * Reloj en tiempo real, fecha, saludo y navegación sidebar
  */
 
 (function () {
@@ -80,8 +80,8 @@
     greetingEl.textContent = obtenerSaludo(ahora.getHours());
   }
 
-  // --- Inicialización ---
-  function init() {
+  // --- Inicialización del reloj ---
+  function initClock() {
     // Establecer el año en el footer
     yearEl.textContent = new Date().getFullYear();
 
@@ -114,16 +114,24 @@
     }, 2500);
   });
 
-  // --- Section Dots (indicadores de navegación) ---
-  function initSectionDots() {
-    var sections = document.querySelectorAll('.snap-section');
-    var dots = document.querySelectorAll('.section-dot');
-    var bottomNavItems = document.querySelectorAll('.bottom-nav-item');
-    if (!sections.length || !dots.length) return;
-
-    // --- URL anchors: update hash on section change, restore on load ---
+  // --- Sidebar Navigation ---
+  function initSidebar() {
+    var sidebar = document.getElementById('sidebar');
+    var sidebarNav = document.getElementById('sidebar-nav');
+    var mobileTopbar = document.getElementById('mobile-topbar');
+    var mobileBurger = document.getElementById('mobile-burger');
+    var overlay = document.getElementById('sidebar-overlay');
+    var collapseBtn = document.getElementById('sidebar-collapse-btn');
+    var cleanBtn = document.getElementById('sidebar-clean-btn');
     var dashboard = document.getElementById('dashboard-scroll');
-    var updatingHash = false; // prevent scroll event feedback loop
+
+    if (!sidebar || !sidebarNav || !dashboard) return;
+
+    var navItems = sidebarNav.querySelectorAll('.sidebar-item[data-section]');
+    var isMobile = window.innerWidth <= 768;
+
+    // --- URL hash management ---
+    var updatingHash = false;
 
     function setSectionHash(id) {
       if (updatingHash) return;
@@ -135,13 +143,11 @@
       updatingHash = false;
     }
 
-    // Restore section from hash on load
     function restoreFromHash() {
       var hash = window.location.hash.replace('#', '');
       if (!hash) return;
       var target = document.getElementById(hash);
       if (!target || !target.classList.contains('snap-section')) return;
-      // Try multiple times because dashboard may become visible after auth
       function tryScroll(attempts) {
         if (attempts <= 0) return;
         if (dashboard.offsetHeight === 0) {
@@ -152,36 +158,15 @@
           target.scrollIntoView({ behavior: 'instant' });
         }, 50);
       }
-      tryScroll(15); // retry for up to 3 seconds
+      tryScroll(15);
     }
 
-    // --- Estado de navegación (compartido con keyboard nav) ---
-    var sectionList = Array.from(sections);
-    var currentSectionIndex = -1;
-
-    // Exponer para acceso global
-    window._sectionList = sectionList;
-    window._currentSectionIndex = function () { return currentSectionIndex; };
-
-    function getSectionIndex(el) {
-      return sectionList.indexOf(el);
-    }
-
-    function scrollToSection(index) {
-      if (index < 0 || index >= sectionList.length) return;
-      sectionList[index].scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // IntersectionObserver: detecta qué sección está visible
+    // --- Scroll spy (IntersectionObserver) ---
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           var id = entry.target.id;
-          currentSectionIndex = getSectionIndex(entry.target);
-          dots.forEach(function (dot) {
-            dot.classList.toggle('active', dot.getAttribute('data-section') === id);
-          });
-          bottomNavItems.forEach(function (item) {
+          navItems.forEach(function (item) {
             item.classList.toggle('active', item.getAttribute('data-section') === id);
           });
           setSectionHash(id);
@@ -189,76 +174,109 @@
       });
     }, {
       root: dashboard,
-      threshold: 0.6
+      threshold: 0.3
     });
 
+    var sections = document.querySelectorAll('.snap-section');
     sections.forEach(function (section) {
       observer.observe(section);
     });
 
-    // Click en dot → scroll a la sección correspondiente
-    dots.forEach(function (dot) {
-      dot.addEventListener('click', function () {
-        var targetId = dot.getAttribute('data-section');
-        var target = document.getElementById(targetId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
-      });
-    });
-
-    // Click en bottom nav item → scroll a la sección correspondiente
-    bottomNavItems.forEach(function (item) {
-      item.addEventListener('click', function () {
+    // --- Click en nav item → scroll suave ---
+    navItems.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        e.preventDefault();
         var targetId = item.getAttribute('data-section');
         var target = document.getElementById(targetId);
         if (target) {
           target.scrollIntoView({ behavior: 'smooth' });
         }
+        // Cerrar drawer en mobile
+        if (isMobile) {
+          closeMobileDrawer();
+        }
       });
     });
 
-    // --- Back to Top button ---
-    var btt = document.getElementById('back-to-top');
-    if (btt && dashboard) {
-      // Show/hide based on scroll position
-      var bttObserver = new IntersectionObserver(function (entries) {
-        var clockVisible = entries[0].isIntersecting;
-        btt.classList.toggle('visible', !clockVisible);
-      }, { root: dashboard, threshold: 0.5 });
+    // --- Collapse toggle (desktop) ---
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function () {
+        document.body.classList.toggle('sidebar-collapsed');
+      });
+    }
 
-      var clockSection = document.getElementById('section-clock');
-      if (clockSection) bttObserver.observe(clockSection);
+    // --- Mobile drawer ---
+    function openMobileDrawer() {
+      sidebar.classList.add('sidebar-open');
+      overlay.classList.add('sidebar-overlay-visible');
+    }
 
-      btt.addEventListener('click', function () {
-        var target = document.getElementById('section-clock');
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth' });
+    function closeMobileDrawer() {
+      sidebar.classList.remove('sidebar-open');
+      overlay.classList.remove('sidebar-overlay-visible');
+    }
+
+    if (mobileBurger) {
+      mobileBurger.addEventListener('click', function () {
+        if (sidebar.classList.contains('sidebar-open')) {
+          closeMobileDrawer();
+        } else {
+          openMobileDrawer();
         }
       });
     }
 
-    // Restore hash after a short delay (after dashboard is visible)
+    if (overlay) {
+      overlay.addEventListener('click', closeMobileDrawer);
+    }
+
+    // --- Clean Mode toggle ---
+    if (cleanBtn) {
+      cleanBtn.addEventListener('click', function () {
+        document.body.classList.toggle('clean-mode');
+      });
+    }
+
+    // --- Responsive listener ---
+    window.addEventListener('resize', function () {
+      var wasMobile = isMobile;
+      isMobile = window.innerWidth <= 768;
+
+      if (wasMobile && !isMobile) {
+        // Mobile → Desktop: clean up mobile state
+        closeMobileDrawer();
+        sidebar.classList.remove('sidebar-open');
+        if (mobileTopbar) mobileTopbar.classList.remove('mobile-visible');
+      } else if (!wasMobile && isMobile) {
+        // Desktop → Mobile: show topbar
+        if (mobileTopbar) mobileTopbar.classList.add('mobile-visible');
+        closeMobileDrawer();
+      }
+    });
+
+    // Initial mobile state
+    if (isMobile) {
+      if (mobileTopbar) mobileTopbar.classList.add('mobile-visible');
+    }
+
+    // Restore hash after a short delay
     restoreFromHash();
   }
 
-  // --- Keyboard Navigation: números 1-8, flechas, Home/End, PgUp/PgDn ---
+  // --- Keyboard Navigation ---
   document.addEventListener('keydown', function (e) {
     // Ignorar si hay un input/textarea/select enfocado
     var tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
-    // Ignorar si hay un modal abierto (checking style.display property)
-    // Nota: style.display devuelve '' si nunca fue modificado via JS (hereda del HTML)
-    // pero el HTML tiene style="display:none;" así que comprobamos ambos
+    // Ignorar si hay un modal abierto
     var tipsModal = document.getElementById('tips-modal');
     var settingsModal = document.getElementById('settings-modal');
     if ((tipsModal && tipsModal.style.display === 'flex') ||
         (settingsModal && settingsModal.style.display === 'flex')) return;
 
-    var sections = window._sectionList;
+    var sections = document.querySelectorAll('.snap-section');
     if (!sections || !sections.length) return;
     var total = sections.length;
-    var current = window._currentSectionIndex();
 
     // Teclas numéricas: 1-8 saltan a la sección correspondiente
     var num = parseInt(e.key, 10);
@@ -268,28 +286,30 @@
       return;
     }
 
-    // Flecha abajo / PgDn: sección siguiente
+    // Flecha abajo / PgDn
     if (e.key === 'ArrowDown' || e.key === 'PageDown') {
       e.preventDefault();
+      var current = getCurrentVisibleSection();
       sections[Math.min(current + 1, total - 1)].scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
-    // Flecha arriba / PgUp: sección anterior
+    // Flecha arriba / PgUp
     if (e.key === 'ArrowUp' || e.key === 'PageUp') {
       e.preventDefault();
+      var current = getCurrentVisibleSection();
       sections[Math.max(current - 1, 0)].scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
-    // Home: ir al inicio
+    // Home
     if (e.key === 'Home') {
       e.preventDefault();
       sections[0].scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
-    // End: ir al final
+    // End
     if (e.key === 'End') {
       e.preventDefault();
       sections[total - 1].scrollIntoView({ behavior: 'smooth' });
@@ -297,7 +317,23 @@
     }
   });
 
-  // Exponer scrollToSection globalmente (para reutilizar desde otros módulos)
+  function getCurrentVisibleSection() {
+    var sections = document.querySelectorAll('.snap-section');
+    var dashboard = document.getElementById('dashboard-scroll');
+    if (!dashboard || !sections.length) return 0;
+    var scrollTop = dashboard.scrollTop;
+    var best = 0;
+    var bestDist = Infinity;
+    sections.forEach(function (s, i) {
+      var dist = Math.abs(s.offsetTop - scrollTop);
+      if (dist < bestDist) {
+        bestDist = dist;
+        best = i;
+      }
+    });
+    return best;
+  }
+
   window.navigateToSection = function (index) {
     if (typeof index !== 'number') return;
     var secs = document.querySelectorAll('.snap-section');
@@ -306,15 +342,15 @@
     }
   };
 
-  // Inicializar dots cuando el dashboard sea visible
+  // --- Inicializar cuando el dashboard sea visible ---
   window.addEventListener('auth:ready', function () {
-    initSectionDots();
+    initSidebar();
   });
 
   // Ejecutar cuando el DOM esté listo
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', initClock);
   } else {
-    init();
+    initClock();
   }
 })();
