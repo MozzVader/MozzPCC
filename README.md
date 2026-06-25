@@ -177,7 +177,6 @@ MozzPCC/
 ├── README.md               # Este archivo
 ├── SETUP.md                # Guia de configuracion paso a paso
 ├── THEME_SYSTEM.md         # Documentacion del sistema de temas/skins/paletas
-├── MEJORAS.md              # Registro de mejoras y cambios
 └── LICENSE.md               # Licencia CC BY-NC-ND 4.0
 ```
 
