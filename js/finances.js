@@ -57,6 +57,7 @@
   var lineChart = null;
   var currentTab = 'movimientos';
   var finSummaryHidden;
+  var editingId = null; // ID de transaccion en modo edicion (null = modo agregar)
 
   // Leer preferencia de privacidad (persiste entre sesiones)
   function loadPrivacyPref() {
@@ -428,16 +429,28 @@
       infoWrap.appendChild(info);
       infoWrap.appendChild(amount);
 
-      // Boton eliminar
+      // Botones editar + eliminar
+      var actions = document.createElement('div');
+      actions.className = 'fin-item-actions';
+
+      var editBtn = document.createElement('button');
+      editBtn.className = 'fin-item-edit';
+      editBtn.setAttribute('aria-label', 'Editar transaccion');
+      editBtn.innerHTML = '<i class="fa-solid fa-pen"></i>';
+      editBtn.dataset.id = t.id;
+
       var delBtn = document.createElement('button');
       delBtn.className = 'fin-item-delete';
       delBtn.setAttribute('aria-label', 'Eliminar transaccion');
       delBtn.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
       delBtn.dataset.id = t.id;
 
+      actions.appendChild(editBtn);
+      actions.appendChild(delBtn);
+
       item.appendChild(iconWrap);
       item.appendChild(infoWrap);
-      item.appendChild(delBtn);
+      item.appendChild(actions);
       list.appendChild(item);
     }
 
@@ -447,7 +460,7 @@
   }
 
   /**
-   * Agrega una nueva transaccion desde el formulario
+   * Agrega una nueva transaccion o actualiza si esta en modo edicion
    */
   async function addTransaction() {
     if (!client || !userId) return;
@@ -500,49 +513,79 @@
       dateVal = getToday();
     }
 
-    // Deshabilitar boton mientras se inserta
+    // Deshabilitar boton mientras se inserta/actualiza
     if (addBtn) {
       addBtn.disabled = true;
       addBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
     }
 
     try {
-      var { data, error } = await client
-        .from('finance_transactions')
-        .insert({
-          user_id: userId,
-          type: currentType,
-          amount: amount,
-          category_id: categoryId,
-          description: description,
-          date: dateVal
-        })
-        .select()
-        .single();
+      if (editingId) {
+        // --- MODO EDICION: actualizar transaccion existente ---
+        var { data, error } = await client
+          .from('finance_transactions')
+          .update({
+            type: currentType,
+            amount: amount,
+            category_id: categoryId,
+            description: description,
+            date: dateVal
+          })
+          .eq('id', editingId)
+          .select()
+          .single();
 
-      if (error) {
-        console.warn('[Finanzas] Error al agregar transaccion:', error);
-        return;
+        if (error) {
+          console.warn('[Finanzas] Error al actualizar transaccion:', error);
+          return;
+        }
+
+        cancelEdit();
+        window.dispatchEvent(new CustomEvent('sync:success'));
+        await loadTransactions();
+        updateSummary();
+        renderCharts();
+      } else {
+        // --- MODO AGREGAR: nueva transaccion ---
+        var { data, error } = await client
+          .from('finance_transactions')
+          .insert({
+            user_id: userId,
+            type: currentType,
+            amount: amount,
+            category_id: categoryId,
+            description: description,
+            date: dateVal
+          })
+          .select()
+          .single();
+
+        if (error) {
+          console.warn('[Finanzas] Error al agregar transaccion:', error);
+          return;
+        }
+
+        window.dispatchEvent(new CustomEvent('sync:success'));
+
+        // Limpiar formulario
+        if (categorySelect) categorySelect.value = '';
+        if (descriptionInput) descriptionInput.value = '';
+        if (amountInput) amountInput.value = '';
+        if (dateInput) dateInput.value = getToday();
+
+        // Recargar datos
+        await loadTransactions();
+        updateSummary();
+        renderCharts();
       }
-
-      window.dispatchEvent(new CustomEvent('sync:success'));
-
-      // Limpiar formulario
-      if (categorySelect) categorySelect.value = '';
-      if (descriptionInput) descriptionInput.value = '';
-      if (amountInput) amountInput.value = '';
-      if (dateInput) dateInput.value = getToday();
-
-      // Recargar datos
-      await loadTransactions();
-      updateSummary();
-      renderCharts();
     } catch (e) {
       console.warn('[Finanzas] Error en addTransaction:', e);
     } finally {
       if (addBtn) {
         addBtn.disabled = false;
-        addBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Agregar';
+        addBtn.innerHTML = editingId
+          ? '<i class="fa-solid fa-check"></i> Guardar'
+          : '<i class="fa-solid fa-plus"></i> Agregar';
       }
     }
   }
@@ -609,6 +652,96 @@
         await loadTransactions();
       }
     }
+  }
+
+  // =========================================================================
+  //  EDITAR TRANSACCION
+  // =========================================================================
+
+  /**
+   * Entra en modo edicion: pre-llena el formulario con los datos de la transaccion
+   * @param {string} id - ID de la transaccion a editar
+   */
+  function editTransaction(id) {
+    var tx = null;
+    for (var i = 0; i < transactions.length; i++) {
+      if (transactions[i].id === id) { tx = transactions[i]; break; }
+    }
+    if (!tx) return;
+
+    editingId = id;
+
+    // Setear tipo (gasto/ingreso)
+    if (tx.type !== currentType) {
+      currentType = tx.type;
+      toggleFormType();
+    }
+
+    // Abrir formulario
+    var panel = document.getElementById('fin-form-panel');
+    if (panel) panel.classList.add('fin-form-open');
+
+    // Pre-llenar campos
+    var categorySelect = document.getElementById('fin-category-select');
+    var descriptionInput = document.getElementById('fin-description-input');
+    var amountInput = document.getElementById('fin-amount-input');
+    var dateInput = document.getElementById('fin-date-input');
+
+    if (categorySelect) categorySelect.value = tx.category_id || '';
+    if (descriptionInput) descriptionInput.value = tx.description || '';
+    if (amountInput) amountInput.value = (parseFloat(tx.amount) || 0).toLocaleString('es-AR', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    if (dateInput) dateInput.value = tx.date || getToday();
+
+    // Cambiar boton a "Guardar" y mostrar cancelar
+    var addBtn = document.getElementById('fin-add-btn');
+    var cancelBtn = document.getElementById('fin-cancel-btn');
+    if (addBtn) addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Guardar';
+    if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+
+    // Borde visual de edicion
+    if (panel) panel.classList.add('fin-editing');
+
+    // Scroll al formulario
+    panel && panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Focus en descripcion o monto
+    if (descriptionInput) descriptionInput.focus();
+  }
+
+  /**
+   * Sale del modo edicion y vuelve al modo agregar
+   */
+  function cancelEdit() {
+    editingId = null;
+
+    // Limpiar formulario
+    var categorySelect = document.getElementById('fin-category-select');
+    var descriptionInput = document.getElementById('fin-description-input');
+    var amountInput = document.getElementById('fin-amount-input');
+    var dateInput = document.getElementById('fin-date-input');
+    if (categorySelect) categorySelect.value = '';
+    if (descriptionInput) descriptionInput.value = '';
+    if (amountInput) amountInput.value = '';
+    if (dateInput) dateInput.value = getToday();
+
+    // Volver tipo a gasto
+    if (currentType !== 'gasto') {
+      currentType = 'ingreso'; // toggleFormType lo va a cambiar a gasto
+      toggleFormType();
+    }
+
+    // Restaurar boton y ocultar cancelar
+    var addBtn = document.getElementById('fin-add-btn');
+    var cancelBtn = document.getElementById('fin-cancel-btn');
+    if (addBtn) addBtn.innerHTML = '<i class="fa-solid fa-check"></i> Agregar';
+    if (cancelBtn) cancelBtn.style.display = 'none';
+
+    // Quitar borde de edicion
+    var panel = document.getElementById('fin-form-panel');
+    if (panel) panel.classList.remove('fin-editing');
   }
 
   // =========================================================================
@@ -1270,6 +1403,7 @@
     transactions = [];
     userId = null;
     currentType = 'gasto';
+    editingId = null;
     donutChart = null;
     barChart = null;
     lineChart = null;
@@ -1513,6 +1647,14 @@
     });
   }
 
+  // Boton cancelar edicion
+  var cancelBtn = document.getElementById('fin-cancel-btn');
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      cancelEdit();
+    });
+  }
+
   // Boton toggle panel del formulario
   var formToggle = document.getElementById('fin-form-toggle');
   if (formToggle) {
@@ -1590,13 +1732,18 @@
     });
   }
 
-  // Delegacion de eventos para botones de eliminar en la lista
+  // Delegacion de eventos para botones de editar y eliminar en la lista
   var finList = document.getElementById('fin-list');
   if (finList) {
     finList.addEventListener('click', function (e) {
-      var target = e.target.closest('.fin-item-delete');
-      if (target && target.dataset.id) {
-        deleteTransaction(target.dataset.id);
+      var editTarget = e.target.closest('.fin-item-edit');
+      if (editTarget && editTarget.dataset.id) {
+        editTransaction(editTarget.dataset.id);
+        return;
+      }
+      var deleteTarget = e.target.closest('.fin-item-delete');
+      if (deleteTarget && deleteTarget.dataset.id) {
+        deleteTransaction(deleteTarget.dataset.id);
       }
     });
   }

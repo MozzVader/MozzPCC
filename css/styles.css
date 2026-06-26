@@ -2293,13 +2293,18 @@ body::after {
   color: var(--t-danger);
 }
 
-/* Delete button — right side, visible on hover */
-.fin-item-delete {
+/* Edit + Delete buttons — right side, visible on hover */
+.fin-item-actions {
+  display: flex;
+  gap: 2px;
   flex-shrink: 0;
   align-self: center;
+}
+
+.fin-item-edit,
+.fin-item-delete {
   background: none;
   border: none;
-  color: var(--t-danger);
   cursor: pointer;
   font-size: 0.8rem;
   opacity: 0;
@@ -2309,9 +2314,56 @@ body::after {
   border-radius: 4px;
 }
 
+.fin-item-edit {
+  color: var(--text-muted);
+}
+
+.fin-item-edit:hover {
+  color: var(--accent);
+  background: var(--accent-dim, rgba(99, 102, 241, 0.15));
+}
+
+.fin-item:hover .fin-item-edit,
+.fin-item:hover .fin-item-delete {
+  opacity: 1;
+  visibility: visible;
+}
+
+.fin-item-delete {
+  color: var(--t-danger);
+}
+
 .fin-item-delete:hover {
   color: var(--t-danger-hover);
   background: var(--t-danger-dim);
+}
+
+/* Editing state for the form panel */
+.fin-form-panel.fin-editing {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.fin-btn-cancel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-xs);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-right: 8px;
+}
+
+.fin-btn-cancel:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
 }
 
 /* Empty state */
@@ -3643,6 +3695,12 @@ body::after {
 
   .fin-filters-row {
     flex-wrap: wrap;
+  }
+
+  .fin-item-edit,
+  .fin-item-delete {
+    opacity: 1;
+    visibility: visible;
   }
 
   .fin-filter {
