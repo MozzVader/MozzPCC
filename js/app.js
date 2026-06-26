@@ -226,11 +226,13 @@
     function openMobileDrawer() {
       sidebar.classList.add('sidebar-open');
       overlay.classList.add('sidebar-overlay-visible');
+      document.body.style.overflow = 'hidden';
     }
 
     function closeMobileDrawer() {
       sidebar.classList.remove('sidebar-open');
       overlay.classList.remove('sidebar-overlay-visible');
+      document.body.style.overflow = '';
     }
 
     if (mobileBurger) {

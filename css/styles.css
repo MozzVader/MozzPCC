@@ -2504,7 +2504,7 @@ body::after {
   border: 1px solid var(--t-surface-4);
   border-radius: var(--radius-sm);
   padding: 16px;
-  min-height: 160px;
+  min-height: 320px;
   position: relative;
   transition: var(--transition);
   animation: noteFadeIn 0.4s ease forwards;
@@ -2598,7 +2598,7 @@ body::after {
   border-radius: var(--t-radius-xs);
   transition: var(--transition-fast);
   line-height: 1.5;
-  height: 52px;
+  height: 104px;
   cursor: text;
   overflow-wrap: break-word;
   word-break: break-word;
@@ -3734,6 +3734,18 @@ body::after {
   .notes-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
+
+  /* Finanzas tabs: full-width en mobile */
+  .fin-tabs {
+    gap: 6px;
+  }
+
+  .fin-tab {
+    flex: 1;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 0.78rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -4641,7 +4653,8 @@ body:not(.dashboard-visible) .skeleton-container { display: none !important; }
   z-index: 800;
   display: flex;
   flex-direction: column;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
