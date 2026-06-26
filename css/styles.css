@@ -141,6 +141,7 @@ body::after {
   height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
+  scroll-behavior: smooth;
   scrollbar-width: none;
 }
 
@@ -8207,7 +8208,7 @@ body.clean-mode .clean-mode-hint {
 .countdown-float {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
   z-index: 800;
   display: flex;
   flex-direction: column;

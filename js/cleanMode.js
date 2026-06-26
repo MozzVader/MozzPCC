@@ -12,6 +12,7 @@
   'use strict';
 
   var isActive = false;
+  var savedScrollTop = 0;
 
   // --- Auto-lock (inactividad) ---
   var inactivityTimer = null;
@@ -87,6 +88,13 @@
   function activate() {
     if (isActive) return;
     isActive = true;
+
+    // Guardar posicion actual del scroll
+    var dashboard = document.querySelector('.dashboard');
+    if (dashboard) {
+      savedScrollTop = dashboard.scrollTop;
+    }
+
     document.body.classList.add('clean-mode');
 
     // Scroll al reloj
@@ -94,16 +102,26 @@
     if (clockSection) {
       clockSection.scrollIntoView({ behavior: 'smooth' });
     }
-
   }
 
   /**
-   * Desactiva el clean mode
+   * Desactiva el clean mode — restaura scroll y scroll spy
    */
   function deactivate() {
     if (!isActive) return;
     isActive = false;
     document.body.classList.remove('clean-mode');
+
+    // Restaurar scroll a la posicion guardada
+    var dashboard = document.querySelector('.dashboard');
+    if (dashboard) {
+      dashboard.scrollTop = savedScrollTop;
+    }
+
+    // Forzar actualizacion del scroll spy
+    if (typeof window._forceScrollSpy === 'function') {
+      window._forceScrollSpy();
+    }
 
     // Resetear el timer de inactividad al volver
     resetInactivityTimer();

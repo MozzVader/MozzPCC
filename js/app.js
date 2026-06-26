@@ -191,6 +191,16 @@
       observer.observe(section);
     });
 
+    // Exponer para que cleanMode.js pueda forzar re-evaluacion
+    window._forceScrollSpy = function () {
+      // Disparar un scroll minimo para que el observer re-evalue
+      if (dashboard) {
+        var pos = dashboard.scrollTop;
+        dashboard.scrollTop = pos + 1;
+        dashboard.scrollTop = pos;
+      }
+    };
+
     // --- Click en nav item → scroll suave ---
     navItems.forEach(function (item) {
       item.addEventListener('click', function (e) {
