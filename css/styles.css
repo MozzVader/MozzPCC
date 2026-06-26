@@ -4952,7 +4952,6 @@ body.sidebar-collapsed .sidebar-user-actions {
 /* Dashboard offset for sidebar */
 body.has-sidebar .dashboard {
   margin-left: 220px;
-  transition: margin-left 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body.sidebar-collapsed.has-sidebar .dashboard {
