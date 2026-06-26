@@ -64,27 +64,27 @@ MozzPCC es un dashboard personal disenado como centro de comando diario. Constru
 | Command Palette | Busqueda rapida con Ctrl+K (secciones, links, tareas, notas, finanzas, acciones + busqueda web con /yt, /g, /w, /tw) |
 | Keyboard Navigation | Numeros 1-8 para saltar a secciones, flechas/PgUp/PgDn para navegar, Home/End |
 | Focus Trap | Tab cycling dentro de modales (accesibilidad) |
-| Clean Mode | Vista limpia con solo reloj pulsando Esc (clic para volver) |
-| Auto-lock | Clean Mode automatico por inactividad (configurable: 5-60 min o desactivado) |
+| Clean Mode | Vista limpia con solo reloj pulsando Esc (restaura posicion al volver) |
+| Auto-lock | Clean Mode automatico por inactividad, restaura posicion al despertar (configurable: 5-60 min o desactivado) |
 | Indicador de Sync | Puntito verde que se enciende al guardar datos en Supabase |
 | Undo Global | Toast de deshacer con barra de progreso al eliminar tareas, notas, transacciones, etc. (5s) |
-| Snap Scroll | Navegacion vertical con snap sections e indicadores laterales con tooltips |
+| Free Scroll | Navegacion vertical libre con sidebar colapsable, scroll spy y transiciones suaves |
 | Landing Page | Pagina de presentacion independiente con screenshots y efectos 3D |
 
 ## Diseno
 
 - Tema oscuro con degradado profundo
-- Tarjetas con efecto glassmorphism (vidrio esmerilado)
-- Navegacion vertical con snap scroll e indicadores laterales
-- 6 skins visuales (estructura + chrome) + 9 paletas de colores:
+- Tarjetas solidas con bordes sutiles y sombras (glassmorphism en Dark Glass y macOS)
+- Navegacion vertical libre con sidebar colapsable y scroll spy
+- 6 skins visuales (estructura + chrome) + 9 paletas de colores. Linear es el tema por defecto:
 
 ### Skins
 
 | Skin | Estilo | Inspiracion |
 |------|--------|------------|
-| Dark Glass | Glassmorphism oscuro | Original PCC |
+| Dark Glass | Glassmorphism oscuro (con blur en cards) | Original PCC |
 | Notion | Claro y minimalista | Notion |
-| Linear | Dark minimalista | Linear App |
+| Linear | Dark minimalista | Linear App (default) |
 | macOS | Vibrancy, transparencia, traffic lights | macOS Sonoma |
 | Windows 11 | Fluent Design, Acrylic, window controls | Windows 11 |
 | Zai | Aurora neural, deep blue-black | Aurora Boreal |
@@ -129,9 +129,9 @@ MozzPCC/
 │   ├── styles.css          # Estilos completos
 │   ├── palettes.css        # Paletas de colores
 │   └── themes/
-│       ├── default.css     # Tema Dark Glass (default)
+│       ├── linear.css      # Tema Linear (default)
+│       ├── default.css     # Tema Dark Glass
 │       ├── notion.css      # Tema Notion
-│       ├── linear.css      # Tema Linear
 │       ├── macos.css       # Tema macOS (Sonoma)
 │       ├── windows.css     # Tema Windows 11 (Fluent Design)
 │       └── zai.css         # Tema Zai (Aurora Neural)
