@@ -2598,7 +2598,8 @@ body::after {
   border-radius: var(--t-radius-xs);
   transition: var(--transition-fast);
   line-height: 1.5;
-  height: 104px;
+  flex: 1;
+  min-height: 80px;
   cursor: text;
   overflow-wrap: break-word;
   word-break: break-word;
